@@ -23,37 +23,27 @@ what you want, remove the file `/private/etc/sudoers.d/${USER}`
 
 ## Install
 
-  1. If you don't already have SSH keys setup on this machine, now is the time:
-
-```bash
-ssh-keygen -t rsa -b 4096 -C "${USER}@${HOSTNAME}"
-cat ~/.ssh/id_rsa.pub | pbcopy
-```
-
+  1. If you don't already have SSH keys setup on this machine, now is the time: `ssh-keygen -t rsa -b 4096 -C "${USER}@${HOSTNAME}"; cat ~/.ssh/id_rsa.pub | pbcopy` 
   2. Add the new SSH key to the Github settings page: https://github.com/settings/ssh
-
-  3. Run the installer:
+  3. Run the following installer:
 
 ```bash
 curl -fsSL 'http://sw.im/pullulant.sh' | /usr/bin/env bash
 ```
 
-OR:
+Alternatively:
 
 ```bash
-mkdir -p ~/workspace && cd ~/workspace
-[[ -d "pullulant" ]] || git clone "git@github.com:kigster/pullulant.git"
-cd pullulant && git pull
-./pullulant -a
+export ws="~/workspace"     # your workspace directory
+[[ -d ${ws} ]] || mkdir -p ${ws}
+[[ -d "${ws}/pullulant" ]] || cd ${ws} && git clone "git@github.com:kigster/pullulant.git"
+cd pullulant && git pull && ./pullulant -a
 ```
-
 
 ## After a Successful Install
 
  * Reboot (required after the first successful install!)
-
  * Open System Preferences, Security & Privacy, choose Privacy tab and unlock the lock at the bottom. After that choose Accessibility and then check "ShiftIt" application.
-
 
 ## Author
 
