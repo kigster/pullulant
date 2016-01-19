@@ -9,13 +9,12 @@ permissions() {
   run "sudo cp -f ${tmpfile} /private/etc/sudoers.d/${USER} && rm -f ${tmpfile}"
 
   my_group=`id -gn`  # find the primary group of the current user
-  for dir in $folders; do
-    if [ ! -d "$dir" ]; then
-      run "sudo mkdir -p $dir"
+  for dir in ${folders}; do
+    if [ ! -d "${dir}" ]; then
+      run "sudo mkdir -p ${dir}"
     fi
-    run "sudo chgrp -R $my_group $dir"
-    run "sudo chown -R ${USER} $dir"
-    run "sudo chmod -R u=xwr,g=xwr,o= $dir"
+    run "sudo chown -R ${USER}:${my_group} ${dir}"
+    run "sudo chmod -R u=xwr,g=wrx,o= ${dir}"
   done
   if [ -z "`ps -ef | grep [p]ostgresql`" -a -d "/usr/local/var/postgres" ]; then
     run "mv /usr/local/var/postgres /usr/local/var/postgres-backup.$$"

@@ -38,6 +38,16 @@ cat ~/.ssh/id_rsa.pub | pbcopy
 curl -fsSL 'http://sw.im/pullulant.sh' | /usr/bin/env bash
 ```
 
+OR:
+
+```bash
+mkdir -p ~/workspace && cd ~/workspace
+[[ -d "pullulant" ]] || git clone "git@github.com:kigster/pullulant.git"
+cd pullulant && git pull
+./pullulant -a
+```
+
+
 ## After a Successful Install
 
  * Reboot (required after the first successful install!)

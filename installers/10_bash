@@ -1,23 +1,22 @@
 #!/usr/bin/env bash
 
-bash_files="./files/bash"
+bash_files_dir="./files/bash"
 
-
-function dotfiles {
+function bash {
     run "pwd"
-    dotfiles=`cd ${bash_files} && ls -1 .[a-zA-Z]* && cd - >/dev/null`
+    files=`cd ${bash_files_dir} && ls -1 .[a-zA-Z]* && cd - >/dev/null`
     mkdir -p ${backup_dir}
-    for file in $dotfiles; do
+    for file in ${files}; do
       if [ -f "${home_dir}/${file}" ]; then
         # echo "overwriting ${home_dir}/${file} (backing up existing file to ${backup}/${file}.${timestamp})"
         run "mv ${home_dir}/${file} ${backup_dir}/${file}"
       else
         echo "installing ${home_dir}/${file}"
       fi
-      run "cp -v ${bash_files}/$file $home_dir"
+      run "cp -v ${bash_files_dir}/$file $home_dir"
     done
     ln -nfs ~/.bashrc ~/.bash_login
-    result=$(grep bashrc ~/.bash_profile)
+    $(grep bashrc ~/.bash_profile > /dev/null)
     if [ $? -eq 1 ]; then
       run "echo 'appending ~/.bashrc to .bash_profile...'"
       run "echo 'source ~/.bashrc' >> ~/.bash_profile"

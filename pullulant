@@ -17,7 +17,7 @@ function load_module {
 }
 
 function init {
-  source "./files/dotfiles/.bash_colors"
+  source "./files/bash/.bash_colors"
 
   load_module "ls -1 $helpers_dir" $helpers_dir
   export helpers=${submodules}
