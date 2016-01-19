@@ -13,13 +13,13 @@ environment needed to build ruby applications on Mac OS-X.
 ### About your OS-X user
 
 Note: shared resources used by the Homebrew, such as files under `/usr/local`, will change ownership
-to the user running this installer. Even though an effort was made to ensure that group `staff`
-can access shared files there, if you have another development user on this machine, there may
-be some issues with permissions.
+to the user running this installer, with full `xwr` permissions. This is so that the effects of any previously run `sudo brew` nuisance is neutralized.
 
-The current OS-X user must be configured as "Admin" on the Mac, and upon entering their password after the first
-request for `sudo`, the user will be modified to allow password-less `sudo` access. If this is not
-what you want, remove the file `/private/etc/sudoers.d/${USER}`
+Typically your group will be `staff`.  Whatever group you are, that group is applied to the key folders (`/usr/local` and `/var/chef`), with permissions also reset to `xwr`. The idea is that this move should permit multiple co-existing users to share `/usr/local` and `/var/chef` at the same time.  
+
+Note that the current OS-X user must be configured as "Admin" on the Mac, and upon entering their password after the first request for `sudo`, the user will be modified to allow password-less `sudo` access for the duration of the script.
+
+At the very end, installer cleans this up, or you can run `pullulant -r reset-sudo`
 
 
 ## Install

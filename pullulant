@@ -33,13 +33,12 @@ init
 function main {
   # loop over installers, and if either passed as an argument or no arguments
   #" at all – run it."
+  [[ -z "${runners}" ]] || section "sudo-enable" && sudo-enable
 
   runners_completed=0
   for runner in $runners; do
 
-    if [[ $runners_completed -eq 0 ]]; then
-      greet
-    fi
+    [[ $runners_completed -eq 0 ]] || greet
 
     section ${runner}
 
@@ -48,21 +47,20 @@ function main {
     status=${status:-1}
 
     if [ ${status:-1} -ne 0 ]; then
-      printf "${bldred}Non-zero status from '${runner}' runner :( ...\n${txtrst}"
-      exit $status
+      printf "${bldred}Non-zero status ${status} from '${runner}' runner :( ...\n${txtrst}"
+      abort $status
     fi
 
     runners_completed=$(($runners_completed + 1))
   done
 
   if [ $status -eq 0 -a $runners_completed -gt 0 ]; then
-    success
-    return 0
+    finish
   elif [ $status -eq 0 -a $runners_completed -eq 0 ]; then
-    printf "${bldylw}No runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
+    printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
+    finish
   else
-    failure
-    return $status
+    abort $status
   fi
 }
 
@@ -76,7 +74,7 @@ while getopts "ar:i:lhqnSB" opt; do
     # this is left for legacy only, -r is the new flag that should be used.
     i)
       printf "${bldred}Whoops! The -i flag is no longer used, please use -r (for 'runner').\n${txtrst}"
-      exit                                  ;;
+      abort 125                            ;;
     r)
       if [ -z "$runners" ]; then
         export runners="$OPTARG"
@@ -84,7 +82,7 @@ while getopts "ar:i:lhqnSB" opt; do
         export runners="$runners $OPTARG"
       fi                                    ;;
     h)
-      greet; help; exit 0;                  ;;
+      greet; help; finish;                  ;;
     q)
       export verbose=
       ;;
@@ -92,7 +90,7 @@ while getopts "ar:i:lhqnSB" opt; do
       export dryrun=yes ;                   ;;
     l)
       installer_info
-      exit 0;
+      finish;
       ;;
     S)
       export skip_sprout_wrap=yes
@@ -102,12 +100,12 @@ while getopts "ar:i:lhqnSB" opt; do
       ;;
     \?)
       help
-      echo "${bldred}ERROR: option: -$OPTARG is invalid :( ${txtrst}" >&2
-      exit 1
+      printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
+      abort 126
       ;;
     :)
-      echo "${bldred}ERROR: option -$OPTARG requires an argument ${txtrst}" >&2
-      exit 1
+      printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
+      abort 127
       ;;
   esac
 done

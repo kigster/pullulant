@@ -46,9 +46,8 @@ function brew_install {
     if [ "$result" -ne 0 ]; then
       run "brew install $package"
     else
-      run "brew upgrade $package --force; true"
-      run "brew unlink $package --force; true"
-      run "brew link $package --overwrite; true"
+      run "brew upgrade $package; true"
+      run "brew unlink $package --force; brew link $package --force; true"
     fi
   fi
 }

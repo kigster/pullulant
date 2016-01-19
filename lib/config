@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 function config {
   # Script-level Constants
-
+  readonly pullulant_vars_symbol_ok=" ✅ "
+  readonly pullulant_vars_symbol_error=" 📛 🚫 ⛔️ 🆘 💀 💔 ❗️ "
   readonly timestamp=`date "+%Y%m%d%H%M%S"`
   readonly sprout_wrap_repo="git@github.com:pivotal-sprout/sprout-wrap.git"
   readonly install_stdout=/tmp/pullulant.stdout.$$.$timestamp

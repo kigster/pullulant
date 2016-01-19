@@ -4,6 +4,33 @@ function on_start {
   sudo rm -f $install_stdout $install_stderr
 }
 
+
+function finish {
+  [[ "$sudoers_enabled" ]] && sudo-disable
+  success
+  exit $*
+}
+function success {
+  printf "${txtblk}"
+  sep "\n\n"
+  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
+  sep
+  printf "\n${txtrst}"
+}
+
+function abort {
+  [[ "$sudoers_enabled" ]] && sudo-disable
+  failure
+  exit $*
+}
+function failure {
+  printf "${txtblk}"
+  sep "\n\n"
+  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
+  sep
+  printf "\n${txtrst}"
+}
+
 function run {
   cmd=$1
   ignore_error_exit=${2:-no}
@@ -23,32 +50,32 @@ function check_exit {
   out=$(echo "$cmd" | egrep -c 'echo|printf|soloist|show-stdout') # eg: cmd="blah blah # show-stdout"
   command_does_not_print=$?  # 1 it does not print, 0 means it does
   if [ "$verbose" -a $command_does_not_print -eq 1 ]; then
-    printf "${bldpur}%-80.80s ${bldylw}→ " "$cmd" | tee -a $install_stdout
+    printf "${bldpur}%-80.80s ${bldylw}→" "$cmd" | tee -a $install_stdout
   fi
   printf "${bldblu}"
   if [ $command_does_not_print -eq 1 ]; then
-    eval "$cmd" 2>>$install_stderr 1>>$install_stdout
+    eval "$cmd" 2>$install_stderr 1>>$install_stdout
   else
-    eval "$cmd" 2>>$install_stderr
+    eval "$cmd" 2>$install_stderr
   fi
   export status=$?
   # did someone provide arguments that have nothing to do with our installers?
   if [ "$status" -eq 0 ]; then
     if [ "$verbose" -a $command_does_not_print -eq 1 ]; then
-      printf "${bldgrn}OK${txtrst}\n"
+      printf "${pullulant_vars_symbol_ok}${txtrst}\n"
     fi
-  else
-    printf "${bldred}Whoops!${txtrst}\n"
-    printf "${bldred}_____________________________________________________________________\n\n"
-    printf "${cmd}\n"
-    printf "${bldred}_____________________________________________________________________\n"
-    printf "${txtrst}\n"
-    printf "Error running command above, exit code was $status\nStandard Error (last 10 lines):\n\n"
-    printf "${bakred}`tail -10 $install_stderr`${txtrst}\n\n"
-    printf "${bldred}Aborting runner ${runner}. Fix the above command, and try again.\n"
-    printf "${bldred}Note that you can find STDERR in $install_stderr, and STDOUT in\n"
-    printf "$install_stdout files.${txtrst}\n\n"
-    exit $status
+  else # error
+    printf "${bldred}${pullulant_vars_symbol_error}${txtrst}\n"
+    printf "\n\n"
+    printf "${txtrst}  Command: ${bldred}${cmd}\n"
+    printf "${txtrst}Exit code: ${bldred}$status\n"
+    printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
+
+    if [ -s "${install_stderr}" ]; then
+      printf "${bldwht}STDERR:\n\n${bakred}"
+      printf "$(cat $install_stderr)${txtrst}\n\n"
+    fi
+    abort $status
   fi
   rm -f '/tmp/install.stderr'
   return $status
@@ -98,27 +125,6 @@ function greet {
   printf "\n${txtrst}"
 }
 
-function success {
-  sep "\n"
-  printf "   🤗   ${bldgrn}Installation successful!${txtrst} \n"
-  printf "   😃   ${bldylw}You can now start application using the following commands:${txtrst}${bldblu} \n\n"
-
-  printf "            cd ~/workspace/pullulant-frontend && git pull && ./local.boot\n"
-  printf "            cd ~/workspace/pullulant          && git pull && ./local.boot\n"
-  sep
-  printf "\n"
-}
-
-function failure {
-  printf "${bldred}"
-  sep "\n"
-  printf "   Installer encountered an error.${txtrst}\n\n"
-  printf "   Try running again, or debug the issue if persists.\n"
-  printf "   ${bldwht}./install ${installer}${txtrst} \n"
-  sep
-  printf "\n"
-}
-
 function section {
   printf "${bldblu}                             ___________________________\n"
   printf "${bldblu}____________________________|${bldwht}${bakblu} %12s %-12s ${txtrst}|____________________________${txtrst}\n\n" "installing" $1
@@ -151,7 +157,7 @@ Examples:
     ./$(basename $0) -r reinstall-postgres       # run just reinstall-postgres
     ./$(basename $0) -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
     ./$(basename $0) -aSB                        # install everything, minus
-                                                 homebrew and sprout-wrap
+                                              homebrew and sprout-wrap
 
  "
 }
