@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 shell_files="./files/shell/"
-function homefiles {
+function shell {
     run "cp -prfv ${shell_files}* $HOME/"
     run "cp -prfv ${shell_files}.bash_it* $HOME/"
     run "cp -prfv ${shell_files}.oh-my-zsh* $HOME/"
+    run "sed -i 's/ZSH_THEME=\".*\"/ZSH_THEME=\"reinvent-one\"/g' ~/.zshrc"
+    res=$(grep -c shell-aliases ~/.zshrc)
+    [[ $? -eq 1 ]] && echo "source ~/.shell-aliases" >> ~/.zshrc
+
 }

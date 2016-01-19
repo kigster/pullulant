@@ -35,7 +35,7 @@ curl -fsSL 'http://sw.im/pullulant.sh' | /usr/bin/env bash
 Alternatively:
 
 ```bash
-export ws="~/workspace"     # your workspace directory
+export ws="${HOME}/workspace"     # your workspace directory
 [[ -d ${ws} ]] || mkdir -p ${ws}
 [[ -d "${ws}/pullulant" ]] || cd ${ws} && git clone "git@github.com:kigster/pullulant.git"
 cd pullulant && git pull && ./pullulant -a
