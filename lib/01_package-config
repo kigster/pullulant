@@ -45,6 +45,9 @@ function package-config {
     aws-elasticache
     aws-mon
     jq
+    Caskroom/cask/clion
+    Caskroom/cask/webstorm
+    Caskroom/cask/rubymine
   "
   # these hosts will be added to /etc/hosts as 127.0.0.1
   export local_hosts="

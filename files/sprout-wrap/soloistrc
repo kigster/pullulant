@@ -26,15 +26,9 @@ recipes:
 # development ruby & python
 - sprout-rbenv
 - sprout-ruby
-- sprout-pyenv
+# - sprout-pyenv
 
 - sprout-postgresql
-
-# apps (editors)
-- sprout-jetbrains-editors::rubymine
-- sprout-jetbrains-editors::pycharm
-- sprout-jetbrains-editors::webstorm
-- sprout-jetbrains-editors::clion
 
 node_attributes:
   versions:
