@@ -1,0 +1,140 @@
+# file: yaml
+recipes:
+
+# base (required by sprout)
+- sprout-base
+- sprout-base::bash_it
+- sprout-homebrew
+- sprout-bash-it
+
+# apps
+- sprout-osx-apps::iterm2
+- sprout-osx-apps::shiftit
+
+# settings
+- sprout-osx-settings
+- sprout-osx-settings::dock_preferences
+- sprout-ssh::known_hosts_github
+
+# development (general)
+- sprout-base::workspace_directory
+- sprout-git
+- sprout-git::default_editor
+- sprout-git::projects
+- sprout-git::git_scripts
+
+# development ruby & python
+- sprout-rbenv
+- sprout-ruby
+- sprout-pyenv
+
+- sprout-postgresql
+
+# apps (editors)
+- sprout-jetbrains-editors::rubymine
+- sprout-jetbrains-editors::pycharm
+- sprout-jetbrains-editors::webstorm
+- sprout-jetbrains-editors::clion
+
+node_attributes:
+  versions:
+    bash_it: 'master'
+  sprout:
+    rbenv:
+      rubies:
+        2.2.3: {}
+        2.3.0: {}
+      default_ruby: 2.2.3
+    pyenv:
+      pythons:
+        2.7.11: {}
+      default_python: 2.7.11
+    git:
+      prefix: ''
+      domain: reinvent.one
+      global_config:
+        hub.protocol: git
+        credential.helper: "'cache --timeout 32400'"
+        autosetup.rebase: true
+        branch.autosetuprebase: remote
+        branch.autosetupmerge: true
+        branch.mergeoptions: "'--no-commit --no-ff'"
+        color.branch: auto
+        color.diff: auto
+        color.interactive: auto
+        color.status: auto
+        color.ui: true
+        push.default: current
+        pull.default: current
+        alias.burn: "'reset --hard HEAD^'"
+        alias.ci: commit
+        alias.co: checkout
+        alias.fixup: "'commit --amend -C HEAD'"
+        alias.g: "'log --pretty=format:\"%h %an - %s\" --graph'"
+        alias.lc: "'log ORIG_HEAD.. --stat --no-merges'"
+        alias.lg: "'log --oneline'"
+        alias.nuke: "'reset --hard HEAD'"
+        alias.ol: "'log --format=\"%C(yellow)%h%Creset %C(cyan)%aN%Creset\t%s\"'"
+        alias.st: status
+        alias.w: whatchanged
+        alias.uncommit: "'reset --soft HEAD^'"
+        core.excludesfile: "$HOME/.gitignore_global"
+        core.pager: "'less -FXRS -x2'"
+      authors:
+        - initials: kig
+          name: Konstantin Gredeskoul
+          username: kig
+      projects:
+        - name: pullulant
+          url: git@github.com:kigster/pullulant.git
+    terminal:
+      default_profile: 'Pro'
+    settings:
+      clock_format: EEE MMM d  h:mm:ss a
+    dock_preferences:
+      orientation: 'bottom'
+      auto_hide: false
+      clear_apps: true
+      tile_size: 25
+      magnification: false
+    bash_it:
+      theme: kig
+    homebrew:
+      formulae:
+        - htop
+        - pcre
+        - nmap
+        - hub
+        - ack
+        - haproxy
+        - qt
+        - the_silver_searcher
+        - imagemagick
+        - pstree
+        - tree
+        - pyenv
+        - awscli
+        - awsebcli
+        - aws-as
+        - aws-cloudsearch
+        - aws-elasticbeanstalk
+        - aws-elasticache
+        - aws-mon
+        - jq
+      casks:
+        - rowanj-gitx
+        - github
+        - google-chrome
+        - google-drive
+        - google-hangouts
+        - atom
+        - virtualbox
+        - slack
+        - dockertoolbox
+        - docker
+        - docker-compose
+        - docker-swarm
+        - kitematic
+        - istat-menus
+        - java
+        - teamviewer

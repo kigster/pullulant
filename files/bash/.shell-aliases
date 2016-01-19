@@ -1,0 +1,23 @@
+umask 027
+
+alias 'gst'='git status'
+alias 'gpr'='git pull --rebase'
+alias 'gprs'='git stash && git pull --rebase && git stash pop'
+alias 'gs'='git status'
+alias 'gc'='git co'
+alias 'gd'='git diff'
+alias 'gm'='git commit -m'
+alias 'gl'='git log'
+alias 'gpp'='git pull && git push'
+alias 'ga'='git add'
+alias 'gaa'='git add -A'
+alias 'gap'='git add -p'
+alias 'gpp'='git pull --rebase && git push'
+
+alias dc='cd'
+alias dir='ls -lF'
+alias lr='ls -alrt'
+alias l='ls -alF'
+alias ds='du -k  | grep -v "\/.*\/"'
+alias diskspace="du -k | grep -v './.*\/'"
+alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"

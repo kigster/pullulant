@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# (c) 2015 pullulant Inc.
+# Author: Konstantin Gredeskoul, kig@reinvent.one
+# http://reinvent.one
+
+
+dir="pullulant"
+script="./pullulant"
+script_flags="-a"
+repo="git@github.com:kigster/${dir}.git"
+ws="${HOME}/workspace"
+
+function bootstrap {
+  mkdir -p ${ws}
+  cd ${ws}
+  if [ ! -d "${dir}" ]; then
+    echo "doing git pull of ${dir} project..."
+    git clone ${repo} ${dir}
+  fi
+  if [ -d "${dir}" -a -f "${dir}/${script}" ]; then
+    pushd "${dir}"
+    git pull
+    ${script} ${script_flags} $*
+  else
+    echo "Can't find '${dir}' folder – perhaps your git isn't setup?"
+  fi
+}
+
+bootstrap

@@ -1,0 +1,179 @@
+#!/usr/bin/env bash
+# encoding: UTF-8
+function on_start {
+  sudo rm -f $install_stdout $install_stderr
+}
+
+function run {
+  cmd=$1
+  ignore_error_exit=${2:-no}
+  status=0
+  if [ ! -z "${dryrun}" ]; then
+    printf "[dryrun]  ${txtgrn}${cmd}${txtrst}\n"
+  else
+    check_exit "$cmd" $ignore_exit
+  fi
+  return $status
+}
+
+function check_exit {
+  on_start
+  cmd=$1
+  ignore_error_exit=${2:-no}
+  out=$(echo "$cmd" | egrep -c 'echo|printf|soloist|show-stdout') # eg: cmd="blah blah # show-stdout"
+  command_does_not_print=$?  # 1 it does not print, 0 means it does
+  if [ "$verbose" -a $command_does_not_print -eq 1 ]; then
+    printf "${bldpur}%-80.80s ${bldylw}→ " "$cmd" | tee -a $install_stdout
+  fi
+  printf "${bldblu}"
+  if [ $command_does_not_print -eq 1 ]; then
+    eval "$cmd" 2>>$install_stderr 1>>$install_stdout
+  else
+    eval "$cmd" 2>>$install_stderr
+  fi
+  export status=$?
+  # did someone provide arguments that have nothing to do with our installers?
+  if [ "$status" -eq 0 ]; then
+    if [ "$verbose" -a $command_does_not_print -eq 1 ]; then
+      printf "${bldgrn}OK${txtrst}\n"
+    fi
+  else
+    printf "${bldred}Whoops!${txtrst}\n"
+    printf "${bldred}_____________________________________________________________________\n\n"
+    printf "${cmd}\n"
+    printf "${bldred}_____________________________________________________________________\n"
+    printf "${txtrst}\n"
+    printf "Error running command above, exit code was $status\nStandard Error (last 10 lines):\n\n"
+    printf "${bakred}`tail -10 $install_stderr`${txtrst}\n\n"
+    printf "${bldred}Aborting runner ${runner}. Fix the above command, and try again.\n"
+    printf "${bldred}Note that you can find STDERR in $install_stderr, and STDOUT in\n"
+    printf "$install_stdout files.${txtrst}\n\n"
+    exit $status
+  fi
+  rm -f '/tmp/install.stderr'
+  return $status
+}
+
+function sep {
+  printf "____________________________________________________________________________________\n" $1
+}
+
+function indented_list {
+  local list="$1"
+  local width="$2"
+  local indent="$3"
+  echo "$list" | fold -sw $width | sed -E "s/(^|$)/${indent}/g"
+}
+
+function tool_info {
+  printf " ___________________________________________________________________________________\n"
+  printf "|                                                                                   |\n"
+  printf "|  ${txtgrn}Pullulant                                                         ${txtrst}🌹  🌻  🍄  🦀  🎃  |\n"
+  printf "|  ${txtylw}Development Environment Installer v${bldblu}$(cat VERSION).${txtwht}                                        |\n"
+  printf "|  Git rev ${txtgrn}$(git log --pretty=oneline --abbrev-commit | head -1 | awk '{print $1}').${txtwht}                                                                 |\n"
+  printf "|___________________________________________________________________________________|\n"
+  installer_info
+}
+
+function installer_info {
+  local installer_list=$(indented_list "$installers" 70 '   ')
+  local helper_list=$(indented_list "$helpers"    70 '   ')
+  local run_list=$(indented_list "$runners"    70 '   ')
+
+  printf "                                                                                    \n"
+  printf "Installers:\n"
+  printf "${txtylw}%-68s ${txtrst}\n" "$installer_list"
+  printf "                                                                                    \n"
+  printf "Helpers:\n"
+  printf "${txtylw}%-68s ${txtrst}\n" "$helper_list"
+  if [ ! -z "$run_list" ]; then
+    printf "                                                                                    \n"
+    printf "Actual Run List:\n"
+    printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
+  fi
+}
+
+function greet {
+  tool_info
+  printf "\n${txtrst}"
+}
+
+function success {
+  sep "\n"
+  printf "   🤗   ${bldgrn}Installation successful!${txtrst} \n"
+  printf "   😃   ${bldylw}You can now start application using the following commands:${txtrst}${bldblu} \n\n"
+
+  printf "            cd ~/workspace/pullulant-frontend && git pull && ./local.boot\n"
+  printf "            cd ~/workspace/pullulant          && git pull && ./local.boot\n"
+  sep
+  printf "\n"
+}
+
+function failure {
+  printf "${bldred}"
+  sep "\n"
+  printf "   Installer encountered an error.${txtrst}\n\n"
+  printf "   Try running again, or debug the issue if persists.\n"
+  printf "   ${bldwht}./install ${installer}${txtrst} \n"
+  sep
+  printf "\n"
+}
+
+function section {
+  printf "${bldblu}                             ___________________________\n"
+  printf "${bldblu}____________________________|${bldwht}${bakblu} %12s %-12s ${txtrst}|____________________________${txtrst}\n\n" "installing" $1
+}
+
+function help {
+  printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q]\n"
+  printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q]\n"
+  printf "       ./$(basename $0) -r homebrew [-f] [-n|-q]\n"
+  printf "   Or: ./$(basename $0) [-l] [-h|-H]\n\n"
+  printf "
+Where, runner is either an installer or a helper.
+
+  -a          run all installers in order
+  -S          skip 'sproutwrap' during the full install
+  -B          Skip 'brew-upgrade' during the full install
+
+  -r runner   run only a specified runner (either helper or installer)
+  -f          force (applies only to brew): uninstall & reinstall each formula
+
+  -q          quiet mode: stop printing commands before and after run.
+  -n          dry-run – print commands, but don't actually run them.
+
+  -l          lists available runners – helpers and installers
+  -h          this help message
+  -H          this help message, and explanation of helpers and installers
+
+Examples:
+    ./$(basename $0) -a                          # install everything
+    ./$(basename $0) -r reinstall-postgres       # run just reinstall-postgres
+    ./$(basename $0) -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
+    ./$(basename $0) -aSB                        # install everything, minus
+                                                 homebrew and sprout-wrap
+
+ "
+}
+
+function details {
+  printf "
+  Runner:
+      Most common usage is with the ${bldlw}-a ${txtrst} flag, that runs all installers.
+      Installers are bash modules located in the ${modules_dir} folder. Each
+      installer has a bash function that matches the name of the file.
+
+      The -r flag can be supplied more than once, or once but with multiple
+      arguments in quotes, eg ${bldylw}-r 'runner1 runner2'${txtrst} or ${bldylw}-r runner1
+      -r runner2${txtrst}. Presence of this flag indicates that only specified
+      runnings will run.
+
+  Helpers
+      Helpers are similar to installers, but they are not ordered, and are
+      not included in the default install. They are meant to be used ad-hoc.
+
+      Eg, to wipe out existing PostgreSQL and re-run the installer
+      do this below. This may be necessary when installing on an existing
+      machine with an outdated or broken PostgreSQL:
+"
+}

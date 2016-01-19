@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+#
+# (c) 2015-2016 pullulant Inc.
+# Author: Konstantin Gredeskoul, kig@reinvent.one
+# http://reinvent.one
+#
+source "./lib/config"
+source "./lib/commands"
+
+config
+
+function load_module {
+  submodules=$(echo `$1`)
+  for submodule in $submodules; do
+    source ${2}/$submodule
+  done
+}
+
+function init {
+  source "./files/dotfiles/.bash_colors"
+
+  load_module "ls -1 $helpers_dir" $helpers_dir
+  export helpers=${submodules}
+
+  load_module "ls -1 $modules_dir" $modules_dir
+  export installers=$(echo $submodules | sed -E 's/[0-9]+_//g')
+
+  export status=0
+}
+
+init
+
+function main {
+  # loop over installers, and if either passed as an argument or no arguments
+  #" at all – run it."
+
+  runners_completed=0
+  for runner in $runners; do
+
+    if [[ $runners_completed -eq 0 ]]; then
+      greet
+    fi
+
+    section ${runner}
+
+    export status=
+    eval ${runner}
+    status=${status:-1}
+
+    if [ ${status:-1} -ne 0 ]; then
+      printf "${bldred}Non-zero status from '${runner}' runner :( ...\n${txtrst}"
+      exit $status
+    fi
+
+    runners_completed=$(($runners_completed + 1))
+  done
+
+  if [ $status -eq 0 -a $runners_completed -gt 0 ]; then
+    success
+    return 0
+  elif [ $status -eq 0 -a $runners_completed -eq 0 ]; then
+    printf "${bldylw}No runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
+  else
+    failure
+    return $status
+  fi
+}
+
+#______________________________________________________________________________
+#
+
+while getopts "ar:i:lhqnSB" opt; do
+  case $opt in
+    a)
+      export runners=${installers}          ;;
+    # this is left for legacy only, -r is the new flag that should be used.
+    i)
+      printf "${bldred}Whoops! The -i flag is no longer used, please use -r (for 'runner').\n${txtrst}"
+      exit                                  ;;
+    r)
+      if [ -z "$runners" ]; then
+        export runners="$OPTARG"
+      else
+        export runners="$runners $OPTARG"
+      fi                                    ;;
+    h)
+      greet; help; exit 0;                  ;;
+    q)
+      export verbose=
+      ;;
+    n)
+      export dryrun=yes ;                   ;;
+    l)
+      installer_info
+      exit 0;
+      ;;
+    S)
+      export skip_sprout_wrap=yes
+      ;;
+    B)
+      export skip_brew_upgrade=yes
+      ;;
+    \?)
+      help
+      echo "${bldred}ERROR: option: -$OPTARG is invalid :( ${txtrst}" >&2
+      exit 1
+      ;;
+    :)
+      echo "${bldred}ERROR: option -$OPTARG requires an argument ${txtrst}" >&2
+      exit 1
+      ;;
+  esac
+done
+
+
+main $*

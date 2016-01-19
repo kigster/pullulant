@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+shell_files="./files/shell/"
+function homefiles {
+    run "cp -prfv ${shell_files}* $HOME/"
+    run "cp -prfv ${shell_files}.bash_it* $HOME/"
+    run "cp -prfv ${shell_files}.oh-my-zsh* $HOME/"
+}

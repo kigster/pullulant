@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# This is a minimal home brew install in order to get a recent working ruby
+# so that we can run sprout-wrap that contains the rest of the install.
+
+function homebrew {
+  brew=`which brew 2>/dev/null`
+  if [ -z "${brew}" ]; then
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install > /tmp/brew.rb
+    run 'printf "Installing Homebrew from scratch, this is so exciting!...\n"'
+    run "ruby < /tmp/brew.rb"
+  else
+    cmd='echo "Homebrew is already installed – version: $(brew --version)"'
+    run "$cmd"
+    brew-update
+  fi
+
+  # Let's run this damn upgrade
+  brew-upgrade
+
+  # Let's install that goddamn brew-cask
+  run "brew tap caskroom/cask; true"
+
+  for package in $brew_packages; do
+    brew_install $package
+  done
+
+  result=$(which gsed)
+  status=$?
+  if [ $status -ne 0 ]; then
+    run "brew install gnu-sed"
+    run "ln -nfs /usr/local/bin/gsed /usr/local/bin/sed"
+  fi
+  status=$?
+}
+
+function brew_install {
+  package=$1
+  if [ ! -z "${brew_force_install}" ]; then
+    run "brew uninstall $package --force; true"
+    run "brew unlink $package --force; true"
+    run "brew install $package --force 2>&1; true #show-stdout"
+    run "brew link $package --overwrite 2>&1; true #show-stdout"
+  else
+    cmd=$(brew list $package 2>/dev/null)
+    result=$?
+    if [ "$result" -ne 0 ]; then
+      run "brew install $package"
+    else
+      run "brew upgrade $package --force; true"
+      run "brew unlink $package --force; true"
+      run "brew link $package --overwrite; true"
+    fi
+  fi
+}

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+function rubyinstall {
+  status=$(rbenv versions | grep 2.2.3)
+  if [ $? -ne 0 ]; then
+    run 'printf "Installing ruby from sources, please wait....\n"'
+    run "rbenv install 2.2.3"
+  fi
+
+  run "rbenv global 2.2.3"
+
+  cmd="gem list -i bundler || gem install bundler" && run "$cmd"
+
+  # This is a hack to get the newly installed ruby to build Nokogiri library.
+  # For some reason using gem command was defaulting to the system ruby.
+  export NOKOGIRI_USE_SYSTEM_LIBRARIES=1
+  export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+  run '~/.rbenv/shims/ruby -e "Gem.install(%q{nokogiri}, %q{1.6.3.1}) unless Gem::Specification.all_names.to_a.include? %q{nokogiri-1.6.3.1}"'
+}

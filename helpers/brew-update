@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+export brew_has_been_updated=
+function brew-update {
+  if [ -z "$brew_has_been_updated" ]; then
+    run "printf '${bldgrn}Updating your Homebrew, please wait while its brewing...${txtrst}\n'"
+    run "brew update # show-stdout "
+    export brew_has_been_updated=yes
+  fi
+}

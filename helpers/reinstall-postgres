@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+function reinstall-postgres {
+  run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents; true"
+  run "launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist; true"
+  out=$(ps -ef | grep "postgres" | grep -v grep)
+  if [ -z "${result}" ]; then
+    run "brew uninstall postgres --force; true"
+    run "brew update"
+    run "brew install postgres --force"
+    run "sudo chown ${USER} /usr/local/var"
+    if [ -d "/usr/local/var/postgres" ]; then
+      run "mv /usr/local/var/postgres /usr/local/var/postgres.backup.$$"
+    fi
+    run "initdb -D /usr/local/var/postgres -E UTF8 -U postgres"
+    run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents"
+    run "launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+  else
+    run "echo 'PostgreSQL still appears running after unloading. Try kill -9?'"
+  fi
+}

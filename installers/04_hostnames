@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+function add_hostname {
+  hostname="$1"
+  result=$(grep $hostname /etc/hosts)
+  if [ $? -ne 0 ]; then
+    run "echo 127.0.0.1 $hostname | sudo tee -a /etc/hosts > /dev/null"
+  else
+    run "echo already have $hostname in /etc/hosts"
+  fi
+}
+
+function hostnames {
+  for hostname in $local_hosts; do
+    add_hostname $hostname
+  done
+}

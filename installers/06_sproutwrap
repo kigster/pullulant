@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+sprout_wrap_home="${HOME}/workspace/sprout-wrap"
+function sproutwrap {
+  if [ ! -z "${skip_sprout_wrap}" ]; then
+    run "echo 'Skipping sprout-wrap'"
+    return
+  fi
+  run "sudo mkdir -p /var/chef"
+  run "sudo chown -R $USER /var/chef"
+  if [ ! -d ${sprout_wrap_home} ]; then
+    run "git clone ${sprout_wrap_repo} ${sprout_wrap_home}"
+  fi
+  run "files/sprout-wrap/* ${sprout_wrap_home}"
+  run "rm -f ${sprout_wrap_home}/Cheffile.lock"
+  run "cd ${sprout_wrap_home}"
+  run "git stash; true"
+  run "git pull origin master"
+  run "git stash pop; true"
+  export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
+  run "bundle"
+  run "soloist"
+  run "cd ${HOME}/workspace/pullulant"
+  export status=$?
+}

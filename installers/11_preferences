@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+function preferences {
+    run "cp -prf ./files/library-preferences/* ~/Library/Preferences"
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+permissions() {
+  local tmpfile=/tmp/sudo.${USER}
+  printf "If asked, please provide your SUDO password:\n"
+  run "sudo echo"  # give me sudo!
+  run "echo '${USER} ALL=(ALL) NOPASSWD: ALL' > ${tmpfile}"
+  run "sudo mkdir -p /private/etc/sudoers.d"
+  run "sudo cp -f ${tmpfile} /private/etc/sudoers.d/${USER} && rm -f ${tmpfile}"
+
+  my_group=`id -gn`  # find the primary group of the current user
+  for dir in $folders; do
+    if [ ! -d "$dir" ]; then
+      run "sudo mkdir -p $dir"
+    fi
+    run "sudo chgrp -R $my_group $dir"
+    run "sudo chown -R ${USER} $dir"
+    run "sudo chmod -R u=xwr,g=xwr,o= $dir"
+  done
+  if [ -z "`ps -ef | grep [p]ostgresql`" -a -d "/usr/local/var/postgres" ]; then
+    run "mv /usr/local/var/postgres /usr/local/var/postgres-backup.$$"
+  fi
+}
