@@ -29,8 +29,16 @@ cookbook 'sprout-osx-settings',
 cookbook 'osx',
   :github => 'pivotal-sprout/osx'
 
+
 cookbook 'sprout-homebrew',
-  :github => 'pivotal-sprout/sprout-homebrew'
+  :github => 'RealScout/sprout-homebrew',
+  :ref => 'remove-cask-install'
+
+cookbook 'homebrew',
+  :github => 'RealScout/homebrew',
+  :ref => 'remove-cask-install'
+
+
 
 cookbook 'sprout-terminal',
   :github => 'pivotal-sprout/sprout-terminal'
@@ -46,4 +54,3 @@ cookbook 'sprout-jetbrains-editors',
 
 cookbook 'sprout-bash-it',
     :git => 'https://github.com/hjhart/sprout-bash-it.git'
-
