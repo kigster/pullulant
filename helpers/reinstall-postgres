@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 function reinstall-postgres {
-  run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents; true"
-  run "launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist; true"
+  run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents" "ignore_error"
+  run "launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist" "ignore_error"
   out=$(ps -ef | grep "postgres" | grep -v grep)
   if [ -z "${result}" ]; then
-    run "brew uninstall postgres --force; true"
-    run "brew update"
-    run "brew install postgres --force"
+    run "brew uninstall  ${opts_verbose} postgres --force" "ignore_error"
+    run "brew update  ${opts_verbose} "
+    run "brew install ${opts_verbose} postgres --force"
     run "sudo chown ${USER} /usr/local/var"
     if [ -d "/usr/local/var/postgres" ]; then
       run "mv /usr/local/var/postgres /usr/local/var/postgres.backup.$$"

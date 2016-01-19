@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function oh-my-zsh {
+  run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
+}

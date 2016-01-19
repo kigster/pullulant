@@ -15,7 +15,7 @@ environment needed to build ruby applications on Mac OS-X.
 Note: shared resources used by the Homebrew, such as files under `/usr/local`, will change ownership
 to the user running this installer, with full `xwr` permissions. This is so that the effects of any previously run `sudo brew` nuisance is neutralized.
 
-Typically your group will be `staff`.  Whatever group you are, that group is applied to the key folders (`/usr/local` and `/var/chef`), with permissions also reset to `xwr`. The idea is that this move should permit multiple co-existing users to share `/usr/local` and `/var/chef` at the same time.  
+Typically your group will be `staff`.  Whatever group you are, that group is applied to the key const_owned_folder_list (`/usr/local` and `/var/chef`), with permissions also reset to `xwr`. The idea is that this move should permit multiple co-existing users to share `/usr/local` and `/var/chef` at the same time.  
 
 Note that the current OS-X user must be configured as "Admin" on the Mac, and upon entering their password after the first request for `sudo`, the user will be modified to allow password-less `sudo` access for the duration of the script.
 

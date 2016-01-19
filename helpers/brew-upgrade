@@ -6,14 +6,14 @@ function brew-upgrade {
     status=200
     return
   fi
-  if [ ! -z "$skip_brew_upgrade" ]; then
+  if [ ! -z "$opts_skip_brew_upgrade" ]; then
     run "echo 'Skipping brew upgrade...'"
     status=0
     return
   fi
   if [ -z "$brew_has_been_upgraded" ]; then
     run "printf '${bldylw}Upgrading every homebrew formula and cask, please wait while its fermenting...${txtrst}\n'"
-    run "brew upgrade --verbose | grep Pouring; true # show-stdout"
+    run "brew upgrade --cleanup"
     export brew_has_been_upgraded=yes
   fi
 }

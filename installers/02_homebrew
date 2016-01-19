@@ -18,7 +18,7 @@ function homebrew {
   brew-upgrade
 
   # Let's install that goddamn brew-cask
-  run "brew tap caskroom/cask; true"
+  run "brew tap caskroom/cask" "true"
 
   for package in $brew_packages; do
     brew_install $package
@@ -35,19 +35,19 @@ function homebrew {
 
 function brew_install {
   package=$1
-  if [ ! -z "${brew_force_install}" ]; then
-    run "brew uninstall $package --force; true"
-    run "brew unlink $package --force; true"
-    run "brew install $package --force 2>&1; true #show-stdout"
-    run "brew link $package --overwrite 2>&1; true #show-stdout"
+  if [ ! -z "${opts_brew_force_reinstall}" ]; then
+    run "brew uninstall ${opts_verbose} $package --force" "true"
+    run "brew unlink    ${opts_verbose} $package --force" "true"
+    run "brew install   ${opts_verbose} $package --force  2>&1 #show-stdout" "true"
+    run "brew link      ${opts_verbose} $package --force 2>&1  #show-stdout" "true"
   else
     cmd=$(brew list $package 2>/dev/null)
     result=$?
     if [ "$result" -ne 0 ]; then
-      run "brew install $package"
+      run "brew install ${opts_verbose} $package"
     else
-      run "brew upgrade $package; true"
-      run "brew unlink $package --force; brew link $package --force; true"
+      run "brew upgrade ${opts_verbose} $package" "true"
     fi
+    [[ -z "${opts_brew_force_link}" ]] || run "brew unlink ${opts_verbose}  $package --force; brew link $package --force" "ignore_error"
   fi
 }

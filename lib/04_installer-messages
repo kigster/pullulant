@@ -1,85 +1,6 @@
-#!/usr/bin/env bash
-# encoding: UTF-8
-function on_start {
-  sudo rm -f $install_stdout $install_stderr
-}
+#!/usr/bin/bash env
 
-
-function finish {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  success
-  exit $*
-}
-function success {
-  printf "${txtblk}"
-  sep "\n\n"
-  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
-  sep
-  printf "\n${txtrst}"
-}
-
-function abort {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  failure
-  exit $*
-}
-function failure {
-  printf "${txtblk}"
-  sep "\n\n"
-  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
-  sep
-  printf "\n${txtrst}"
-}
-
-function run {
-  cmd=$1
-  ignore_error_exit=${2:-no}
-  status=0
-  if [ ! -z "${dryrun}" ]; then
-    printf "[dryrun]  ${txtgrn}${cmd}${txtrst}\n"
-  else
-    check_exit "$cmd" $ignore_exit
-  fi
-  return $status
-}
-
-function check_exit {
-  on_start
-  cmd=$1
-  ignore_error_exit=${2:-no}
-  out=$(echo "$cmd" | egrep -c 'echo|printf|soloist|show-stdout') # eg: cmd="blah blah # show-stdout"
-  command_does_not_print=$?  # 1 it does not print, 0 means it does
-  if [ "$verbose" -a $command_does_not_print -eq 1 ]; then
-    printf "${bldpur}%-80.80s ${bldylw}→" "$cmd" | tee -a $install_stdout
-  fi
-  printf "${bldblu}"
-  if [ $command_does_not_print -eq 1 ]; then
-    eval "$cmd" 2>$install_stderr 1>>$install_stdout
-  else
-    eval "$cmd" 2>$install_stderr
-  fi
-  export status=$?
-  # did someone provide arguments that have nothing to do with our installers?
-  if [ "$status" -eq 0 ]; then
-    if [ "$verbose" -a $command_does_not_print -eq 1 ]; then
-      printf "${pullulant_vars_symbol_ok}${txtrst}\n"
-    fi
-  else # error
-    printf "${bldred}${pullulant_vars_symbol_error}${txtrst}\n"
-    printf "\n\n"
-    printf "${txtrst}  Command: ${bldred}${cmd}\n"
-    printf "${txtrst}Exit code: ${bldred}$status\n"
-    printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
-
-    if [ -s "${install_stderr}" ]; then
-      printf "${bldwht}STDERR:\n\n${bakred}"
-      printf "$(cat $install_stderr)${txtrst}\n\n"
-    fi
-    abort $status
-  fi
-  rm -f '/tmp/install.stderr'
-  return $status
-}
+source "${bash_files_dir}/.bash_colors"
 
 function sep {
   printf "____________________________________________________________________________________\n" $1
@@ -131,25 +52,27 @@ function section {
 }
 
 function help {
-  printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q]\n"
-  printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q]\n"
-  printf "       ./$(basename $0) -r homebrew [-f] [-n|-q]\n"
+  printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q|-v]\n"
+  printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]\n"
+  printf "       ./$(basename $0) -r homebrew [-L] [-R] [-n|-q|-v]\n"
   printf "   Or: ./$(basename $0) [-l] [-h|-H]\n\n"
   printf "
 Where, runner is either an installer or a helper.
 
-  -a          run all installers in order
-  -S          skip 'sproutwrap' during the full install
-  -B          Skip 'brew-upgrade' during the full install
+  -a          run [a]ll installers in order
+  -r runner   run only a specified [r]unner (either helper or installer)
+  -S          [S]proutwrap is disabled during the install
+  -B          [B]rew-upgrade is disabled
 
-  -r runner   run only a specified runner (either helper or installer)
-  -f          force (applies only to brew): uninstall & reinstall each formula
+  -L          [L]ink or relink each brew of formulas with --force
+  -R          [R]einstall each brew formula with --force
 
-  -q          quiet mode: stop printing commands before and after run.
-  -n          dry-run – print commands, but don't actually run them.
+  -q          [q]uiet mode: stop printing commands before and after run.
+  -v          [v]erbose run show command's output, and add -v to some
+  -n          dry-ru[n] – print commands, but don't actually run them.
 
-  -l          lists available runners – helpers and installers
-  -h          this help message
+  -l          [l]ists available runners – helpers and installers
+  -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
 
 Examples:
@@ -158,8 +81,7 @@ Examples:
     ./$(basename $0) -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
     ./$(basename $0) -aSB                        # install everything, minus
                                               homebrew and sprout-wrap
-
- "
+"
 }
 
 function details {

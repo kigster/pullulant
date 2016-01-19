@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# encoding: UTF-8
+
+function on_start {
+  run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
+  [[ "$sudoers_enabled" ]] && section "sudo-enable" && sudo-enable
+}
+
+function on_exit {
+  [[ "$sudoers_enabled" ]] && sudo-disable
+  run "rm -rf ${const_cmd_stderr} # hide-command"
+  run "rm -rf ${const_cmd_stdout} # hide-command"
+  return 1
+}
+
+function finish {
+  on_exit && success
+  exit $*
+}
+function success {
+  printf "${txtblk}"
+  sep "\n\n"
+  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
+  sep
+  printf "\n${txtrst}"
+}
+
+function abort {
+  [[ "$sudoers_enabled" ]] && sudo-disable
+  on_exit && failure
+  exit $*
+}
+function failure {
+  printf "${txtblk}"
+  sep "\n\n"
+  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
+  sep
+  printf "\n${txtrst}"
+}
+
+function run {
+  cmd=$1
+  ignore_error=${2-""}
+  status=0
+  if [ ! -z "${opts_dryrun}" ]; then
+    printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
+  else
+    check_exit "$cmd" $ignore_error
+  fi
+  return $status
+}
+
+function check_exit {
+  local cmd=$1
+  local ignore_error=${2-""}
+  local cmd_prints=  # 'yes' if the command actually meant to output something, null otherwise
+  local cmd_verbose= # 'yes' if the verbose flag is passed, or "#show-stdout" comment included
+  local cmd_quiet=   # 'yes' if globally quiet, or command passed #hide-command command
+  local out=
+
+  out=$(echo "$cmd" | egrep -c 'echo|printf')
+  [[ $? -eq 0 ]]             && cmd_prints=yes
+
+  out=$(echo "$cmd" | egrep -c 'hide-command')
+  [[ $? -eq 0 ]]             && cmd_quiet=yes
+  [[ -n "${opts_quiet}" ]]   && cmd_quiet=yes
+
+  out=$(echo "$cmd" | egrep -c 'show-stdout')
+  [[ $? -eq 0 ]]             && cmd_verbose=yes
+  [[ -n "${opts_verbose}" ]] && cmd_verbose=yes
+
+  # print the user-visible info about the command, if any
+  if [ -z "${cmd_prints}" -a -z "${cmd_quiet}" ]; then
+    if [ -z "${cmd_verbose}" ]; then
+      printf "${bldpur}%-80.80s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
+    else
+      printf "${bldpur}%s${txtrst}\n" "$cmd" | tee -a ${const_cmd_stdout}
+    fi
+  fi
+
+  # print the actual STDOUT if present, or nothing when captured
+  printf "${txtblu}"
+  if [ -n "${cmd_verbose}" -a -z "${cmd_quiet}" ]; then
+    eval "$cmd 2>${const_cmd_stderr}"
+  else
+    eval "$cmd 2>${const_cmd_stderr} 1>${const_cmd_stdout}"
+  fi
+
+  real_status=$?
+  status=${real_status}
+
+  [[ -n "${ignore_error}" ]] && status=0
+
+  if [ -n "${cmd_prints}" ]; then
+    return $status
+  fi
+
+  if [ "$status" -eq 0 ]; then
+    if [ -z "${cmd_quiet}" ]; then
+      if [ -z "${cmd_verbose}" ]; then
+        if [ $real_status -ne 0 ]; then
+          printf "${var_pullulant_symbol_ignored}${txtrst}\n"
+        else
+          printf "${var_pullulant_symbol_ok}${txtrst}\n"
+        fi
+      fi
+    fi
+  else # error
+    [[ -z "${cmd_verbose}" ]]       && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
+    [[ -s "${const_cmd_stderr}" ]]  && printf "\n${bldred}$(cat ${const_cmd_stderr})${txtrst}\n"
+
+    printf "\n"
+    printf "${txtrst}  Command: ${bldred}${cmd}\n"
+    printf "${txtrst}Exit code: ${bldred}$status\n"
+    printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
+    abort $status
+  fi
+  return $status
+}

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 function rubyinstall {
-  status=$(rbenv versions | grep 2.2.3)
+  status=$(rbenv versions | grep ${rbenv_ruby_version})
   if [ $? -ne 0 ]; then
     run 'printf "Installing ruby from sources, please wait....\n"'
-    run "rbenv install 2.2.3"
+    run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
   fi
 
-  run "rbenv global 2.2.3"
+  run "rbenv global ${rbenv_ruby_version}"
 
   cmd="gem list -i bundler || gem install bundler" && run "$cmd"
 

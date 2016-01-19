@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+function package-config {
+
+  # List of Brew Formulas to install and link
+  export brew_packages="
+    rbenv
+    ruby-build
+    watch
+    git
+    bash
+    node
+    npm
+    homebrew/dupes/rsync
+    bash-completion
+    redis
+    nginx
+    libxml2
+    libxslt
+    libiconv
+    libzip
+    zlib
+    zsh
+    openssl
+    libmemcached
+    vim
+    wget
+    htop
+    pcre
+    nmap
+    hub
+    ack
+    haproxy
+    qt
+    the_silver_searcher
+    imagemagick
+    pstree
+    tree
+    pyenv
+    awscli
+    awsebcli
+    aws-as
+    aws-cloudsearch
+    aws-elasticbeanstalk
+    aws-elasticache
+    aws-mon
+    jq
+  "
+  # these hosts will be added to /etc/hosts as 127.0.0.1
+  export local_hosts="
+  "
+
+  # these nodejs modules will be install using npm
+  export nodejs_modules="
+    bower
+    ember-cli
+  "
+
+  # This is the ruby version that will be installed using rbenv
+  export rbenv_ruby_version="2.2.3"
+}
+
+package-config

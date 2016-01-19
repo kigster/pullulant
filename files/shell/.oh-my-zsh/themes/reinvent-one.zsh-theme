@@ -37,7 +37,7 @@ BULLETTRAIN_HG_SHOW=false
 
 BULLETTRAIN_EXEC_TIME_ELAPSED=1
 BULLETTRAIN_EXEC_TIME_SHOW=true
- 
+
 # PROMPT
 if [ ! -n "${BULLETTRAIN_PROMPT_CHAR+1}" ]; then
   BULLETTRAIN_PROMPT_CHAR="\$"
@@ -337,7 +337,7 @@ prompt_context() {
 
 # Prompt previous command execution time
 preexec() {
-    cmd_timestamp=`date +%s`
+    cmd_const_timestamp=`date +%s`
 }
 
 prompt_cmd_exec_time() {
@@ -346,7 +346,7 @@ prompt_cmd_exec_time() {
   fi
 
   local stop=`date +%s`
-  local start=${cmd_timestamp:-$stop}
+  local start=${cmd_const_timestamp:-$stop}
   let local elapsed=$stop-$start
   [ $elapsed -gt $BULLETTRAIN_EXEC_TIME_ELAPSED ] && prompt_segment $BULLETTRAIN_EXEC_TIME_BG $BULLETTRAIN_EXEC_TIME_FG "${elapsed}s"
 }

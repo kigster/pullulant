@@ -4,10 +4,6 @@
 # Author: Konstantin Gredeskoul, kig@reinvent.one
 # http://reinvent.one
 #
-source "./lib/config"
-source "./lib/commands"
-
-config
 
 function load_module {
   submodules=$(echo `$1`)
@@ -17,14 +13,13 @@ function load_module {
 }
 
 function init {
-  source "./files/bash/.bash_colors"
+  load_module "ls -1 lib/*" "."
 
   load_module "ls -1 $helpers_dir" $helpers_dir
   export helpers=${submodules}
 
   load_module "ls -1 $modules_dir" $modules_dir
   export installers=$(echo $submodules | sed -E 's/[0-9]+_//g')
-
   export status=0
 }
 
@@ -33,7 +28,7 @@ init
 function main {
   # loop over installers, and if either passed as an argument or no arguments
   #" at all – run it."
-  [[ -z "${runners}" ]] || section "sudo-enable" && sudo-enable
+  [[ -z "${runners}" ]] || on_start
 
   runners_completed=0
   for runner in $runners; do
@@ -67,46 +62,47 @@ function main {
 #______________________________________________________________________________
 #
 
-while getopts "ar:i:lhqnSB" opt; do
+while getopts "ar:SBLRqnvlh" opt; do
   case $opt in
     a)
-      export runners=${installers}          ;;
+        export runners=${installers}          ;;
     # this is left for legacy only, -r is the new flag that should be used.
     i)
-      printf "${bldred}Whoops! The -i flag is no longer used, please use -r (for 'runner').\n${txtrst}"
-      abort 125                            ;;
+        printf "${bldred}Whoops! The -i flag is no longer used, please use -r (for 'runner').\n${txtrst}"
+        abort 125                            ;;
     r)
-      if [ -z "$runners" ]; then
-        export runners="$OPTARG"
-      else
-        export runners="$runners $OPTARG"
-      fi                                    ;;
+        if [ -z "$runners" ]; then
+          export runners="$OPTARG"
+        else
+          export runners="$runners $OPTARG"
+        fi                                    ;;
     h)
-      greet; help; finish;                  ;;
+        greet; help; finish;                  ;;
     q)
-      export verbose=
-      ;;
+        export opts_quiet=                    ;;
     n)
-      export dryrun=yes ;                   ;;
+        export opts_dryrun=yes                ;;
+    v)
+        export opts_verbose=" -v ";           ;;
     l)
-      installer_info
-      finish;
-      ;;
+        installer_info; finish;               ;;
     S)
-      export skip_sprout_wrap=yes
-      ;;
+        export opts_skip_sprout_wrap=yes      ;;
     B)
-      export skip_brew_upgrade=yes
-      ;;
+        export opts_skip_brew_upgrade=yes     ;;
+    L)
+        export opts_brew_force_link=yes       ;;
+    R)
+        export opts_brew_force_reinstall=yes  ;;
     \?)
-      help
-      printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
-      abort 126
-      ;;
+        help
+        printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
+        abort 126
+        ;;
     :)
-      printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
-      abort 127
-      ;;
+        printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
+        abort 127
+        ;;
   esac
 done
 

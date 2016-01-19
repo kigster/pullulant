@@ -6,13 +6,13 @@
 #
 function brew-wipe {
   brew=`which brew`
-  export verbose=true
+  export opts_quiet=true
   if [ ! -z "${brew}" ]; then
     printf "Homebrew is installed, version $(brew --version)\n"
     printf "${bldylw}Let's wipe it completely!${txtrst}\n\n"
     run 'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" -- -f'
-    run "sudo mv /Library/Cache/Homebrew /Library/Cache/Homebrew.${timestamp}; true"
-    run "sudo mv /opt/homebrew-cask /opt/homebrew-cask.${timestamp}; true"
+    run "sudo mv /Library/Cache/Homebrew /Library/Cache/Homebrew.${const_timestamp}" "ignore_error"
+    run "sudo mv /opt/homebrew-cask /opt/homebrew-cask.${const_timestamp}" "ignore_error"
   else
     cmd='printf "Homebrew is not installed...\n\n"'
     run "$cmd"

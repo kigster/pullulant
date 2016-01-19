@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
-bash_files_dir="./files/bash"
-
 function bash {
     run "pwd"
     files=`cd ${bash_files_dir} && ls -1 .[a-zA-Z]* && cd - >/dev/null`
     mkdir -p ${backup_dir}
     for file in ${files}; do
       if [ -f "${home_dir}/${file}" ]; then
-        # echo "overwriting ${home_dir}/${file} (backing up existing file to ${backup}/${file}.${timestamp})"
+        # echo "overwriting ${home_dir}/${file} (backing up existing file to ${backup}/${file}.${const_timestamp})"
         run "mv ${home_dir}/${file} ${backup_dir}/${file}"
       else
         echo "installing ${home_dir}/${file}"

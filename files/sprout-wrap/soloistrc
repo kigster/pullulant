@@ -100,27 +100,6 @@ node_attributes:
     bash_it:
       theme: kig
     homebrew:
-      formulae:
-        - htop
-        - pcre
-        - nmap
-        - hub
-        - ack
-        - haproxy
-        - qt
-        - the_silver_searcher
-        - imagemagick
-        - pstree
-        - tree
-        - pyenv
-        - awscli
-        - awsebcli
-        - aws-as
-        - aws-cloudsearch
-        - aws-elasticbeanstalk
-        - aws-elasticache
-        - aws-mon
-        - jq
       casks:
         - rowanj-gitx
         - github
