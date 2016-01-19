@@ -8,7 +8,7 @@ environment needed to build ruby applications on Mac OS-X.
   1. Run `xcode-select --install` to make sure you have dev tools
   2. Run OS-X Updates if any, and reboot if requested.
   3. Go to _System Preferences / Security & Privacy / General_, unlock the panel and choose the radio button "Allow apps downloaded from <Anywhere>". This is required for running `phantomjs` binary that's downloaded later.
-  4. Go to _System Preferences / Sharing _, unlock the panel and set the hostname of your system, if it's currently set to a default.
+  4. Go to _System Preferences / Sharing_, unlock the panel and set the hostname of your system, if it's currently set to a default.
 
 ### About your OS-X user
 
@@ -24,7 +24,7 @@ what you want, remove the file `/private/etc/sudoers.d/${USER}`
 
 ## Install
 
-  1. If you don't already have SSH keys setup on this machine, now is the time: `ssh-keygen -t rsa -b 4096 -C "${USER}@${HOSTNAME}"; cat ~/.ssh/id_rsa.pub | pbcopy` 
+  1. If you don't already have SSH keys setup on this machine, now is the time: `ssh-keygen -t rsa -b 4096 -C "${USER}@${HOSTNAME}"; cat ~/.ssh/id_rsa.pub | pbcopy`
   2. Add the new SSH key to the Github settings page: https://github.com/settings/ssh
   3. Run the following installer:
 
