@@ -30,10 +30,12 @@ function main {
   #" at all – run it."
   [[ -z "${runners}" ]] || on_start
 
-  runners_completed=0
+  local runners_started=0
+  local runners_completed=0
   for runner in $runners; do
+    export runners_started=$((runners_started + 1))
 
-    [[ $runners_completed -eq 0 ]] || greet
+    [[ $runners_started -gt 1 ]] || greet
 
     section ${runner}
 
