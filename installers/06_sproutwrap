@@ -6,9 +6,10 @@ function sproutwrap {
     return
   fi
 
-  prepare_sprout_wrap_folder
-  replace_configuration
-  run_soloist
+  rubyinstall                   # won't run again, if ran already
+  prepare_sprout_wrap_folder    # checkout and prepare folders for chef
+  replace_configuration         # overwrite configuration with our own
+  run_soloist                   # run the f$$$er
 }
 
 function run_soloist {
