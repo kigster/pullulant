@@ -46,6 +46,78 @@ cd pullulant; git pull --rebase; ./pullulant -a
  * Reboot (required after the first successful install!)
  * Open System Preferences, Security & Privacy, choose Privacy tab and unlock the lock at the bottom. After that choose Accessibility and then check "ShiftIt" application.
 
+## Driving the Script
+
+
+```bash
+_____________________________________________________________________________________
+|                                                                                   |
+|  Pullulant                                                                        |
+|  Development Environment Installer v0.0.1.                                        |
+|  Git rev 0e85cdb.                                                                 |
+|___________________________________________________________________________________|
+
+Installers:
+   permissions homebrew nodejs hostnames rubyinstall sproutwrap
+   monofonts zsh preferences home
+
+Helpers:
+   brew-update brew-upgrade brew-wipe reinstall-postgres sudo-disable
+   sudo-enable
+
+Actual Run List:
+
+
+Usage: ./pullulant -a [-S] [-B] [-n|-q|-v]
+       ./pullulant -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
+       ./pullulant -r homebrew [-L] [-R] [-n|-q|-v]
+   Or: ./pullulant [-l] [-h|-H]
+
+
+Where, runner is either an installer or a helper.
+
+  -a          run [a]ll installers in order
+  -r runner   run only a specified [r]unner (either helper or installer)
+  -S          [S]proutwrap is disabled during the install
+  -B          [B]rew-upgrade is disabled
+
+  -L          [L]ink or relink each brew of formulas with --force
+  -R          [R]einstall each brew formula with --force
+
+  -q          [q]uiet mode: stop printing commands before and after run.
+  -v          [v]erbose run show command's output, and add -v to some
+  -n          dry-ru[n] print commands, but don't actually run them.
+
+  -l          [l]ists available runners  helpers and installers
+  -h          this [h]elp message
+  -H          this help message, and explanation of helpers and installers
+
+Examples:
+    ./pullulant -a                          # install everything
+    ./pullulant -r reinstall-postgres       # run just reinstall-postgres
+    ./pullulant -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
+    ./pullulant -aSB                        # install everything, minus
+                                              homebrew and sprout-wrap
+
+  Runner:
+      Most common usage is with the -a  flag, that runs all installers.
+      Installers are bash modules located in the ./installers folder. Each
+      installer has a bash function that matches the name of the file.
+
+      The -r flag can be supplied more than once, or once but with multiple
+      arguments in quotes, eg -r 'runner1 runner2' or -r runner1
+      -r runner2. Presence of this flag indicates that only specified
+      runnings will run.
+
+  Helpers
+      Helpers are similar to installers, but they are not ordered, and are
+      not included in the default install. They are meant to be used ad-hoc.
+
+      Eg, to wipe out existing PostgreSQL and re-run the installer
+      do this below. This may be necessary when installing on an existing
+      machine with an outdated or broken PostgreSQL:
+```
+
 ## Author
 
 &copy; 2015-2016 Konstantin Gredeskoul, portions of this code were donated by [Shippo, Inc.](http://goshippo.com) and used with permisssion.
