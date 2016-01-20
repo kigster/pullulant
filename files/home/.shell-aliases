@@ -21,3 +21,6 @@ alias l='ls -alF'
 alias ds='du -k  | grep -v "\/.*\/"'
 alias diskspace="du -k | grep -v './.*\/'"
 alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"
+
+[[ -z "$(which rbenv)" ]] || eval "$(rbenv init -)"
+[[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"

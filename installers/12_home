@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+function home {
+  run "rsync -a ${rsync_home_dir} ${HOME}"
+
+  ln -nfs ~/.bashrc ~/.bash_login
+  $(grep bashrc ~/.bash_profile > /dev/null)
+  if [ $? -eq 1 ]; then
+    run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
+    run "echo 'source ~/.bashrc' >> ~/.bash_profile"
+  fi
+}
