@@ -74,6 +74,7 @@ Where, runner is either an installer or a helper.
   -l          [l]ists available runners – helpers and installers
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
+  -X          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
     ./$(basename $0) -a                          # install everything

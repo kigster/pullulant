@@ -64,7 +64,7 @@ function main {
 #______________________________________________________________________________
 #
 
-while getopts "ar:SBLRqnvlh" opt; do
+while getopts "ar:SBLRqnvlhHx" opt; do
   case $opt in
     a)
         export runners=${installers}          ;;
@@ -81,8 +81,13 @@ while getopts "ar:SBLRqnvlh" opt; do
           export runners="$runners $OPTARG"
         fi                                    ;;
 
+    x)
+        ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
+        cat doc/help; finish;                 ;;
     h)
         greet; help; finish;                  ;;
+    H)
+        greet; help; details; finish;         ;;
     q)
         export opts_quiet=                    ;;
     n)
