@@ -24,8 +24,8 @@ recipes:
 - sprout-git::git_scripts
 
 # development ruby & python
-- sprout-rbenv
-- sprout-ruby
+# - sprout-rbenv
+# - sprout-ruby
 # - sprout-pyenv
 
 - sprout-postgresql

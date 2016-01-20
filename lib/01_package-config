@@ -60,7 +60,8 @@ function package-config {
   "
 
   # This is the ruby version that will be installed using rbenv
-  export rbenv_ruby_version="2.2.3"
+  # the first one is the default
+  rbenv_ruby_versions=("2.3.0" "2.2.3")
 }
 
 package-config

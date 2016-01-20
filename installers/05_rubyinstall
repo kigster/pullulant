@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
-
+export rubyinstall_ran=
 function rubyinstall {
-  status=$(rbenv versions | grep ${rbenv_ruby_version})
-  if [ $? -ne 0 ]; then
-    run 'printf "Installing ruby from sources, please wait....\n"'
-    run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
-  fi
+  [[ -n "${rubyinstall_ran}" ]] && return
+  run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
+  for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
+    status=$(rbenv versions | grep ${rbenv_ruby_version})
+    if [ $? -ne 0 ]; then
+      run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
+      run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
+      run "eval $(rbenv init -) && rbenv rehash"
+      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
+      export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      run 'eval "$(rbenv init -)"; ~/.rbenv/shims/ruby -e "Gem.install(%q{nokogiri}, %q{1.6.3.1}) unless Gem::Specification.all_names.to_a.include? %q{nokogiri-1.6.3.1}"'
+    fi
+  done
 
-  run "rbenv global ${rbenv_ruby_version}"
-
-  cmd="gem list -i bundler || gem install bundler" && run "$cmd"
-
-  # This is a hack to get the newly installed ruby to build Nokogiri library.
-  # For some reason using gem command was defaulting to the system ruby.
-  export NOKOGIRI_USE_SYSTEM_LIBRARIES=1
-  export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-  run '~/.rbenv/shims/ruby -e "Gem.install(%q{nokogiri}, %q{1.6.3.1}) unless Gem::Specification.all_names.to_a.include? %q{nokogiri-1.6.3.1}"'
+  run "rbenv global ${rbenv_ruby_versions[0]}"
+  export rubyinstall_ran=yes
 }
