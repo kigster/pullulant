@@ -49,12 +49,12 @@ cd pullulant; git pull --rebase; ./pu -a
 ## Driving the Script
 
 
-```bash
-_____________________________________________________________________________________
+```
+ ___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant                                                                        |
-|  Development Environment Installer v0.0.1.                                        |
-|  Git rev 0e85cdb.                                                                 |
+|  Pullulant (or gently: 'pu')                                                      |
+|  Development Environment Installer v1.0.0.                                        |
+|  Git rev 45f1284.                                                                 |
 |___________________________________________________________________________________|
 
 Installers:
@@ -65,13 +65,10 @@ Helpers:
    brew-update brew-upgrade brew-wipe reinstall-postgres sudo-disable
    sudo-enable
 
-Actual Run List:
-
-
 Usage: ./pu -a [-S] [-B] [-n|-q|-v]
        ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
        ./pu -r homebrew [-L] [-R] [-n|-q|-v]
-   Or: ./pu [-l] [-h|-H]
+   Or: ./pu [-l] [-h|-H|-x]
 
 
 Where, runner is either an installer or a helper.
@@ -91,13 +88,14 @@ Where, runner is either an installer or a helper.
   -l          [l]ists available runners  helpers and installers
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
+  -X          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
     ./pu -a                          # install everything
     ./pu -r reinstall-postgres       # run just reinstall-postgres
     ./pu -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
     ./pu -aSB                        # install everything, minus
-                                              homebrew and sprout-wrap
+                                            # homebrew and sprout-wrap
 
   Runner:
       Most common usage is with the -a  flag, that runs all installers.

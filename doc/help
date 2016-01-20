@@ -1,8 +1,8 @@
  ___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant                                                                   |
+|  Pullulant (or gently: 'pu')                                                 |
 |  Development Environment Installer v1.0.0.                                        |
-|  Git rev 08f7554.                                                                 |
+|  Git rev 45f1284.                                                                 |
 |___________________________________________________________________________________|
                                                                                     
 Installers:
@@ -12,9 +12,6 @@ Installers:
 Helpers:
    brew-update brew-upgrade brew-wipe reinstall-postgres sudo-disable    
    sudo-enable    
-                                                                                    
-Actual Run List:
-                                                                     
 
 Usage: ./pu -a [-S] [-B] [-n|-q|-v]
        ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
