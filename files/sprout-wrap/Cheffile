@@ -2,6 +2,13 @@
 
 site 'https://supermarket.getchef.com/api/v1'
 
+cookbook 'sprout-homebrew',
+  :github => 'RealScout/sprout-homebrew',
+  :ref => 'remove-cask-install'
+
+cookbook 'homebrew',
+  :github => 'chef-cookbooks/homebrew'
+
 cookbook 'sprout-pyenv',
   :github => 'kigster/sprout-pyenv'
 
@@ -28,17 +35,6 @@ cookbook 'sprout-osx-settings',
 
 cookbook 'osx',
   :github => 'pivotal-sprout/osx'
-
-
-cookbook 'sprout-homebrew',
-  :github => 'RealScout/sprout-homebrew',
-  :ref => 'remove-cask-install'
-
-cookbook 'homebrew',
-  :github => 'RealScout/homebrew',
-  :ref => 'remove-cask-install'
-
-
 
 cookbook 'sprout-terminal',
   :github => 'pivotal-sprout/sprout-terminal'
