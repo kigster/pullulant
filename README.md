@@ -1,7 +1,9 @@
 # Pullulant Development Environment on Mac OS-X
 
 This document describes a set of quick steps to run a fully automated setup of the development
-environment needed to build ruby applications on Mac OS-X.
+environment needed to build or Mac applications on Mac OS-X. 
+
+It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Run it :)
 
 ## Pre-Install – OS-X Preparation
 
@@ -17,10 +19,9 @@ to the user running this installer, with full `xwr` permissions. This is so that
 
 Typically your group will be `staff`.  Whatever group you are, that group is applied to the key const_owned_folder_list (`/usr/local` and `/var/chef`), with permissions also reset to `xwr`. The idea is that this move should permit multiple co-existing users to share `/usr/local` and `/var/chef` at the same time.  
 
-Note that the current OS-X user must be configured as "Admin" on the Mac, and upon entering their password after the first request for `sudo`, the user will be modified to allow password-less `sudo` access for the duration of the script.
+Note that the current OS-X user must be configured as "Admin" on the Mac, and upon entering their password after the first request for `sudo`, the user will be modified to allow password-less `sudo` access for the duration of the script. At the end of the script, that access is removed.
 
-At the very end, installer cleans this up, or you can run `pullulant -r reset-sudo`
-
+You can override this in your environment, by running `./pu -r sudo-enable` or `./pu -r sudo-disable`.
 
 ## Install
 
@@ -29,16 +30,16 @@ At the very end, installer cleans this up, or you can run `pullulant -r reset-su
   3. Run the following installer:
 
 ```bash
-curl -fsSL 'http://sw.i./pu.sh' | /usr/bin/env bash
+curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash
 ```
 
 Alternatively:
 
 ```bash
-export ws="${HOME}/workspace"     # your workspace directory
-[[ -d ${ws} ]] || mkdir -p ${ws}
-[[ -d "${ws./pu" ]] || cd ${ws} && git clone "git@github.com:kigste./pu.git"
-cd pullulant; git pull --rebase; ./pu -a
+  export ws="${HOME}/workspace"     # your workspace directory
+  [[ -d ${ws} ]] || mkdir -p ${ws}
+  [[ -d "${ws./pu" ]] || cd ${ws} && git clone "git@github.com:kigster/pu.git"
+  cd pullulant; git pull --rebase; ./pu -a
 ```
 
 ## After a Successful Install
