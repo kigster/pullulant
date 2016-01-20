@@ -5,6 +5,9 @@ environment needed to build or Mac applications on Mac OS-X.
 
 It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Run it :)
 
+Behind the scenes it also uses [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap). This is why this project is called
+"Pullulant" – it is Latin for "Sprout". 
+
 ## Pre-Install – OS-X Preparation
 
   1. Run `xcode-select --install` to make sure you have dev tools
