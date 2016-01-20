@@ -55,7 +55,7 @@ function help {
   printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q|-v]\n"
   printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]\n"
   printf "       ./$(basename $0) -r homebrew [-L] [-R] [-n|-q|-v]\n"
-  printf "   Or: ./$(basename $0) [-l] [-h|-H]\n\n"
+  printf "   Or: ./$(basename $0) [-l] [-h|-H|-x]\n\n"
   printf "
 Where, runner is either an installer or a helper.
 
@@ -81,7 +81,7 @@ Examples:
     ./$(basename $0) -r reinstall-postgres       # run just reinstall-postgres
     ./$(basename $0) -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
     ./$(basename $0) -aSB                        # install everything, minus
-                                              homebrew and sprout-wrap
+                                            # homebrew and sprout-wrap
 "
 }
 

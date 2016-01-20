@@ -1,8 +1,8 @@
  ___________________________________________________________________________________
 |                                                                                   |
 |  Pullulant                                                                   |
-|  Development Environment Installer v0.0.1.                                        |
-|  Git rev 0e85cdb.                                                                 |
+|  Development Environment Installer v1.0.0.                                        |
+|  Git rev 08f7554.                                                                 |
 |___________________________________________________________________________________|
                                                                                     
 Installers:
@@ -16,10 +16,10 @@ Helpers:
 Actual Run List:
                                                                      
 
-Usage: ./pullulant -a [-S] [-B] [-n|-q|-v]
-       ./pullulant -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
-       ./pullulant -r homebrew [-L] [-R] [-n|-q|-v]
-   Or: ./pullulant [-l] [-h|-H]
+Usage: ./pu -a [-S] [-B] [-n|-q|-v]
+       ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
+       ./pu -r homebrew [-L] [-R] [-n|-q|-v]
+   Or: ./pu [-l] [-h|-H|-x]
 
 
 Where, runner is either an installer or a helper.
@@ -39,13 +39,14 @@ Where, runner is either an installer or a helper.
   -l          [l]ists available runners  helpers and installers
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
+  -X          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-    ./pullulant -a                          # install everything
-    ./pullulant -r reinstall-postgres       # run just reinstall-postgres
-    ./pullulant -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
-    ./pullulant -aSB                        # install everything, minus
-                                              homebrew and sprout-wrap
+    ./pu -a                          # install everything
+    ./pu -r reinstall-postgres       # run just reinstall-postgres
+    ./pu -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
+    ./pu -aSB                        # install everything, minus
+                                            # homebrew and sprout-wrap
 
   Runner:
       Most common usage is with the -a  flag, that runs all installers.
@@ -64,3 +65,4 @@ Examples:
       Eg, to wipe out existing PostgreSQL and re-run the installer
       do this below. This may be necessary when installing on an existing
       machine with an outdated or broken PostgreSQL:
+[0;34m[0;34m
