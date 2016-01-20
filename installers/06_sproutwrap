@@ -5,24 +5,38 @@ function sproutwrap {
     run "echo 'Skipping sprout-wrap'"
     return
   fi
+
+  prepare_sprout_wrap_folder
+  replace_configuration
+  run_soloist
+}
+
+function run_soloist {
+  run "pushd ${sprout_wrap_home}"
+  export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+  export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
   run 'eval "$(rbenv init -)"' "ignore_error"
+  eval "$(rbenv init -)"
+  run "bundle"
+  run "bundle exec soloist # show-stdout"
+  export status=$?
+  run "cd ${HOME}/workspace/pullulant"
+}
+
+function prepare_sprout_wrap_folder {
   run "sudo mkdir -p /var/chef"
   run "sudo chown -R $USER /var/chef"
   if [ ! -d ${sprout_wrap_home} ]; then
     run "git clone ${const_sprout_wrap_repo} ${sprout_wrap_home}"
   fi
+  run "pushd ${sprout_wrap_home}"
+  [[ "$(git diff | wc -l)" -gt 0 ]] && run "git reset --hard"
+  run "git pull origin master"
+  run "popd"
+}
+
+function replace_configuration {
   run "cp ./files/sprout-wrap/* ${sprout_wrap_home}"
   run "rm -f ${sprout_wrap_home}/.ruby-version"
   run "rm -f ${sprout_wrap_home}/Cheffile.lock"
-  run "cd ${sprout_wrap_home}"
-  run "git stash" "ignore_error"
-  run "git pull origin master"
-  run "git stash pop" "ignore_error"
-  export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-  export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
-  run 'eval "$(rbenv init -)"' "ignore_error"
-  run "bundle"
-  run "bundle exec soloist"
-  run "cd ${HOME}/workspace/pullulant"
-  export status=$?
 }

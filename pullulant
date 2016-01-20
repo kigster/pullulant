@@ -73,11 +73,14 @@ while getopts "ar:SBLRqnvlh" opt; do
         printf "${bldred}Whoops! The -i flag is no longer used, please use -r (for 'runner').\n${txtrst}"
         abort 125                            ;;
     r)
+        [[ "${OPTARG}" == "sudo-enable" ]] && export skip_sudo_disable=true
+        [[ "${OPTARG}" == "sudo-disable" ]] && export sudoers_enabled=true
         if [ -z "$runners" ]; then
           export runners="$OPTARG"
         else
           export runners="$runners $OPTARG"
         fi                                    ;;
+
     h)
         greet; help; finish;                  ;;
     q)

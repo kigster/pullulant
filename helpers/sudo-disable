@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 sudo-disable() {
-  run "sudo rm -f /private/etc/sudoers.d/${USER}"
+  [[ -n "${sudoers_enabled}" && -z "${skip_sudo_disable}" ]] && run "sudo rm -f /private/etc/sudoers.d/${USER}"
   export sudoers_enabled=
 }
