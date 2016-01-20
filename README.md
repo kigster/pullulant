@@ -29,7 +29,7 @@ At the very end, installer cleans this up, or you can run `pullulant -r reset-su
   3. Run the following installer:
 
 ```bash
-curl -fsSL 'http://sw.im/pullulant.sh' | /usr/bin/env bash
+curl -fsSL 'http://sw.i./pu.sh' | /usr/bin/env bash
 ```
 
 Alternatively:
@@ -37,8 +37,8 @@ Alternatively:
 ```bash
 export ws="${HOME}/workspace"     # your workspace directory
 [[ -d ${ws} ]] || mkdir -p ${ws}
-[[ -d "${ws}/pullulant" ]] || cd ${ws} && git clone "git@github.com:kigster/pullulant.git"
-cd pullulant; git pull --rebase; ./pullulant -a
+[[ -d "${ws./pu" ]] || cd ${ws} && git clone "git@github.com:kigste./pu.git"
+cd pullulant; git pull --rebase; ./pu -a
 ```
 
 ## After a Successful Install
@@ -68,10 +68,10 @@ Helpers:
 Actual Run List:
 
 
-Usage: ./pullulant -a [-S] [-B] [-n|-q|-v]
-       ./pullulant -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
-       ./pullulant -r homebrew [-L] [-R] [-n|-q|-v]
-   Or: ./pullulant [-l] [-h|-H]
+Usage: ./pu -a [-S] [-B] [-n|-q|-v]
+       ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
+       ./pu -r homebrew [-L] [-R] [-n|-q|-v]
+   Or: ./pu [-l] [-h|-H]
 
 
 Where, runner is either an installer or a helper.
@@ -93,10 +93,10 @@ Where, runner is either an installer or a helper.
   -H          this help message, and explanation of helpers and installers
 
 Examples:
-    ./pullulant -a                          # install everything
-    ./pullulant -r reinstall-postgres       # run just reinstall-postgres
-    ./pullulant -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
-    ./pullulant -aSB                        # install everything, minus
+    ./pu -a                          # install everything
+    ./pu -r reinstall-postgres       # run just reinstall-postgres
+    ./pu -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
+    ./pu -aSB                        # install everything, minus
                                               homebrew and sprout-wrap
 
   Runner:

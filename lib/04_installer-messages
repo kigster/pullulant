@@ -16,7 +16,7 @@ function indented_list {
 function tool_info {
   printf " ___________________________________________________________________________________\n"
   printf "|                                                                                   |\n"
-  printf "|  ${txtgrn}Pullulant                                                         ${txtrst}🌹  🌻  🍄  🦀  🎃  |\n"
+  printf "|  ${txtgrn}Pullulant (or gently: 'pu')                                       ${txtrst}🌹  🌻  🍄  🦀  🎃  |\n"
   printf "|  ${txtylw}Development Environment Installer v${bldblu}$(cat VERSION).${txtwht}                                        |\n"
   printf "|  Git rev ${txtgrn}$(git log --pretty=oneline --abbrev-commit | head -1 | awk '{print $1}').${txtwht}                                                                 |\n"
   printf "|___________________________________________________________________________________|\n"
@@ -34,7 +34,7 @@ function installer_info {
   printf "                                                                                    \n"
   printf "Helpers:\n"
   printf "${txtylw}%-68s ${txtrst}\n" "$helper_list"
-  if [ ! -z "$run_list" ]; then
+  if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
     printf "                                                                                    \n"
     printf "Actual Run List:\n"
     printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
