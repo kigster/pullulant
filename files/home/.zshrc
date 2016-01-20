@@ -5,7 +5,7 @@
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="reinvent-one"
+ZSH_THEME="suvash.zsh-theme"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -51,9 +51,10 @@ ZSH_THEME="reinvent-one"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
-# User configuration
+source ${HOME}/.select-prompt
 
-  export PATH="/Users/hired/.rbenv/shims:/Users/hired/.pyenv/shims:/Users/hired/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+# User configuration
+export PATH="/Users/hired/.rbenv/shims:/Users/hired/.pyenv/shims:/Users/hired/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -82,4 +83,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-source ~/.shell-aliases
+#
+# load user's theme if exists
+[[ -s "${HOME}/.${USER}.zsh-theme" ]] && source "${HOME}/.${USER}.zsh-theme"

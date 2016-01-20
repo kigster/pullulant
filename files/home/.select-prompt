@@ -1,0 +1,61 @@
+#!/usr/bin/env zsh
+[[ -s ${HOME}/.bash_colors ]] && source ${HOME}/.bash_colors
+theme-to-path() {
+  [[ -n "${1}" ]] && echo -n "${HOME}/.oh-my-zsh/themes/${1}.zsh-theme"
+}
+
+select-prompt() {
+  argument=${1}
+
+  cd "${HOME}/.oh-my-zsh/themes"
+  # find prompt files that are larger than 512 bytes :)
+
+  large_themes=$(find . -size 2 | sed -e 's/\.\///g; s/\.zsh-theme//g' | tr '\n' ' ')
+  prompts=($(echo "${large_themes}"))
+  size=${#prompts[@]}  # not really necessary, but is fun
+
+  theme=
+  index=
+  by_index=
+  by_name=
+  if [ -n "${argument}" ]; then
+    if [ -n "$(echo $argument | sed -e 's/[^0-9]//g')" ]; then
+      argument=$(echo $argument | sed -e 's/[^0-9]//g')
+      if [ ${argument} -lt $size ]; then
+        # argument is an index into the array
+        index=${argument}
+        theme=${themes[${index}]}
+        by_index=yes
+      fi
+    else
+      theme=${argument}
+      file="$(theme-to-path ${theme})"
+      if [ -s "${file}" ]; then
+        by_name=yes
+      else
+        theme=
+      fi
+    fi
+  fi
+
+  [[ -z "${theme}" && -z "$index" ]] && index=$(($RANDOM % $size))
+  [[ -z "$theme" ]] && theme=${prompts[$index]}
+
+  printf "${bldylw}"
+  [[ -z "${argument}" ]] && echo "Your random theme today is #${index} named '${theme}', enjoy!"
+  [[ -n "${argument}" && -n "${by_name}"  ]] && echo "You selected ${theme} theme, enjoy!"
+  [[ -n "${argument}" && -n "${by_index}" ]] && echo "You picked theme #${index} named '${theme}', enjoy!"
+  printf "${txtrst}"
+  #
+  filename=$(theme-to-path ${theme})
+  if [ ! -s "${filename}" ]; then
+    printf "${bldred}Internal Error${bldwht}: can't find file ${filename} for theme '${theme}'\n"
+    return 1
+  fi
+  source ${filename}
+  cd -
+}
+
+alias ppp=select-prompt
+
+printf "${bldgrn}Type ${bldylw}'ppp [ theme-index | theme-name ]'${bldgrn} to pick another prompt :D \n"
