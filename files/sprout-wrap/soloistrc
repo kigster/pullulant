@@ -2,14 +2,10 @@
 recipes:
 
 # base (required by sprout)
+- homebrew
 - sprout-base
 - sprout-base::bash_it
-- sprout-homebrew
 - sprout-bash-it
-
-# apps
-- sprout-osx-apps::iterm2
-- sprout-osx-apps::shiftit
 
 # settings
 - sprout-osx-settings
@@ -22,13 +18,6 @@ recipes:
 - sprout-git::default_editor
 - sprout-git::projects
 - sprout-git::git_scripts
-
-# development ruby & python
-# - sprout-rbenv
-# - sprout-ruby
-# - sprout-pyenv
-
-- sprout-postgresql
 
 node_attributes:
   versions:
@@ -81,8 +70,6 @@ node_attributes:
       projects:
         - name: pullulant
           url: git@github.com:kigster/pullulant.git
-    terminal:
-      default_profile: 'Pro'
     settings:
       clock_format: EEE MMM d  h:mm:ss a
     dock_preferences:
@@ -93,21 +80,3 @@ node_attributes:
       magnification: false
     bash_it:
       theme: kig
-    homebrew:
-      casks:
-        - rowanj-gitx
-        - github
-        - google-chrome
-        - google-drive
-        - google-hangouts
-        - atom
-        - virtualbox
-        - slack
-        - dockertoolbox
-        - docker
-        - docker-compose
-        - docker-swarm
-        - kitematic
-        - istat-menus
-        - java
-        - teamviewer

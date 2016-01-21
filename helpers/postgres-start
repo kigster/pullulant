@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+function postgres-start {
+  [[ -n "$(postgres-master-pid)" ]] && {
+    run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is already running\n'"
+    return
+  }
+
+  run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents"
+  run "launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+  status=0
+  return $status
+}

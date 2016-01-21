@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function osx {
+  # stop forced authentication for os-x updates
+  run "sudo defaults delete /Library/Preferences/com.apple.SoftwareUpdate CatalogURL"
+}

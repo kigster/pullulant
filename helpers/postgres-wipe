@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+function postgres-wipe {
+  postgres-stop
+  run "brew uninstall ${opts_verbose} postgres --force" "ignore_error"
+  return 0
+}

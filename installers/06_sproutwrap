@@ -18,7 +18,7 @@ function run_soloist {
   export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
   run 'eval "$(rbenv init -)"' "ignore_error"
   eval "$(rbenv init -)"
-  run "bundle"
+  run "bundle              # show-stdout"
   run "bundle exec soloist # show-stdout"
   export status=$?
   run "cd ${HOME}/workspace/pullulant"
@@ -40,4 +40,7 @@ function replace_configuration {
   run "cp ./files/sprout-wrap/* ${sprout_wrap_home}"
   run "rm -f ${sprout_wrap_home}/.ruby-version"
   run "rm -f ${sprout_wrap_home}/Cheffile.lock"
+  # so that the damn Nokogiri gets built with the latest possible version,
+  # not the ancient damn stupidity checked into the lock file.
+  run "rm -f ${sprout_wrap_home}/Gemfile.lock"
 }

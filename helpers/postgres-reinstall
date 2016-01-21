@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+function postgres-reinstall {
+  postgres-wipe
+  postgres-install
+  return 0
+}

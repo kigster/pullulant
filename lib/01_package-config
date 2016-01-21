@@ -48,6 +48,34 @@ function package-config {
     Caskroom/cask/clion
     Caskroom/cask/webstorm
     Caskroom/cask/rubymine
+    Caskroom/cask/shiftit
+    Caskroom/cask/istat-menus
+    Caskroom/cask/iterm2
+    Caskroom/cask/slack
+    Caskroom/cask/gitx
+    Caskroom/cask/github
+    Caskroom/cask/google-chrome
+    Caskroom/cask/google-drive
+    Caskroom/cask/google-hangouts
+    Caskroom/cask/atom
+    Caskroom/cask/virtualbox
+    Caskroom/cask/slack
+    Caskroom/cask/dockertoolbox
+    Caskroom/cask/docker
+    Caskroom/cask/docker-compose
+    Caskroom/cask/docker-swarm
+    Caskroom/cask/kitematic
+    Caskroom/cask/java
+    Caskroom/cask/teamviewer
+  "
+
+  export brew_relink_packages="
+    libxml2
+    libxslt
+    libiconv
+    libzip
+    zlib
+    openssl
   "
   # these hosts will be added to /etc/hosts as 127.0.0.1
   export local_hosts="

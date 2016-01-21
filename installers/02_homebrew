@@ -21,8 +21,16 @@ function homebrew {
   run "brew tap caskroom/cask" "true"
 
   for package in $brew_packages; do
-    brew_install $package
+    if [ -n "$(echo $package | grep cask)" ]; then
+      brew_cask_install $package
+    else
+      brew_install $package
+    fi
   done
+  for package in $brew_relink_packages; do
+    brew_relink $package
+  done
+
 
   result=$(which gsed)
   status=$?
@@ -31,6 +39,17 @@ function homebrew {
     run "ln -nfs /usr/local/bin/gsed /usr/local/bin/sed"
   fi
   status=$?
+}
+
+function brew_relink {
+  pkg=${1}
+  run "brew unlink ${opts_verbose} $pkg --force"
+  run "brew link   ${opts_verbose} $pkg --force"
+}
+
+function brew_cask_install {
+  package=$1
+  run "brew cask install ${package} --force --appdir=/Applications"
 }
 
 function brew_install {
@@ -48,6 +67,6 @@ function brew_install {
     else
       run "brew upgrade ${opts_verbose} $package" "true"
     fi
-    [[ -z "${opts_brew_force_link}" ]] || run "brew unlink ${opts_verbose}  $package --force; brew link $package --force" "ignore_error"
+    [[ -z "${opts_brew_force_link}" ]] || brew_relink ${package}
   fi
 }

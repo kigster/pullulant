@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+function postgres-master-pid {
+  # took me forever to track down that the name of the function was in arguments,
+  # so ps -ef | grep postgres was matching this process even with the [p] trick!
+  pidlist=$(bash -c "ps -ef | egrep '[p]ostgres' | grep -v $0")
+  pid=$(echo $pidlist | cut -d ' ' -f 5 | uniq)
+  echo -n $pid
+}
+
+function postgres-install {
+  [[ -z "$(postgres-master-pid)" ]] || {
+    run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is running, can't install. Run 'postgres-wipe''"
+    return
+  }
+
+  run "brew install ${opts_verbose} postgres --force"
+  run "sudo chown ${USER} /usr/local/var"
+  if [ -d "/usr/local/var/postgres" ]; then
+    backup="/usr/local/var/postgres.backup.$$"
+    run "mv /usr/local/var/postgres $backup"
+    run "printf 'Previous data folder was moved to $backup and ignored.\n'"
+  fi
+  run "initdb -D /usr/local/var/postgres -E UTF8 -U postgres"
+
+  postgres-start
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+function postgres-stop {
+  [[ -z "$(postgres-master-pid)" ]] && {
+    run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is already not running\n'"
+    return
+  }
+  # brew-update
+  run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents" "ignore_error"
+  run "launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist" "ignore_error"
+  run "sleep 1"
+  attempt=0
+  while [ -n "$(postgres-master-pid)" -a $attempt -lt 2 ]; do
+    run "echo 'Detected that PostgreSQL is still running'"
+    pid=$(postgres-master-pid)
+    run "echo 'kill -9 $pid'"
+    attempt=$(($attempt + 1))
+    run "printf 'Waiting for postgres to stop...'"
+    run "sleep 1"
+  done
+  [[ -z "$(postgres-master-pid)" ]] && run "printf '${bldgrn}Success. ${bldwht}PostgreSQL is not running\n'"
+  return 0
+}

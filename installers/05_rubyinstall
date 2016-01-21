@@ -11,7 +11,6 @@ function rubyinstall {
       run "eval $(rbenv init -) && rbenv rehash"
       [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
       export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-      run 'eval "$(rbenv init -)"; ~/.rbenv/shims/ruby -e "Gem.install(%q{nokogiri}, %q{1.6.3.1}) unless Gem::Specification.all_names.to_a.include? %q{nokogiri-1.6.3.1}"'
     fi
   done
 
