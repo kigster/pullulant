@@ -53,7 +53,6 @@ function package-config {
     Caskroom/cask/iterm2
     Caskroom/cask/slack
     Caskroom/cask/gitx
-    Caskroom/cask/github
     Caskroom/cask/google-chrome
     Caskroom/cask/google-drive
     Caskroom/cask/google-hangouts
