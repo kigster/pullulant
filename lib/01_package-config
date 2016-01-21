@@ -45,6 +45,7 @@ function package-config {
     aws-elasticache
     aws-mon
     jq
+    cmake
     Caskroom/cask/clion
     Caskroom/cask/webstorm
     Caskroom/cask/rubymine
