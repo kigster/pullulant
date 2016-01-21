@@ -1,7 +1,7 @@
 # Pullulant Development Environment on Mac OS-X
 
 This document describes a set of quick steps to run a fully automated setup of the development
-environment needed to build or Mac applications on Mac OS-X. 
+environment needed to work with javascript/node/ruby/python/etc applications on on Mac OS-X. 
 
 It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Run it :)
 
