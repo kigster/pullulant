@@ -10,9 +10,10 @@ Installers:
    monofonts zsh preferences home    
                                                                                     
 Helpers:
-   brew-update brew-upgrade brew-wipe reinstall-postgres sudo-disable    
-   sudo-enable    
-
+   brew-update brew-upgrade brew-wipe 
+   postgres-install postgres-reinstall postgres-start postgres-stop postgres-wipe
+   sudo-disable sudo-enable
+   
 Usage: ./pu -a [-S] [-B] [-n|-q|-v]
        ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
        ./pu -r homebrew [-L] [-R] [-n|-q|-v]
