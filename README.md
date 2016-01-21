@@ -53,23 +53,26 @@ Alternatively:
 ## Driving the Script
 
 
+
 ```
  ___________________________________________________________________________________
 |                                                                                   |
 |  Pullulant (or gently: 'pu')                                                      |
-|  Development Environment Installer v1.0.0.                                        |
-|  Git rev 45f1284.                                                                 |
+|  Development Environment Installer v1.0.2.                                        |
+|  Git rev da7c36a.                                                                 |
 |___________________________________________________________________________________|
-
+                                                                                    
 Installers:
-   permissions homebrew nodejs hostnames rubyinstall sproutwrap
-   monofonts zsh preferences home
-
+   permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap,    
+   monofonts, zsh, preferences, home, osx    
+                                                                                    
 Helpers:
-   brew-update brew-upgrade brew-wipe reinstall-postgres sudo-disable
-   sudo-enable
+   brew-update, brew-upgrade, brew-wipe, postgres-install,    
+   postgres-reinstall, postgres-start, postgres-stop, postgres-wipe,    
+   sudo-disable, sudo-enable    
+                                                                                    
 
-Usage: ./pu -a [-S] [-B] [-n|-q|-v]
+Usage: ./pu -a [-S] [-B] [-n|-q|-v|-p]
        ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
        ./pu -r homebrew [-L] [-R] [-n|-q|-v]
    Or: ./pu [-l] [-h|-H|-x]
@@ -85,6 +88,7 @@ Where, runner is either an installer or a helper.
   -L          [L]ink or relink each brew of formulas with --force
   -R          [R]einstall each brew formula with --force
 
+  -p          su[p]press section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose run show command's output, and add -v to some
   -n          dry-ru[n] print commands, but don't actually run them.
