@@ -1,11 +1,11 @@
 # Path to your oh-my-zsh installation.
-  export ZSH=/Users/hired/.oh-my-zsh
+  export ZSH=/Users/${USER}/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="suvash.zsh-theme"
+ZSH_THEME="suvash"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -54,7 +54,7 @@ plugins=(git)
 source ${HOME}/.select-prompt
 
 # User configuration
-export PATH="/Users/hired/.rbenv/shims:/Users/hired/.pyenv/shims:/Users/hired/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/Users/${USER}/.rbenv/shims:/Users/${USER}/.pyenv/shims:/Users/${USER}/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh

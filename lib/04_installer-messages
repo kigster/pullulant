@@ -10,23 +10,32 @@ function indented_list {
   local list="$1"
   local width="$2"
   local indent="$3"
-  echo "$list" | fold -sw $width | sed -E "s/(^|$)/${indent}/g"
+  echo "$list" | fold -sw $width | sed -E "s/ /, /g; s/(^|$)/${indent}/g; "
 }
 
+function tool_revision {
+  git log --pretty=oneline --abbrev-commit | head -1 | awk '{print $1}'
+}
 function tool_info {
   printf " ___________________________________________________________________________________\n"
   printf "|                                                                                   |\n"
   printf "|  ${txtgrn}Pullulant (or gently: 'pu')                                       ${txtrst}🌹  🌻  🍄  🦀  🎃  |\n"
   printf "|  ${txtylw}Development Environment Installer v${bldblu}$(cat VERSION).${txtwht}                                        |\n"
-  printf "|  Git rev ${txtgrn}$(git log --pretty=oneline --abbrev-commit | head -1 | awk '{print $1}').${txtwht}                                                                 |\n"
+  printf "|  Git rev ${txtgrn}$(tool_revision).${txtwht}                                                                 |\n"
   printf "|___________________________________________________________________________________|\n"
   installer_info
+}
+
+function tool_info_short {
+  printf "${bldwht}"
+  printf "_________________________________________________\n"
+  printf "${bldgrn}Pullulant (aka 'pu'),  ${bldwht}Version $(cat VERSION), Ref $(tool_revision)\n"
+  printf -- "${txtrst}Started as '$0 $args'\n"
 }
 
 function installer_info {
   local installer_list=$(indented_list "$installers" 70 '   ')
   local helper_list=$(indented_list "$helpers"    70 '   ')
-  local run_list=$(indented_list "$runners"    70 '   ')
 
   printf "                                                                                    \n"
   printf "Installers:\n"
@@ -34,9 +43,17 @@ function installer_info {
   printf "                                                                                    \n"
   printf "Helpers:\n"
   printf "${txtylw}%-68s ${txtrst}\n" "$helper_list"
+  printf "                                                                                    \n"
+
+  runner_info
+}
+
+function runner_info {
+  linebreak="\n"
+  [[ "$1" == "one_line" ]] && linebreak=""
+  local run_list=$(indented_list "$runners"    70 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "                                                                                    \n"
-    printf "Actual Run List:\n"
+    printf "Run List:${linebreak}"
     printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
   fi
 }
@@ -47,12 +64,14 @@ function greet {
 }
 
 function section {
+  [[ -n "${opts_suppress_headers}" ]] && return
+
   printf "${bldblu}                             ___________________________\n"
   printf "${bldblu}____________________________|${bldwht}${bakblu} %12s %-12s ${txtrst}|____________________________${txtrst}\n\n" "installing" $1
 }
 
 function help {
-  printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q|-v]\n"
+  printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q|-v|-p]\n"
   printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]\n"
   printf "       ./$(basename $0) -r homebrew [-L] [-R] [-n|-q|-v]\n"
   printf "   Or: ./$(basename $0) [-l] [-h|-H|-x]\n\n"
@@ -67,6 +86,7 @@ Where, runner is either an installer or a helper.
   -L          [L]ink or relink each brew of formulas with --force
   -R          [R]einstall each brew formula with --force
 
+  -p          su[p]press section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose run show command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.

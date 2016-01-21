@@ -33,6 +33,7 @@ function package-config {
   export opts_skip_sprout_wrap=
   export opts_brew_force_reinstall=
   export opts_brew_force_link=
+  export opts_suppress_headers=
 }
 
 package-config

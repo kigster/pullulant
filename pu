@@ -35,7 +35,7 @@ function main {
   for runner in $runners; do
     export runners_started=$((runners_started + 1))
 
-    [[ $runners_started -gt 1 ]] || greet
+    [[ $runners_started -eq 1 ]] &&  tool_info_short && runner_info "one_line" }
 
     section ${runner}
 
@@ -64,7 +64,7 @@ function main {
 #______________________________________________________________________________
 #
 
-while getopts "ar:SBLRqnvlhHx" opt; do
+while getopts "ar:SBLRqnvlhHxp" opt; do
   case $opt in
     a)
         export runners=${installers}          ;;
@@ -88,8 +88,10 @@ while getopts "ar:SBLRqnvlhHx" opt; do
         greet; help; finish;                  ;;
     H)
         greet; help; details; finish;         ;;
+    p)
+        export opts_suppress_headers=yes      ;;
     q)
-        export opts_quiet=                    ;;
+        export opts_quiet=yes                 ;;
     n)
         export opts_dryrun=yes                ;;
     v)
@@ -117,4 +119,6 @@ while getopts "ar:SBLRqnvlhHx" opt; do
 done
 
 
-main $*
+export args=$*
+
+main args

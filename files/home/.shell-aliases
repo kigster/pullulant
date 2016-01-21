@@ -13,6 +13,7 @@ alias 'ga'='git add'
 alias 'gaa'='git add -A'
 alias 'gap'='git add -p'
 alias 'gpp'='git pull --rebase && git push'
+alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
 
 alias dc='cd'
 alias dir='ls -lF'
@@ -22,5 +23,12 @@ alias ds='du -k  | grep -v "\/.*\/"'
 alias diskspace="du -k | grep -v './.*\/'"
 alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"
 
-[[ -z "$(which rbenv)" ]] || eval "$(rbenv init -)"
-[[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"
+function py {
+  [[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"
+}
+function rb {
+  [[ -z "$(which rbenv)" ]] || eval "$(rbenv init -)"
+}
+
+py
+rb
