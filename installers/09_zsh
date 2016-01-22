@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 
 function zsh {
-  run "rsync -a --ignore-existing ${rsync_home_dir}.zshrc ${HOME}/"
-  run "rsync -a --ignore-existing ${rsync_home_dir}.select-prompt ${HOME}/"
 
   #run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
+
   oh-my-zsh-installer
+
+  run "rsync -a --ignore-existing ${zsh_rsync_home_dir}.zshrc ${HOME}/"
+  run "rsync -a --ignore-existing ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
+  run "rsync -a --ignore-existing ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
+
   rc=${HOME}/.zshrc
+
   [[ -n "$(echo $SHELL | grep zsh)" ]]               || run "chsh -s $(which zsh)"
   [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
   [[ -n "$(grep shell-aliases $rc)" ]]               || echo "source ~/.shell-aliases" >> $rc
-  [[ -n "$(grep 'rbenv init' $rc)" ]]                || echo 'eval "$(rbenv init -)"' >> $rc
 }
 
 function oh-my-zsh-installer {

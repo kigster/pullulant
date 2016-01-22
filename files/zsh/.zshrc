@@ -49,7 +49,11 @@ ZSH_THEME="suvash"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=( heroku rbenv ruby aws bower \
+          brew bundler capistrano common-aliases dirhistory rake \
+          encode64 gem gitfast github jsontools npm osx pow
+          rails redis-cli ruby web-search wd
+          )
 
 source ${HOME}/.select-prompt
 
@@ -85,4 +89,5 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 # load user's theme if exists
+export NOKOGIRI_USE_SYSTEM_LIBRARIES=1s
 [[ -s "${HOME}/.${USER}.zsh-theme" ]] && source "${HOME}/.${USER}.zsh-theme"
