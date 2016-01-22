@@ -62,8 +62,9 @@ Variables with names starting with `var_` can be overridden before running the
 script. So can all the variables set in the `pu-packages` file, such as
 which brew formulas or casks to install.
 
-You can also copy the file `lib/pu-packages` to `~/.pullulant_packages` and
-modify it there. This file is loaded before any packages are defined.
+You can also copy the file `sample-config/.pullulant_packages` to your home folder, 
+and modify it there to suit your needs. This file is loaded before any packages 
+are defined, and overrides the packages the script itself defines.
 
 ```
 > ./pu -x
