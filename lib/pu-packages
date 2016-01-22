@@ -2,8 +2,12 @@
 
 function package-config {
 
+  [[ -s "${custom_packages_file}" ]] && {
+    source "${custom_packages_file}"
+  }
+
   # List of Brew Formulas to install and link
-    [[ -n "${brew_packages}" ]] || export brew_packages="
+  [[ -n "${brew_packages}" ]] || export brew_packages="
     rbenv
     ruby-build
     watch
