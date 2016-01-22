@@ -7,7 +7,7 @@ function homebrew {
   if [ -z "${brew}" ]; then
     curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install > /tmp/brew.rb
     run 'printf "Installing Homebrew from scratch, this is so exciting!...\n"'
-    run "ruby < /tmp/brew.rb"
+    run "/usr/bin/ruby < /tmp/brew.rb"
   else
     cmd='echo "Homebrew is already installed – version: $(brew --version)"'
     run "$cmd"
@@ -20,17 +20,28 @@ function homebrew {
   # Let's install that goddamn brew-cask
   run "brew tap caskroom/cask" "true"
 
-  for package in $brew_packages; do
-    if [ -n "$(echo $package | grep cask)" ]; then
-      brew_cask_install $package
-    else
-      brew_install $package
-    fi
-  done
-  for package in $brew_relink_packages; do
-    brew_relink $package
-  done
+  brew_partial_install=
+  if [ -n "${opts_brew_link_only}" -o -n "${opts_brew_casks_only}" -o -n "${opts_brew_formulae_only}" ]; then
+    brew_partial_install=yes
+  fi
 
+  [[ -z "${brew_partial_install}" || -n "${opts_brew_formulae_only}" ]] && {
+    for package in $brew_packages; do
+      brew_install $package
+    done
+  }
+
+  [[ -z "${brew_partial_install}" || -n "${opts_brew_casks_only}" ]] && {
+    for package in $brew_casks; do
+      brew_cask_install $package
+    done
+  }
+
+  [[ -z "${brew_partial_install}" || -n "${opts_brew_link_only}" ]] && {
+    for package in $brew_relink_packages; do
+      brew_relink $package
+    done
+  }
 
   result=$(which gsed)
   status=$?
@@ -43,29 +54,31 @@ function homebrew {
 
 function brew_relink {
   pkg=${1}
-  run "brew unlink ${opts_verbose} $pkg --force"
-  run "brew link   ${opts_verbose} $pkg --force"
+  run "brew unlink    ${opts_verbose} $pkg ${opts_brew_force}"
+  run "brew link      ${opts_verbose} $pkg ${opts_brew_force}"
 }
 
 function brew_cask_install {
   package=$1
-  run "brew cask install ${package} --force --appdir=/Applications"
+  [[ -d "${var_brew_cask_appdir}/${package}" ]] || {
+    run "brew cask install ${package} ${opts_brew_force} --appdir=${var_brew_cask_appdir}"
+  }
 }
 
 function brew_install {
   package=$1
-  if [ ! -z "${opts_brew_force_reinstall}" ]; then
-    run "brew uninstall ${opts_verbose} $package --force" "true"
-    run "brew unlink    ${opts_verbose} $package --force" "true"
-    run "brew install   ${opts_verbose} $package --force  2>&1 #show-stdout" "true"
-    run "brew link      ${opts_verbose} $package --force 2>&1  #show-stdout" "true"
+  if [ ! -z "${opts_brew_reinstall}" ]; then
+    run "brew uninstall ${opts_verbose} $package ${opts_brew_force}" "true"
+    run "brew unlink    ${opts_verbose} $package ${opts_brew_force}" "true"
+    run "brew install   ${opts_verbose} $package ${opts_brew_force} 2>&1 #show-stdout" "true"
+    run "brew link      ${opts_verbose} $package ${opts_brew_force} 2>&1  #show-stdout" "true"
   else
     cmd=$(brew list $package 2>/dev/null)
     result=$?
     if [ "$result" -ne 0 ]; then
-      run "brew install ${opts_verbose} $package"
+      run "brew install   ${opts_verbose} $package ${opts_brew_force}"
     else
-      run "brew upgrade ${opts_verbose} $package" "true"
+      run "brew upgrade   ${opts_verbose} $package ${opts_brew_force}" "true"
     fi
     [[ -z "${opts_brew_force_link}" ]] || brew_relink ${package}
   fi

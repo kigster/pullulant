@@ -13,7 +13,6 @@ function load_module {
 }
 
 function init {
-  load_module "ls -1 lib/*" "."
   source "lib/pu.bash"
 
   load_module "ls -1 $helpers_dir" $helpers_dir
@@ -33,12 +32,15 @@ function main {
 
   local runners_started=0
   local runners_completed=0
+
   for runner in $runners; do
     export runners_started=$((runners_started + 1))
 
-    [[ $runners_started -eq 1 ]] &&  tool_info_short && runner_info "one_line" }
+    [[ $runners_started -eq 1 ]] && {
+      pu-short-header
+    }
 
-    section ${runner}
+    pu-print-section-header ${runner}
 
     export status=
     eval ${runner}
@@ -65,16 +67,12 @@ function main {
 #______________________________________________________________________________
 #
 
-while getopts "ar:SBLRqnvlhHxp" opt; do
+while getopts "ar:SBLRKFCfqnvlhHxp" opt; do
   case $opt in
     a)
         export runners=${installers}          ;;
-    # this is left for legacy only, -r is the new flag that should be used.
-    i)
-        printf "${bldred}Whoops! The -i flag is no longer used, please use -r (for 'runner').\n${txtrst}"
-        abort 125                            ;;
     r)
-        [[ "${OPTARG}" == "sudo-enable" ]] && export skip_sudo_disable=true
+        [[ "${OPTARG}" == "sudo-enable"  ]] && export skip_sudo_disable=true
         [[ "${OPTARG}" == "sudo-disable" ]] && export sudoers_enabled=true
         if [ -z "$runners" ]; then
           export runners="$OPTARG"
@@ -82,13 +80,29 @@ while getopts "ar:SBLRqnvlhHxp" opt; do
           export runners="$runners $OPTARG"
         fi                                    ;;
 
-    x)
-        ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
-        cat doc/help; finish;                 ;;
-    h)
-        greet; help; finish;                  ;;
-    H)
-        greet; help; details; finish;         ;;
+    #========================= Runner Stuff =========================
+
+    S)
+        export opts_skip_sprout_wrap=yes      ;;
+    B)
+        export opts_skip_brew_upgrade=yes     ;;
+
+    #========================= Home Brew ============================
+
+    F)
+        export opts_brew_formulae_only=yes    ;;
+    C)
+        export opts_brew_casks_only=yes       ;;
+    L)
+        export opts_brew_link_only=yes        ;;
+    R)
+        export opts_brew_reinstall=yes        ;;
+    K)
+        export opts_brew_force_link=yes       ;;
+    f)
+        export opts_brew_force=" --force "    ;;
+
+    #========================= Output Control =======================
     p)
         export opts_suppress_headers=yes      ;;
     q)
@@ -97,18 +111,27 @@ while getopts "ar:SBLRqnvlhHxp" opt; do
         export opts_dryrun=yes                ;;
     v)
         export opts_verbose=" -v ";           ;;
+
+    #========================= Help and Info ========================
+
+    x)
+        ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
+        cat doc/help; finish;                 ;;
+    h)
+        pu-welcome-screen-short
+        pu-print-help
+        finish;                               ;;
+    H)
+        pu-print-help
+        pu-print-detailed-usage
+        finish;                               ;;
+
     l)
-        installer_info; finish;               ;;
-    S)
-        export opts_skip_sprout_wrap=yes      ;;
-    B)
-        export opts_skip_brew_upgrade=yes     ;;
-    L)
-        export opts_brew_force_link=yes       ;;
-    R)
-        export opts_brew_force_reinstall=yes  ;;
+        pu-short-header
+        pu-installers-helpers
+        finish;                               ;;
     \?)
-        help
+        pu-print-help
         printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
         abort 126
         ;;
