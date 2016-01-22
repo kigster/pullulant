@@ -5,6 +5,8 @@ export sudoers_enabled=
 
 sudo-enable() {
   run "[[ -d ${sudoers_dir} ]] || sudo mkdir -p ${sudoers_dir}"
-  run "[[ -f ${sudoers_dir}/${USER} ]] || echo 'kig ALL=(ALL) NOPASSWD: ALL' | sudo tee -a ${sudoers_dir}/kig "
-  export sudoers_enabled=true
+  [[ -s ${sudoers_dir}/${USER} ]] || {
+    echo 'kig ALL=(ALL) NOPASSWD: ALL' | sudo tee -a ${sudoers_dir}/kig
+    export sudoers_enabled=true
+  }
 }
