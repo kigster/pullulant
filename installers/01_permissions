@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 permissions() {
+  run "xcode-select --install 2>/dev/null; true"
+
   local tmpfile=/tmp/sudo.${USER}
   printf "If asked, please provide your SUDO password:\n"
   run "sudo echo"  # give me sudo!
@@ -12,7 +14,4 @@ permissions() {
     run "sudo chown -R ${USER}:${my_group} ${dir}"
     run "sudo chmod -R u=xwr,g=wrx,o= ${dir}"
   done
-  if [ -z "`ps -ef | grep [p]ostgresql`" -a -d "/usr/local/var/postgres" ]; then
-    run "mv ${opts_verbose} /usr/local/var/postgres /usr/local/var/postgres-backup.$$"
-  fi
 }
