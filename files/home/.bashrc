@@ -9,6 +9,8 @@ function dkenv {
   fi
 }
 
+export NOKOGIRI_USE_SYSTEM_LIBRARIES=1
+
 dkenv
 
 export LANG=en_US.UTF-8
