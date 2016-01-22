@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 function monofonts {
-  run "sudo cp -prfv ./files/mono-fonts/*.ttf ${HOME}/Library/Fonts # show-stdout"
   run "pushd ~/workspace"
   if [ ! -d "powerline-fonts" ]; then
     run "git clone https://github.com/powerline/fonts.git powerline-fonts"
