@@ -122,6 +122,7 @@ while getopts "ar:SBLRKFCfqnvlhHxp" opt; do
         pu-print-help
         finish;                               ;;
     H)
+        pu-welcome-screen-short
         pu-print-help
         pu-print-detailed-usage
         finish;                               ;;

@@ -1,13 +1,13 @@
  ___________________________________________________________________________________
 |                                                                                   |
 |  Pullulant (or gently: 'pu')                                                 |
-|  Development Environment Installer v1.0.2.                                        |
-|  Git rev da7c36a.                                                                 |
+|  Development Environment Installer v1.1.0.                                        |
+|  Git rev 6f81c41.                                                                 |
 |___________________________________________________________________________________|
                                                                                     
 Installers:
    permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap,    
-   monofonts, zsh, preferences, home, osx    
+   monofonts, postgresql, zsh, preferences, home, osx    
                                                                                     
 Helpers:
    brew-update, brew-upgrade, brew-wipe, postgres-install,    
@@ -15,38 +15,56 @@ Helpers:
    sudo-disable, sudo-enable    
                                                                                     
 
-Usage: ./pu -a [-S] [-B] [-n|-q|-v|-p]
-       ./pu -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]
-       ./pu -r homebrew [-L] [-R] [-n|-q|-v]
-   Or: ./pu [-l] [-h|-H|-x]
+Usage: ./pu -a [-S] [-B]                          [ output ]
+       ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
+       ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
+   Or: ./pu [-l|-h|-H|-x]
 
 
-Where, runner is either an installer or a helper.
+Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
 
-  -a          run [a]ll installers in order
-  -r runner   run only a specified [r]unner (either helper or installer)
+Global Flags:
+Full run:
+  -a          run [a]ll installers in their order
   -S          [S]proutwrap is disabled during the install
   -B          [B]rew-upgrade is disabled
 
-  -L          [L]ink or relink each brew of formulas with --force
-  -R          [R]einstall each brew formula with --force
+Partial run (multiple runners can be listed in quotes or multiple -r flags):
+  -r runner   run only a specified [r]unner (helper or installer)
+              eg: ./pu -r 'zsh osx' -r home
 
-  -p          su[p]press section headers for more compact output
+Homebrew control:
+              -C -F -L flags allow picking specific subset of the install.
+              The flags can mix. Adding all three is the same as adding none.
+
+  -L          Only [L]ink packages configured for brew linking
+  -C          Only [C]asks are installed from a configured list
+  -F          Only [F]ormulas are installed from a configured list
+
+              These apply to all brew commands:
+  -R          [R]einstall each formulae during brew install
+  -K          Relin[K] all brew formulas/casks during install
+  -f          [F]orce all brew commands with --force
+
+Output control:
+  -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
-  -v          [v]erbose run show command's output, and add -v to some
+  -v          [v]erbose - show each command's output, and add -v to some
   -n          dry-ru[n] print commands, but don't actually run them.
 
-  -l          [l]ists available runners  helpers and installers
+Help & Info:
+  -l          [l]ist available runners  helpers and installers
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
-  -X          same as -H but in plain ascii (also saves into doc/help)
+  -x          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-    ./pu -a                          # install everything
-    ./pu -r reinstall-postgres       # run just reinstall-postgres
-    ./pu -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
-    ./pu -aSB                        # install everything, minus
-                                            # homebrew and sprout-wrap
+    ./pu -a                         # install everything
+    ./pu -r reinstall-postgres      # run just reinstall-postgres
+    ./pu -r brew-wipe -r homebrew   # wipe and reinstall homebrew
+    ./pu -r homebrew -F -pv         # only brew formulas verbose
+    ./pu -aSB                       # install everything, minus
+                                    # homebrew and sprout-wrap
 
   Runner:
       Most common usage is with the -a  flag, that runs all installers.
@@ -62,6 +80,9 @@ Examples:
       Helpers are similar to installers, but they are not ordered, and are
       not included in the default install. They are meant to be used ad-hoc.
 
-      Eg, to wipe out existing PostgreSQL and re-run the installer
-      do this below. This may be necessary when installing on an existing
-      machine with an outdated or broken PostgreSQL:
+      You can add new installers and helpers by adding new files in the
+      corresponding folders with bash functions matching the name.
+
+      For example, to enable password-less sudo, use 'sudo-enable' helper:
+
+      ./pu -r sudo-enable

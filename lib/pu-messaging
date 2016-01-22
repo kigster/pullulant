@@ -88,46 +88,56 @@ function pu-print-section-header {
 }
 
 function pu-print-help {
-  printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q|-v|-p]\n"
-  printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]\n"
-  printf "       ./$(basename $0) -r homebrew [-L|-R|-F|-C|-f] [-n|-q|-v]\n"
-  printf "   Or: ./$(basename $0) [-l] [-h|-H|-x]\n\n"
+  # ar:SBLRKFCfqnvlhHxp
+  printf "Usage: ./$(basename $0) -a [-S] [-B]                          [ output ]\n"
+  printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B]    [ output ]\n"
+  printf "       ./$(basename $0) -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]\n"
+  printf "   Or: ./$(basename $0) [-l|-h|-H|-x]\n\n"
   printf "
-Where, runner is either an installer or a helper.
+Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
 
-  -a          run [a]ll installers in order
-  -r runner   run only a specified [r]unner (either helper or installer)
+Global Flags:
+Full run:
+  -a          run [a]ll installers in their order
   -S          [S]proutwrap is disabled during the install
   -B          [B]rew-upgrade is disabled
 
-Homebrew – by default all three -L, -C, -F are on, unless at least one is set
-with the flags.
-  -L          [L]ink packages configured for brew linking
-  -C          [C]asks are installed from a configured list
-  -F          [F]ormulas are installed from a configured list
+Partial run (multiple runners can be listed in quotes or multiple -r flags):
+  -r runner   run only a specified [r]unner (helper or installer)
+              eg: ./$(basename $0) -r 'zsh osx' -r home
 
+Homebrew control:
+              -C -F -L flags allow picking specific subset of the install.
+              The flags can mix. Adding all three is the same as adding none.
+
+  -L          Only [L]ink packages configured for brew linking
+  -C          Only [C]asks are installed from a configured list
+  -F          Only [F]ormulas are installed from a configured list
+
+              These apply to all brew commands:
   -R          [R]einstall each formulae during brew install
-  -K          Relin[K] all brew packages/casks during install
+  -K          Relin[K] all brew formulas/casks during install
   -f          [F]orce all brew commands with --force
 
-Output:
-  -p          su[p]press pu-print-section-header headers for more compact output
+Output control:
+  -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
-  -v          [v]erbose run show command's output, and add -v to some
+  -v          [v]erbose - show each command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.
 
-Information:
-  -l          [l]ists available runners – helpers and installers
+Help & Info:
+  -l          [l]ist available runners – helpers and installers
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
-  -X          same as -H but in plain ascii (also saves into doc/help)
+  -x          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-    ./$(basename $0) -a                          # install everything
-    ./$(basename $0) -r reinstall-postgres       # run just reinstall-postgres
-    ./$(basename $0) -rf 'brew-wipe homebrew'    # wipe and reinstall homebrew
-    ./$(basename $0) -aSB                        # install everything, minus
-                                            # homebrew and sprout-wrap
+    ./$(basename $0) -a                         # install everything
+    ./$(basename $0) -r reinstall-postgres      # run just reinstall-postgres
+    ./$(basename $0) -r brew-wipe -r homebrew   # wipe and reinstall homebrew
+    ./$(basename $0) -r homebrew -F -pv         # only brew formulas verbose
+    ./$(basename $0) -aSB                       # install everything, minus
+                                    # homebrew and sprout-wrap
 "
 }
 
@@ -147,8 +157,11 @@ function pu-print-detailed-usage {
       Helpers are similar to installers, but they are not ordered, and are
       not included in the default install. They are meant to be used ad-hoc.
 
-      Eg, to wipe out existing PostgreSQL and re-run the installer
-      do this below. This may be necessary when installing on an existing
-      machine with an outdated or broken PostgreSQL:
+      You can add new installers and helpers by adding new files in the
+      corresponding folders with bash functions matching the name.
+
+      For example, to enable password-less sudo, use 'sudo-enable' helper:
+
+      ./$(basename $0) -r sudo-enable
 "
 }
