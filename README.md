@@ -41,7 +41,7 @@ by running `./pu -r sudo-enable` or `./pu -r sudo-disable`.
   3. Run the following installer:
 
 ```bash
-curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash
+  curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash
 ```
 
 ## After a Successful Install
@@ -50,6 +50,74 @@ curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash
    Security Agent errors.
  * Open System Preferences, Security & Privacy, choose Privacy tab and
    unlock the lock at the bottom. After that choose Accessibility and then check "ShiftIt" application.
+ * Search in Spotlight, and start the following apps:
+    * iStat Menus – click install when it comes up
+    * Alfred 2
+
+## What's Installed
+
+### Languages
+
+This setup is tailored for web application development, and it's default set
+of packages is definitely biased towards ruby, installing both `rbenv` and `ruby-build`.  
+
+That said, tools such as `pyenv` are also installed, which makes installing multiple
+versions of `python` a breeze. Similarly, `npm` and `bower` are both installed by default.
+
+### Developer Necessities
+
+  * iTerm2 – mandatory replacement for Terminal :)
+  * ShiftIt – use Ctrl-Option-Cmd with arrows to quickly align windows on the screen.
+  * iStatMenus
+  * Typical services needed for building web applications:
+    * PostgreSQL 9.5
+    * nginx
+    * haproxy
+    * Redis
+    * memcached
+    * ElasticSearch
+    * AWS CLI
+    * CMake
+    * rsync
+
+### Git
+
+  * Git aliases
+  * `hub` tool for GitHub with autocompletion on zsh
+  * Git scripts for pair programming `git pair`
+  * Git global defaults used by professional developers
+  * GitX Application
+  * Github Application
+
+### Editors & OS-X Applications
+
+  * RubyMine (JetBrains ruby IDE)
+  * WebStorm (JetBrains JavaScript IDE)
+  * CLion (JetBrains C++ IDE)
+  * vim
+  * Github's Atom
+  * TeamViewer for remote pair programming
+  * Docker toolbox + Kitematic
+  * VirtualBox
+  * Slack
+  * GitX
+
+### Shells
+
+ * Bash and Bash Completion are both installed
+ * Zsh and Oh-My-Zsh are installed, and zsh is made the default (unless `-Z` flag is passed)
+
+### Programming Fonts
+
+ * Powerline Fonts for the iTerm2 are installed, so that you get a great choice of
+   coding fonts on a Mac. Powerline fonts are also required if you want to use
+   'reinvent-one' zsh prompt theme.
+
+### Google
+
+ * Chrome
+ * Drive
+ * Hangouts
 
 ## Driving the Installer
 
@@ -62,8 +130,8 @@ Variables with names starting with `var_` can be overridden before running the
 script. So can all the variables set in the `pu-packages` file, such as
 which brew formulas or casks to install.
 
-You can also copy the file `sample-config/.pullulant_packages` to your home folder, 
-and modify it there to suit your needs. This file is loaded before any packages 
+You can also copy the file `sample-config/.pullulant_packages` to your home folder,
+and modify it there to suit your needs. This file is loaded before any packages
 are defined, and overrides the packages the script itself defines.
 
 ```

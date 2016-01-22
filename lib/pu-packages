@@ -73,6 +73,7 @@ function package-config {
     iterm2
     slack
     gitx
+    github-desktop
     google-chrome
     google-drive
     google-hangouts
@@ -85,6 +86,7 @@ function package-config {
     kitematic
     java
     teamviewer
+    alfred
   "
 
     [[ -n "${brew_relink_packages}" ]] || export brew_relink_packages="
