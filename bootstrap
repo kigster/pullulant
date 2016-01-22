@@ -1,15 +1,26 @@
 #!/usr/bin/env bash
+#_______________________________________________________________________________
 #
-# (c) 2015 pullulant Inc.
-# Author: Konstantin Gredeskoul, kig@reinvent.one
-# http://reinvent.one
-
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+export txtrst='\e[0m'    # Text Reset
+export bldred='\e[1;31m' # Red
 
 readonly dir=${dir-"pullulant"}
 readonly script=${script-"./pu"}
 readonly script_flags=${script_flags-"-a"}
-readonly repo=${repo-"git@github.com:kigster/pullulant.git"}
+readonly repo=${repo-"https://github.com/kigster/pullulant"}
 readonly ws=${ws-"${HOME}/workspace"}
+
+install_status=99
+git_status=99
 
 function bootstrap {
   mkdir -p ${ws}
@@ -21,10 +32,30 @@ function bootstrap {
   if [ -d "${dir}" -a -f "${dir}/${script}" ]; then
     pushd "${dir}"
     git pull
+    git_status=$?
+    if [ $git_status -ne 0 ]; then
+      printf "\n${bldred}There was a problem with git pull.\n${txtrst}Check permissions and your git setup.\n"
+      return
+    fi
     ${script} ${script_flags} $*
+    install_status=$?
   else
-    echo "Can't find '${dir}' folder – perhaps your git isn't setup?"
+    printf "${bldred}Can't find '${dir}' folder – perhaps your git isn't setup?\n"
   fi
 }
 
 bootstrap
+
+if [ ${install_status} -ne 0 ]; then
+  printf "${bldred}Non-zero exit code from the installer, doh!\n"
+fi
+
+if [ ${git_status} -eq 0 ]; then
+  printf "${txtrst}You can now re-run or customize your install by using 'pu' directly:\n"
+  echo "  cd ${ws}/${dir} "
+  echo "  ./pu -H             # to see the usage info "
+  echo "  ./pu -r homebrew    # to install just brew & packags, etc.."
+fi
+printf "${txtrst}\n"
+
+exit $install_status
