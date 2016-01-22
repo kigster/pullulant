@@ -136,12 +136,11 @@ are defined, and overrides the packages the script itself defines.
 
 ```
 > ./pu -x
-
-___________________________________________________________________________________
+ ___________________________________________________________________________________
 |                                                                                   |
 |  Pullulant (or gently: 'pu')                                                      |
-|  Development Environment Installer v1.1.0.                                        |
-|  Git rev 6f81c41.                                                                 |
+|  Development Environment Installer v1.1.2.                                        |
+|  Git rev e1f458d.                                                                 |
 |___________________________________________________________________________________|
 
 Installers:
@@ -154,10 +153,10 @@ Helpers:
   sudo-disable, sudo-enable
 
 
-Usage: ./pu -a [-S] [-B]                          [ output ]
+Usage: ./pu -a [-S] [-B] [-Z]                     [ output ]
        ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
        ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
-  Or:  ./pu [-l|-h|-H|-x]
+   Or: ./pu [-l|-h|-H|-x]
 
 
 Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
@@ -184,6 +183,9 @@ Homebrew control:
  -R          [R]einstall each formulae during brew install
  -K          Relin[K] all brew formulas/casks during install
  -f          [F]orce all brew commands with --force
+
+Zsh
+ -Z          Do not change the default shell to Zsh (it's still installed)
 
 Output control:
  -p          su[p]press pretty section headers for more compact output
@@ -225,6 +227,7 @@ Examples:
      For example, to enable password-less sudo, use 'sudo-enable' helper:
 
      ./pu -r sudo-enable
+
 ```
 
 ## Acknowledgements
