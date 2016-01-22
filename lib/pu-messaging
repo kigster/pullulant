@@ -6,36 +6,54 @@ function sep {
   printf "____________________________________________________________________________________\n" $1
 }
 
-function indented_list {
+function pu-indent-list {
   local list="$1"
   local width="$2"
   local indent="$3"
   echo "$list" | fold -sw $width | sed -E "s/ /, /g; s/(^|$)/${indent}/g; "
 }
 
-function tool_revision {
+function pu-git-revision {
   git log --pretty=oneline --abbrev-commit | head -1 | awk '{print $1}'
 }
-function tool_info {
+function pu-long-header {
   printf " ___________________________________________________________________________________\n"
   printf "|                                                                                   |\n"
   printf "|  ${txtgrn}Pullulant (or gently: 'pu')                                       ${txtrst}🌹  🌻  🍄  🦀  🎃  |\n"
   printf "|  ${txtylw}Development Environment Installer v${bldblu}$(cat VERSION).${txtwht}                                        |\n"
-  printf "|  Git rev ${txtgrn}$(tool_revision).${txtwht}                                                                 |\n"
+  printf "|  Git rev ${txtgrn}$(pu-git-revision).${txtwht}                                                                 |\n"
   printf "|___________________________________________________________________________________|\n"
-  installer_info
+  pu-installers-helpers
 }
 
-function tool_info_short {
-  printf "${bldwht}"
-  printf "_________________________________________________\n"
-  printf "${bldgrn}Pullulant (aka 'pu'),  ${bldwht}Version $(cat VERSION), Ref $(tool_revision)\n"
-  printf -- "${txtrst}Started as '$0 $args'\n"
+function pu-short-header {
+  printf "${bldwht}\n"
+  printf "${bldylw}Pullulant (aka 'pu'),  ${bldwht}Version $(cat VERSION), Ref $(pu-git-revision)\n\n"
+  local runner_list=$(pu-indent-list "$runners"    70 '')
+  printf "Run List: ${bldylw}${runner_list}${bldwht}\n"
+  printf "Enabled Options: ${bldylw}"
+  printf "${txtrst}"
+  count=0
+  for option in ${pu_options}; do
+    option_value=$(pu_option_value $option)
+    if [ -z "${option_value/ /}" ]; then
+      continue
+    else
+      [[ $count -gt 0 ]] && printf ", "
+      if [ "$option_value" == "yes" ]; then
+        printf "${bldgrn}%s" ${option/opts_/}
+      else
+        printf "${bldgrn}%s=${bldylw}%s" ${option/opts_/} ${option_value}
+      fi
+    fi
+    count=$(($count + 1))
+  done
+  printf "\n"
 }
 
-function installer_info {
-  local installer_list=$(indented_list "$installers" 70 '   ')
-  local helper_list=$(indented_list "$helpers"    70 '   ')
+function pu-installers-helpers {
+  local installer_list=$(pu-indent-list "$installers" 70 '   ')
+  local helper_list=$(pu-indent-list "$helpers"    70 '   ')
 
   printf "                                                                                    \n"
   printf "Installers:\n"
@@ -45,35 +63,34 @@ function installer_info {
   printf "${txtylw}%-68s ${txtrst}\n" "$helper_list"
   printf "                                                                                    \n"
 
-  runner_info
+  pu-list-current-runners
 }
 
-function runner_info {
+function pu-list-current-runners {
   linebreak="\n"
-  [[ "$1" == "one_line" ]] && linebreak=""
-  local run_list=$(indented_list "$runners"    70 '   ')
+  local run_list=$(pu-indent-list "$runners"    70 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "Run List:${linebreak}"
+    printf "Run List:\n"
     printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
   fi
 }
 
-function greet {
-  tool_info
+function pu-welcome-screen-short {
+  pu-long-header
   printf "\n${txtrst}"
 }
 
-function section {
+function pu-print-section-header {
   [[ -n "${opts_suppress_headers}" ]] && return
 
   printf "${bldblu}                             ___________________________\n"
   printf "${bldblu}____________________________|${bldwht}${bakblu} %12s %-12s ${txtrst}|____________________________${txtrst}\n\n" "installing" $1
 }
 
-function help {
+function pu-print-help {
   printf "Usage: ./$(basename $0) -a [-S] [-B] [-n|-q|-v|-p]\n"
   printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B] [-n|-q|-v]\n"
-  printf "       ./$(basename $0) -r homebrew [-L] [-R] [-n|-q|-v]\n"
+  printf "       ./$(basename $0) -r homebrew [-L|-R|-F|-C|-f] [-n|-q|-v]\n"
   printf "   Or: ./$(basename $0) [-l] [-h|-H|-x]\n\n"
   printf "
 Where, runner is either an installer or a helper.
@@ -83,14 +100,23 @@ Where, runner is either an installer or a helper.
   -S          [S]proutwrap is disabled during the install
   -B          [B]rew-upgrade is disabled
 
-  -L          [L]ink or relink each brew of formulas with --force
-  -R          [R]einstall each brew formula with --force
+Homebrew – by default all three -L, -C, -F are on, unless at least one is set
+with the flags.
+  -L          [L]ink packages configured for brew linking
+  -C          [C]asks are installed from a configured list
+  -F          [F]ormulas are installed from a configured list
 
-  -p          su[p]press section headers for more compact output
+  -R          [R]einstall each formulae during brew install
+  -K          Relin[K] all brew packages/casks during install
+  -f          [F]orce all brew commands with --force
+
+Output:
+  -p          su[p]press pu-print-section-header headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose run show command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.
 
+Information:
   -l          [l]ists available runners – helpers and installers
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
@@ -105,7 +131,7 @@ Examples:
 "
 }
 
-function details {
+function pu-print-detailed-usage {
   printf "
   Runner:
       Most common usage is with the ${bldlw}-a ${txtrst} flag, that runs all installers.

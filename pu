@@ -14,6 +14,7 @@ function load_module {
 
 function init {
   load_module "ls -1 lib/*" "."
+  source "lib/pu.bash"
 
   load_module "ls -1 $helpers_dir" $helpers_dir
   export helpers=${submodules}

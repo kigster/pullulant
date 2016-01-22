@@ -3,7 +3,7 @@
 function package-config {
 
   # List of Brew Formulas to install and link
-  export brew_packages="
+    [[ -n "${brew_packages}" ]] || export brew_packages="
     rbenv
     ruby-build
     watch
@@ -31,6 +31,7 @@ function package-config {
     hub
     ack
     haproxy
+    elasticsearch
     qt
     the_silver_searcher
     imagemagick
@@ -46,30 +47,33 @@ function package-config {
     aws-mon
     jq
     cmake
-    Caskroom/cask/clion
-    Caskroom/cask/webstorm
-    Caskroom/cask/rubymine
-    Caskroom/cask/shiftit
-    Caskroom/cask/istat-menus
-    Caskroom/cask/iterm2
-    Caskroom/cask/slack
-    Caskroom/cask/gitx
-    Caskroom/cask/google-chrome
-    Caskroom/cask/google-drive
-    Caskroom/cask/google-hangouts
-    Caskroom/cask/atom
-    Caskroom/cask/virtualbox
-    Caskroom/cask/slack
-    Caskroom/cask/dockertoolbox
-    Caskroom/cask/docker
-    Caskroom/cask/docker-compose
-    Caskroom/cask/docker-swarm
-    Caskroom/cask/kitematic
-    Caskroom/cask/java
-    Caskroom/cask/teamviewer
+    tmux
   "
 
-  export brew_relink_packages="
+    [[ -n "${brew_casks}" ]] || export brew_casks="
+    clion
+    webstorm
+    rubymine
+    shiftit
+    istat-menus
+    iterm2
+    slack
+    gitx
+    google-chrome
+    google-drive
+    google-hangouts
+    atom
+    virtualbox
+    slack
+    dockertoolbox
+    docker
+    docker-compose
+    kitematic
+    java
+    teamviewer
+  "
+
+    [[ -n "${brew_relink_packages}" ]] || export brew_relink_packages="
     libxml2
     libxslt
     libiconv
@@ -77,19 +81,20 @@ function package-config {
     zlib
     openssl
   "
+
   # these hosts will be added to /etc/hosts as 127.0.0.1
   export local_hosts="
   "
 
   # these nodejs modules will be install using npm
-  export nodejs_modules="
+  [[ -n "${nodejs_modules}" ]] || export nodejs_modules="
     bower
     ember-cli
   "
 
   # This is the ruby version that will be installed using rbenv
   # the first one is the default
-  rbenv_ruby_versions=("2.3.0" "2.2.3")
+  [[ -n "${rbenv_ruby_versions[@]}" ]] ||rbenv_ruby_versions=("2.3.0" "2.2.3")
 }
 
 package-config

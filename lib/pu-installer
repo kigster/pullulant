@@ -3,7 +3,7 @@
 
 function on_start {
   run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
-  [[ "$sudoers_enabled" ]] && section "sudo-enable" && sudo-enable
+  [[ "$sudoers_enabled" ]] && pu-print-section-header "sudo-enable" && sudo-enable
 }
 
 function on_exit {
@@ -82,7 +82,6 @@ function check_exit {
   printf "${txtblu}"
 
   if [ -n "${cmd_prints}" ]; then
-    # command is printf or echo
     eval "$cmd 2>${const_cmd_stderr}"
   elif [ -n "${cmd_verbose}" -a -z "${cmd_quiet}" ]; then
     eval "$cmd 2>${const_cmd_stderr}"
