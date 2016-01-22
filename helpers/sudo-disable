@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
 
 sudo-disable() {
   [[ -n "${sudoers_enabled}" && -z "${skip_sudo_disable}" ]] && run "sudo rm -f /private/etc/sudoers.d/${USER}"

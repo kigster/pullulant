@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
 
 function dkenv {
   if [ ! -z "$(which docker-machine)" ]; then
@@ -23,7 +33,7 @@ export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export WS=$HOME/workspace
 export PGUSER=postgres
 
-if [ ! -z "$(which atom)" ]; then
+if [ -n "$(which atom)" ]; then
   export EDITOR=atom
 else
   export EDITOR=vim

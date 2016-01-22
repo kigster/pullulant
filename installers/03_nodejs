@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
-
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
 function install_if_not_installed {
   # http://stackoverflow.com/questions/10972176/find-the-version-of-an-installed-npm-package
   package=$1

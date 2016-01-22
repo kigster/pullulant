@@ -1,4 +1,11 @@
 # README
+# ____________________________________________________________
+#
+# BASED ON BULLET-TRAIN zsh theme:
+# https://github.com/caiogondim/bullet-train-oh-my-zsh-theme
+# Customized by Konstantin Gredeskoul for project Pu:
+# https://github.com/kigster/pullulant/
+# ____________________________________________________________
 #
 # In order for this theme to render correctly, you will need a
 # [Powerline-patched font](https://github.com/Lokaltog/powerline-fonts).

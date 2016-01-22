@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
-# This is a minimal home brew install in order to get a recent working ruby
-# so that we can run sprout-wrap that contains the rest of the install.
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+# This is a brew installer meant to replace the complicated sprout-homebrew cookbooks.
+#
 
 function homebrew {
   brew=`which brew 2>/dev/null`

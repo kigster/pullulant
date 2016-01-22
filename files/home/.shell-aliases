@@ -1,3 +1,14 @@
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+
 umask 027
 
 alias 'gst'='git status'

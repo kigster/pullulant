@@ -159,7 +159,14 @@ Examples:
      ./pu -r sudo-enable
 ```
 
-## Author
+## Acknowledgements
 
 &copy; 2015-2016 Konstantin Gredeskoul, portions of the code were developed under
-sponsorship by [Shippo, Inc.](http://goshippo.com) and used with permission.
+the generous sponsorship of [Shippo, Inc.](http://goshippo.com) and are used
+with permission.
+
+The following people assisted in building this tool:
+
+ * Wissam Jarjoui
+ * Subhi Beidas
+ * Dennis Rohm

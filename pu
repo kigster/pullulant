@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
+#_______________________________________________________________________________
 #
-# (c) 2015-2016 pullulant Inc.
-# Author: Konstantin Gredeskoul, kig@reinvent.one
-# http://reinvent.one
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+# Portions of this code were developed with sponsorship from GoShippo.com
+#
+# MIT License
+#_______________________________________________________________________________
 #
 
 function load_module {

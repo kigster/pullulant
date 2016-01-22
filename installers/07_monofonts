@@ -1,5 +1,15 @@
-#!/usr/bin/bash
-
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
 function monofonts {
   run "pushd ~/workspace"
   if [ ! -d "powerline-fonts" ]; then

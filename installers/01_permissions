@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
 
 permissions() {
   run "xcode-select --install 2>/dev/null; true"

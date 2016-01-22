@@ -1,4 +1,22 @@
 #!/usr/bin/env zsh
+# README:
+# This file should be sourced into your zsh environment. It works with
+# oh-my-zsh and creates an alias to select a specific or a random prompt:
+#
+# Usage:
+#     ppp               # set random prompt
+#     ppp 12            # set prompt theme to #12 in the list
+#     ppp reinvent-one  # set prompt theme to "reinvent-one"
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+
 [[ -s ${HOME}/.bash_colors ]] && source ${HOME}/.bash_colors
 theme-to-path() {
   [[ -n "${1}" ]] && echo -n "${HOME}/.oh-my-zsh/themes/${1}.zsh-theme"

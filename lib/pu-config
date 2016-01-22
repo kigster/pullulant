@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
 function package-config {
   # Script-level Constants
   export var_pullulant_symbol_ok=${var_pullulant_symbol_ok-" ✅ "}
