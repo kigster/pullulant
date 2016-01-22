@@ -14,8 +14,9 @@ function on_exit {
 }
 
 function finish {
+  exit_status=${1-0}
   on_exit && success
-  exit $*
+  exit ${exit_status}
 }
 function success {
   printf "${txtblk}"
