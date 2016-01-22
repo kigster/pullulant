@@ -22,7 +22,7 @@ function zsh {
 
   rc=${HOME}/.zshrc
 
-  [[ -n "$(echo $SHELL | grep zsh)" ]]               || run "chsh -s $(which zsh)"
+  [[ -z "$(echo $SHELL | grep zsh)" && -z "${opts_dont_change_shell}" ]] && run "chsh -s $(which zsh)"
   [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
   [[ -n "$(grep shell-aliases $rc)" ]]               || echo "source ~/.shell-aliases" >> $rc
 }

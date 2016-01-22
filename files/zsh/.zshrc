@@ -89,6 +89,7 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
-# load user's theme if exists
+# load user's custom zsh file
+
 export NOKOGIRI_USE_SYSTEM_LIBRARIES=1s
-[[ -s "${HOME}/.${USER}.zsh-theme" ]] && source "${HOME}/.${USER}.zsh-theme"
+[[ -s "${HOME}/.zsh-${USER}" ]] && source "${HOME}/.zsh-${USER}"

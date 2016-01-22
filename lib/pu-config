@@ -53,6 +53,7 @@ function package-config {
     opts_brew_casks_only
     opts_brew_link_only
     opts_brew_force
+    opts_dont_change_shell
   "
 
   for option in ${pu_options}; do

@@ -99,7 +99,7 @@ function pu-print-section-header {
 
 function pu-print-help {
   # ar:SBLRKFCfqnvlhHxp
-  printf "Usage: ./$(basename $0) -a [-S] [-B]                          [ output ]\n"
+  printf "Usage: ./$(basename $0) -a [-S] [-B] [-Z]                     [ output ]\n"
   printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B]    [ output ]\n"
   printf "       ./$(basename $0) -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]\n"
   printf "   Or: ./$(basename $0) [-l|-h|-H|-x]\n\n"
@@ -128,6 +128,9 @@ Homebrew control:
   -R          [R]einstall each formulae during brew install
   -K          Relin[K] all brew formulas/casks during install
   -f          [F]orce all brew commands with --force
+
+Zsh
+  -Z          Do not change the default shell to Zsh (it's still installed)
 
 Output control:
   -p          su[p]press pretty section headers for more compact output

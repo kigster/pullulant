@@ -74,7 +74,7 @@ function main {
 #______________________________________________________________________________
 #
 
-while getopts "ar:SBLRKFCfqnvlhHxp" opt; do
+while getopts "ar:SBLRKFCfqnvlhHxpZ" opt; do
   case $opt in
     a)
         export runners=${installers}          ;;
@@ -108,6 +108,11 @@ while getopts "ar:SBLRKFCfqnvlhHxp" opt; do
         export opts_brew_force_link=yes       ;;
     f)
         export opts_brew_force=" --force "    ;;
+
+    #========================= Other          =======================
+
+    Z)
+        export opts_dont_change_shell=yes     ;;
 
     #========================= Output Control =======================
     p)
