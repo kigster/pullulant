@@ -13,9 +13,10 @@ function postgres-stop {
   while [ -n "$(postgres-master-pid)" -a $attempt -lt 2 ]; do
     run "echo 'Detected that PostgreSQL is still running'"
     pid=$(postgres-master-pid)
-    run "echo 'kill -9 $pid'"
+    [[ $attempt -eq 0 ]] && run "sudo pkill postgres"
+    [[ $attempt -eq 1 ]] && run "sudo pkill -9 postgres"
     attempt=$(($attempt + 1))
-    run "printf 'Waiting for postgres to stop...'"
+    run "echo 'Waiting for postgres to stop...'"
     run "sleep 1"
   done
   [[ -z "$(postgres-master-pid)" ]] && run "printf '${bldgrn}Success. ${bldwht}PostgreSQL is not running\n'"

@@ -9,12 +9,13 @@ function postgres-master-pid {
 }
 
 function postgres-install {
+  run "brew install ${opts_verbose} postgres ${opts_brew_force}"
+
   [[ -z "$(postgres-master-pid)" ]] || {
-    run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is running, can't install. Run 'postgres-wipe''"
-    return
+    run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is running, skipping\nRun \"postgres-wipe\" to reinstall.'\n"
+    return 0
   }
 
-  run "brew install ${opts_verbose} postgres --force"
   run "sudo chown ${USER} /usr/local/var"
   if [ -d "/usr/local/var/postgres" ]; then
     backup="/usr/local/var/postgres.backup.$$"
