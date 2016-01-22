@@ -22,6 +22,8 @@ alias l='ls -alF'
 alias ds='du -k  | grep -v "\/.*\/"'
 alias diskspace="du -k | grep -v './.*\/'"
 alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"
+alias be="bundle exec"
+alias ber="bundle exec rake"
 
 function py {
   [[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"
@@ -29,6 +31,3 @@ function py {
 function rb {
   [[ -z "$(which rbenv)" ]] || eval "$(rbenv init -)"
 }
-
-py
-rb
