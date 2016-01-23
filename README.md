@@ -1,11 +1,16 @@
 # Pullulant Development Environment on Mac OS-X
 
-This document describes a set of quick steps to run a fully automated setup of the development
-environment needed to work with javascript/node/ruby/python/etc applications on on Mac OS-X.
+## Why?
 
-It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Run it :)
+This is a project that is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too brittle seemingly, especially lately around HomeBrew, and kind of difficult to fix: for each sprout-something cookbook you must fork it first, fix the problem, then fork sprout-wrap, point to your fixed version in the Cheffile, then run it your forked version, and also maintain it until Pivotal merges your changes. Just not really that awesome of a process. 
 
-Behind the scenes it also uses [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap). This is why this project is called
+With this installer everything is right at your fingertips: you can fix it instantly. 
+
+The project essentially combines a bunch of steps that I do to run a fully automated (even unattended) setup of the development environment for projects involving building javascript, nodejs, ruby, python, C/C++, or even Arduino applications on on Mac OS-X. This installer condenses a ton of personal experience and taste, merges it with that of Pivotal Labs, and gives you an easy to use modular installer that can run the entire thing at once, or or one thing at a time.
+
+It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Try it! :)
+
+Behind the scenes it also uses . This is why this project is called
 "Pullulant" – it is Latin for "Sprout".
 
 ## Pre-Install – OS-X Preparation
