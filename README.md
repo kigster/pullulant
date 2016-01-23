@@ -12,7 +12,7 @@ It uses `brew`, and many automated tasks that are customizing your environment t
 
 Check out the script usage and the sexy prompt you might get after running it!
 
-![[Pu Usage](doc/pu.png)
+![Pu Usage](doc/pu.png)
 
 ## What's that name?
 
