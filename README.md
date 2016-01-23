@@ -1,16 +1,18 @@
-# Pullulant Development Environment on Mac OS-X
+# Pullulant 
 
-## Why?
+# Bootstrap Your Development Environment on Mac OS-X
 
-This is a project that is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too brittle seemingly, especially lately around HomeBrew, and kind of difficult to fix: for each sprout-something cookbook you must fork it first, fix the problem, then fork sprout-wrap, point to your fixed version in the Cheffile, then run it your forked version, and also maintain it until Pivotal merges your changes. Just not really that awesome of a process. 
+## WTF?
 
-With this installer everything is right at your fingertips: you can fix it instantly. 
+The project essentially combines nearly hundred small steps into modular pieces that run one after anoterh. This is what you need to do – `curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash` in order to kick off a fully automated (even unattended) setup of the development environment for projects involving building javascript, nodejs, ruby, python, C/C++, or even Arduino applications on on Mac OS-X. This installer condenses a ton of personal experience and taste and merges it with that of Pivotal Labs. It's design  gives you an easy way to use modules that can be run all at once, or one at a time.
 
-The project essentially combines a bunch of steps that I do to run a fully automated (even unattended) setup of the development environment for projects involving building javascript, nodejs, ruby, python, C/C++, or even Arduino applications on on Mac OS-X. This installer condenses a ton of personal experience and taste, merges it with that of Pivotal Labs, and gives you an easy to use modular installer that can run the entire thing at once, or or one thing at a time.
+With this installer everything is right at your fingertips: you can change things, or fix any issues instantly and easily.
 
-It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Try it! :)
+This project is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too brittle seemingly, especially lately around HomeBrew, and kind of difficult to fix (see appendix 1). 
 
-Check out the script usage and the sexy prompt you might get after running it!
+Installer relies on [HomeBrew](http://brew.sh/), [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap), and about 2K lines of bash scripting to deliver your shell goodies to the door, all while customizing your environment to look like and serve you, the oh-mightly-powerful Developer, with all of it's shine. Try it! :)
+
+I mean – just check out the sexy prompt you might get after running it (as well as the usage flags LOL).
 
 ![Pu Usage](doc/pu.png)
 
@@ -251,3 +253,7 @@ The following people assisted in building this tool:
  * Wissam Jarjoui
  * Subhi Beidas
  * Dennis Rohm
+
+## Appendix
+
+ 1. SproutWrap is difficult to fix when it breaks. For each sprout-something cookbook you must fork it first, fix the problem, then fork sprout-wrap, point to your fixed version in the Cheffile, then run it your forked version, and also maintain it until Pivotal merges your changes. Just not really that awesome of a process. 
