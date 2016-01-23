@@ -1,5 +1,4 @@
 # Pullulant 
-
 # Bootstrap Dev Environment on Mac OS-X
 
 ## WTF?
