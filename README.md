@@ -1,6 +1,6 @@
 # Pullulant 
 
-# Bootstrap Your Development Environment on Mac OS-X
+# Bootstrap Dev Environment on Mac OS-X
 
 ## WTF?
 
