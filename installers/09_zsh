@@ -14,17 +14,22 @@ function zsh {
 
   #run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
 
+  run "chmod -R 750 /usr/local/share/zsh"
+
+  rsync_opts=""
+
+  [[ -n "${opts_force}" ]] && run "rm -rf ${HOME}/.oh-my-zsh ${HOME}/.zsh* ${HOME}/.zcomp*"
+
   oh-my-zsh-installer
 
-  run "rsync -a --ignore-existing ${zsh_rsync_home_dir}.zshrc ${HOME}/"
-  run "rsync -a --ignore-existing ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
-  run "rsync -a --ignore-existing ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
+  [[ -z "$(echo $SHELL | grep zsh)" && -z "${opts_dont_change_shell}" ]] && run "chsh -s /usr/local/bin/zsh"
+
+  run "rsync -a ${zsh_rsync_home_dir}.zshrc ${HOME}/"
+  run "rsync -a ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
+  run "rsync -a ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
 
   rc=${HOME}/.zshrc
-
-  [[ -z "$(echo $SHELL | grep zsh)" && -z "${opts_dont_change_shell}" ]] && run "chsh -s $(which zsh)"
   [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
-  [[ -n "$(grep shell-aliases $rc)" ]]               || echo "source ~/.shell-aliases" >> $rc
 }
 
 function oh-my-zsh-installer {

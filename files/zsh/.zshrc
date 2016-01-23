@@ -1,11 +1,5 @@
 # Path to your oh-my-zsh installation.
-  export ZSH=/Users/${USER}/.oh-my-zsh
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="suvash"
+export ZSH=/Users/${USER}/.oh-my-zsh
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -45,12 +39,35 @@ COMPLETION_WAITING_DOTS="true"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+#
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(rbenv ruby rails brew bundler rake gem encode64 git github jsontools npm bower web-search wd heroku)
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+
+ZSH_THEME="xiong-chiamiov-plus"
+
+plugins=(git rbenv brew bundler gem encode64 github jsontools npm bower web-search wd heroku)
 
 source ${HOME}/.select-prompt
 
@@ -74,22 +91,9 @@ else
   fi
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-#
 # load user's custom zsh file
 
 export NOKOGIRI_USE_SYSTEM_LIBRARIES=1s
-[[ -s "${HOME}/.zsh-${USER}" ]] && source "${HOME}/.zsh-${USER}"
+
+[[ -s "${HOME}/.shell-aliases" ]] && source "${HOME}/.shell-aliases"
+[[ -s "${HOME}/.zsh-${USER}" ]]   && source "${HOME}/.zsh-${USER}"

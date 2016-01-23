@@ -65,32 +65,32 @@ function homebrew {
 
 function brew_relink {
   pkg=${1}
-  run "brew unlink    ${opts_verbose} $pkg ${opts_brew_force}"
-  run "brew link      ${opts_verbose} $pkg ${opts_brew_force}"
+  run "brew unlink    ${opts_verbose} $pkg ${opts_force}"
+  run "brew link      ${opts_verbose} $pkg ${opts_force}"
 }
 
 function brew_cask_install {
   package=$1
   [[ -d "${var_brew_cask_appdir}/${package}" ]] || {
-    run "brew cask install ${package} ${opts_brew_force} --appdir=${var_brew_cask_appdir}"
+    run "brew cask install ${package} ${opts_force} --appdir=${var_brew_cask_appdir}"
   }
 }
 
 function brew_install {
   package=$1
   if [ ! -z "${opts_brew_reinstall}" ]; then
-    run "brew uninstall ${opts_verbose} $package ${opts_brew_force}" "true"
-    run "brew unlink    ${opts_verbose} $package ${opts_brew_force}" "true"
-    run "brew install   ${opts_verbose} $package ${opts_brew_force} 2>&1 #show-stdout" "true"
-    run "brew link      ${opts_verbose} $package ${opts_brew_force} 2>&1  #show-stdout" "true"
+    run "brew uninstall ${opts_verbose} $package ${opts_force}" "true"
+    run "brew unlink    ${opts_verbose} $package ${opts_force}" "true"
+    run "brew install   ${opts_verbose} $package ${opts_force} 2>&1 #show-stdout" "true"
+    run "brew link      ${opts_verbose} $package ${opts_force} 2>&1  #show-stdout" "true"
   else
     cmd=$(brew list $package 2>/dev/null)
     result=$?
     if [ "$result" -ne 0 ]; then
-      run "brew install   ${opts_verbose} $package ${opts_brew_force}"
+      run "brew install   ${opts_verbose} $package ${opts_force}"
     else
-      run "brew upgrade   ${opts_verbose} $package ${opts_brew_force}" "true"
+      run "brew upgrade   ${opts_verbose} $package ${opts_force}" "true"
     fi
-    [[ -z "${opts_brew_force_link}" ]] || brew_relink ${package}
+    [[ -z "${opts_brew_link_force}" ]] || brew_relink ${package}
   fi
 }

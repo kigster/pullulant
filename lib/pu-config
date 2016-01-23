@@ -44,15 +44,15 @@ function package-config {
     opts_runners
     opts_verbose
     opts_dryrun
-    opts_skip_brew_upgrade
-    opts_skip_sprout_wrap
+    opts_force
     opts_suppress_headers
+    opts_skip_sprout_wrap
+    opts_skip_brew_upgrade
     opts_brew_reinstall
-    opts_brew_force_link
+    opts_brew_link_force
     opts_brew_formulae_only
     opts_brew_casks_only
     opts_brew_link_only
-    opts_brew_force
     opts_dont_change_shell
   "
 

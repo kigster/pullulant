@@ -19,7 +19,7 @@ function postgres-master-pid {
 }
 
 function postgres-install {
-  run "brew install ${opts_verbose} postgres ${opts_brew_force}"
+  run "brew install ${opts_verbose} postgres ${opts_force}"
 
   [[ -z "$(postgres-master-pid)" ]] || {
     run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is running, skipping\nRun \"postgres-wipe\" to reinstall.'\n"

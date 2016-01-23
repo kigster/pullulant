@@ -93,6 +93,8 @@ while getopts "ar:SBLRKFCfqnvlhHxpZ" opt; do
         export opts_skip_sprout_wrap=yes      ;;
     B)
         export opts_skip_brew_upgrade=yes     ;;
+    f)
+        export opts_force=" --force "         ;;
 
     #========================= Home Brew ============================
 
@@ -105,9 +107,7 @@ while getopts "ar:SBLRKFCfqnvlhHxpZ" opt; do
     R)
         export opts_brew_reinstall=yes        ;;
     K)
-        export opts_brew_force_link=yes       ;;
-    f)
-        export opts_brew_force=" --force "    ;;
+        export opts_brew_link_force=yes       ;;
 
     #========================= Other          =======================
 
