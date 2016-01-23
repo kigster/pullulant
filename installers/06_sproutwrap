@@ -30,6 +30,7 @@ function run_soloist {
   export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
   run 'eval "$(rbenv init -)"' "ignore_error"
   eval "$(rbenv init -)"
+  [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
   run "bundle              # show-stdout"
   run "bundle exec soloist # show-stdout"
   export status=$?

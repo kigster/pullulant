@@ -109,8 +109,9 @@ function package-config {
   "
 
   # This is the ruby version that will be installed using rbenv
-  # the first one is the default
-  [[ -n "${rbenv_ruby_versions[@]}" ]] ||rbenv_ruby_versions=("2.3.0" "2.2.3")
+  # the first one in the list will be set as the default. At least one
+  # is required to keep going with SproutWrap.
+  [[ -n "${rbenv_ruby_versions[@]}" ]] ||rbenv_ruby_versions=("2.2.3" "2.3.0")
 }
 
 package-config
