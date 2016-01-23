@@ -10,8 +10,13 @@ The project essentially combines a bunch of steps that I do to run a fully autom
 
 It uses `brew`, and many automated tasks that are customizing your environment to look and do what real pros need for their development :) Ok, that's a joke, but seriosly, this has a lot of goodies. Try it! :)
 
-Behind the scenes it also uses . This is why this project is called
-"Pullulant" – it is Latin for "Sprout".
+Check out the script usage and the sexy prompt you might get after running it!
+
+![[Pu Usage](doc/pu.png)
+
+## What's that name?
+
+"Pullulant" – it is Latin for "Sprout". [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) is a large chunk of this install, so the names gives credit where credit is due.
 
 ## Pre-Install – OS-X Preparation
 
