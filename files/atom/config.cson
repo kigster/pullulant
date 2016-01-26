@@ -1,0 +1,18 @@
+"*":
+  core:
+    themes: [
+      "native-ui"
+      "an-old-hope-syntax"
+    ]
+  editor:
+    invisibles: {}
+    showIndentGuide: true
+    showInvisibles: true
+  "exception-reporting":
+    userId: "ea855b00-5a85-5c2f-8f19-6c1ab68a4909"
+  "linter-checkbashisms": {}
+  minimap: {}
+  "tool-bar":
+    position: "Left"
+  welcome:
+    showOnStartup: false
