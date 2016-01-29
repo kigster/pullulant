@@ -23,6 +23,7 @@ function package-config {
   readonly export const_cmd_stderr=/tmp/pullulant.stderr.$$.$const_timestamp
   # const_owned_folder_list to chmod
   readonly export const_owned_folder_list="/usr/local /var/chef /opt /Library/Caches/Homebrew"
+  readonly export postgresql_dir="/usr/local/var/postgres"
 
   # Path that includes rbenv and pyenv
   export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"

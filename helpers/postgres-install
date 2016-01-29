@@ -36,3 +36,9 @@ function postgres-install {
 
   postgres-start
 }
+
+# http://stackoverflow.com/questions/25970132/pg-tblspc-missing-after-installation-of-latest-version-of-os-x-yosemite-or-el
+function postgres-permissions {
+  run "mkdir -p ${postgresql_dir}/{pg_tblspc,pg_twophase,pg_stat,pg_stat_tmp,pg_replslot,pg_snapshots,pg_commit_ts,pg_logical/mappings,pg_logical/snapshots}"
+  run "chmod -R 700 ${postgresql_dir}"
+}
