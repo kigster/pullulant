@@ -24,4 +24,5 @@ permissions() {
     run "sudo chown -R ${USER}:${my_group} ${dir}"
     run "sudo chmod -R u=xwr,g=wrx,o= ${dir}"
   done
+  postgres-permissions
 }
