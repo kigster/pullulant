@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #_______________________________________________________________________________
 #
 # (c) 2016 Konstantin Gredeskoul
@@ -41,29 +42,4 @@ function py {
 }
 function rb {
   [[ -z "$(which rbenv)" ]] || eval "$(rbenv init -)"
-}
-function load {
-  cd ~/Library/LaunchAgents
-  launchctl load -w *$1*
-  cd -
-}
-function unload {
-  cd ~/Library/LaunchAgents
-  launchctl unload -w *$1*
-  cd -
-}
-function loaded {
-  printf "\n"
-  shift
-  while test ${#} -gt 0
-  do
-    running $1
-    shift
-  done
-}
-function running {
-  pattern=$1
-  out=$(ps -ef | egrep "${pattern}" | grep -v grep | wc -l)
-  [[ $out -eq 0 ]] && printf "${bldwht}%14s is ${bldred}stopped${txtrst}\n" $pattern
-  [[ $out -ne 0 ]] && printf "${bldwht}%14s is ${bldgrn}running ($(echo $out | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
 }

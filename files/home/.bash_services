@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+
+function load {
+  cd ~/Library/LaunchAgents
+  launchctl load -w *$1*
+  cd -
+}
+function unload {
+  cd ~/Library/LaunchAgents
+  launchctl unload -w *$1*
+  cd -
+}
+function reload {
+  unload $1
+  load $1
+}
+function loaded {
+  printf "\n"
+  while test ${#} -gt 0
+  do
+    running $1
+    shift
+  done
+}
+function running {
+  pattern=$1
+  [[ -n "${ZSH_VERSION}" ]] && setopt null_glob
+  definitions=$(find ~/Library/LaunchAgents -name '*.plist' | grep ${pattern} | wc -l)
+  processes=$(ps -ef | egrep "${pattern}" | grep -v grep | wc -l)
+  if [ $definitions -gt 0 ]; then
+    [[ $processes -eq 0 ]] && printf "${bldwht}%14s is ${bldred}stopped${txtrst}\n" $pattern
+    [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldgrn}running ($(echo $out | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
+  else
+    [[ $processes -eq 0 ]] && printf "${bldwht}%14s is ${bldylw}undefined${txtrst}\n" $pattern
+    [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldylw}running, but undefined ($(echo $out | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
+  fi
+}
+function services {
+  loaded nginx haproxy postgres redis memcached elastic solr mysql
+}
+
+function services_intro {
+  [[ -s ~/.bash_color ]] && source ~/.bash_color
+
+  printf "${bldblu}\n"
+  printf "System Helpers:${bldgrn}\n"
+  printf "   ${bldgrn}load ${txtrst}| ${bldred}unload${txtrst} <service>    ${bldwht}[un]load service from ~/Library/LaunchAgents\n"
+  printf "   ${bldgrn}reload ${txtrst}<service>           ${bldwht}reload service\n"
+  printf "   ${bldgrn}running ${txtrst}<service>          ${bldwht}check if a service is running\n"
+  printf "   ${bldgrn}services${txtrst}                   ${bldwht}list common web services with their status\n\n"
+  printf "Service Status:\n"
+  services
+}
