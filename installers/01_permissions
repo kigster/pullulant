@@ -25,4 +25,5 @@ permissions() {
     run "sudo chmod -R u=xwr,g=wrx,o= ${dir}"
   done
   postgres-permissions
+  zsh-permissions
 }

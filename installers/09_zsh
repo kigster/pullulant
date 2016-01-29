@@ -11,15 +11,13 @@
 #_______________________________________________________________________________
 #
 function zsh {
-
-  #run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
-
-  run "chmod -R 750 /usr/local/share/zsh"
+  zsh-permissions
 
   rsync_opts=""
 
   [[ -n "${opts_force}" ]] && run "rm -rf ${HOME}/.oh-my-zsh ${HOME}/.zsh* ${HOME}/.zcomp*"
 
+  #run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
   oh-my-zsh-installer
 
   [[ -z "$(echo $SHELL | grep zsh)" && -z "${opts_dont_change_shell}" ]] && run "chsh -s /usr/local/bin/zsh"
@@ -42,4 +40,9 @@ function oh-my-zsh-installer {
   else
     run "env git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $ZSH"
   fi
+}
+
+function zsh-permissions {
+  run "chmod -R 750 /usr/local/share/zsh"
+  run "chmod -R 750 /usr/local/Cellar/zsh"
 }
