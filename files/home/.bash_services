@@ -11,14 +11,18 @@
 #_______________________________________________________________________________
 
 function load {
-  cd ~/Library/LaunchAgents
+  cd ~/Library/LaunchAgents >/dev/null
   launchctl load -w *$1*
-  cd -
+  cd - >/dev/null
+  echo
+  running $1
 }
 function unload {
-  cd ~/Library/LaunchAgents
+  cd ~/Library/LaunchAgents>/dev/null
   launchctl unload -w *$1*
-  cd -
+  cd - >/dev/null
+  echo
+  running $1
 }
 function reload {
   unload $1
@@ -39,10 +43,10 @@ function running {
   processes=$(ps -ef | egrep "${pattern}" | grep -v grep | wc -l)
   if [ $definitions -gt 0 ]; then
     [[ $processes -eq 0 ]] && printf "${bldwht}%14s is ${bldred}stopped${txtrst}\n" $pattern
-    [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldgrn}running ($(echo $out | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
+    [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldgrn}running ($(echo $processes | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
   else
     [[ $processes -eq 0 ]] && printf "${bldwht}%14s is ${bldylw}undefined${txtrst}\n" $pattern
-    [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldylw}running, but undefined ($(echo $out | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
+    [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldylw}running, but undefined ($(echo $processes | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
   fi
 }
 function services {

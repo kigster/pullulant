@@ -69,6 +69,7 @@ ZSH_THEME="xiong-chiamiov-plus"
 
 plugins=(git rbenv brew bundler gem encode64 github jsontools npm bower web-search wd heroku)
 
+export NOKOGIRI_USE_SYSTEM_LIBRARIES=1s
 source ${HOME}/.select-prompt
 
 # User configuration
@@ -92,8 +93,15 @@ else
 fi
 
 # load user's custom zsh file
+scripts=(.bash_colors .bash_docker .bash_services .bash_aliases .zsh-${USER} )
 
-export NOKOGIRI_USE_SYSTEM_LIBRARIES=1s
+for script in ${scripts[@]}; do
+  if [ -s "${HOME}/${script}" ]; then
+    source "${HOME}/${script}"
+  else
+    echo "${script} not found"
+  fi
+done
 
-[[ -s "${HOME}/.shell-aliases" ]] && source "${HOME}/.shell-aliases"
-[[ -s "${HOME}/.zsh-${USER}" ]]   && source "${HOME}/.zsh-${USER}"
+dkenv
+services_intro

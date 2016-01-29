@@ -10,18 +10,8 @@
 # MIT License
 #_______________________________________________________________________________
 
-function dkenv {
-  if [ ! -z "$(which docker-machine)" ]; then
-    docker_env=$(docker-machine env default 2>/dev/null)
-    if [ $? -eq 0 ]; then
-      eval "$(docker-machine env default 2>/dev/null)"
-    fi
-  fi
-}
 
 export NOKOGIRI_USE_SYSTEM_LIBRARIES=1
-
-dkenv
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -45,13 +35,16 @@ if [ ! -z "$(echo $SHELL | grep bash)" -a ! -z "$(which brew)" ]; then
   fi
 fi
 
-scripts="~/.bash_colors \
-         ~/.bash_docker \
-         ~/.bash_${USER} \
-         ~/.shell-aliases"
+# load user's custom zsh file
+scripts=(.bash_colors .bash_docker .bash_services .bash_aliases .zsh-${USER} )
 
-for script in $scripts; do
-  if [ -f "${script}" ]; then
-    source "${script}"
+for script in ${scripts[@]}; do
+  if [ -s "${HOME}/${script}" ]; then
+    source "${HOME}/${script}"
+  else
+    printf "${script} was not found, ignored...\n"
   fi
 done
+
+dkenv
+services_intro
