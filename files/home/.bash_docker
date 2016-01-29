@@ -46,3 +46,12 @@ dbu() { docker build -t=$1 .; }
 
 # Show all alias related docker
 dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort; }
+
+function dkenv {
+  if [ ! -z "$(which docker-machine)" ]; then
+    docker_env=$(docker-machine env default 2>/dev/null)
+    if [ $? -eq 0 ]; then
+      eval "$(docker-machine env default 2>/dev/null)"
+    fi
+  fi
+}
