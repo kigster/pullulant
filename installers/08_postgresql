@@ -11,5 +11,6 @@
 #_______________________________________________________________________________
 #
 function postgresql {
+    postgres-permissions
     postgres-install
 }
