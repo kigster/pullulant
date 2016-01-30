@@ -1,4 +1,6 @@
 "*":
+  build:
+    saveOnBuild: true
   core:
     themes: [
       "native-ui"
@@ -12,6 +14,79 @@
     userId: "ea855b00-5a85-5c2f-8f19-6c1ab68a4909"
   "linter-checkbashisms": {}
   minimap: {}
+  "terminal-plus":
+    ansiColors:
+      normal:
+        blue:
+          red: 0
+          green: 116
+          blue: 205
+          alpha: 1
+        cyan:
+          red: 0
+          green: 164
+          blue: 207
+          alpha: 1
+        green:
+          red: 138
+          green: 198
+          blue: 81
+          alpha: 1
+        magenta:
+          red: 147
+          green: 109
+          blue: 205
+          alpha: 1
+        red:
+          red: 204
+          green: 128
+          blue: 112
+          alpha: 1
+        yellow:
+          red: 255
+          green: 224
+          blue: 70
+          alpha: 1
+      zBright:
+        brightBlue:
+          red: 0
+          green: 155
+          blue: 255
+          alpha: 1
+        brightCyan:
+          red: 0
+          green: 227
+          blue: 255
+          alpha: 1
+        brightGreen:
+          red: 149
+          green: 250
+          blue: 106
+          alpha: 1
+        brightMagenta:
+          red: 252
+          green: 161
+          blue: 255
+          alpha: 1
+        brightRed:
+          red: 255
+          green: 77
+          blue: 0
+          alpha: 1
+        brightYellow:
+          red: 255
+          green: 226
+          blue: 0
+          alpha: 1
+    core:
+      mapTerminalsTo: "Folder"
+    style:
+      defaultPanelHeight: "30%"
+      fontFamily: "Fira Mono Medium for Powerline"
+      fontSize: "12"
+      theme: "pro"
+    toggles:
+      autoClose: true
   "tool-bar":
     position: "Left"
   welcome:

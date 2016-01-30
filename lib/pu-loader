@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+# encoding: UTF-8
+
+# usage: require <folder>  # containing modules named "xxx.." or NN_xxx.." where NN
+                           # is an integer. Allows sorting installers by the
+                           # deliberate order.
+function require_dir {
+  subfolder=$1
+  submodules=$(echo $(ls -1 ${subfolder}))
+  for submodule in ${submodules}; do
+    source "${subfolder}/${submodule}"
+  done
+}
+
+function init {
+  source "lib/pu.bash"
+
+  require_dir "${helpers_dir}"
+  export helpers=${submodules}
+
+  require_dir "${modules_dir}"
+
+  # Strip the optional leading number in the file name, used for sorting.
+  export installers=$(echo $submodules | sed -E 's/[0-9]+_//g')
+  export status=0
+}
+
+init

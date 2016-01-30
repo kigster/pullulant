@@ -13,7 +13,7 @@
 function package-config {
   # Script-level Constants
   export var_pullulant_symbol_ok=${var_pullulant_symbol_ok-" ✅ "}
-  export var_pullulant_symbol_error=${var_pullulant_symbol_error-" 📛 🚫 ⛔️ 🆘 💀 💔 ❗️ "}
+  export var_pullulant_symbol_error=${var_pullulant_symbol_error-" ⛔️     "}
   export var_pullulant_symbol_ignored=${var_pullulant_symbol_ignored-" 🙄   "}
   export var_zsh_theme=${var_zsh_theme-"reinvent-one"}
   export var_brew_cask_appdir=${var_brew_cask_appdir-"/Applications"}
@@ -21,6 +21,7 @@ function package-config {
   readonly export const_sprout_wrap_repo="git@github.com:pivotal-sprout/sprout-wrap.git"
   readonly export const_cmd_stdout=/tmp/pullulant.stdout.$$.$const_timestamp
   readonly export const_cmd_stderr=/tmp/pullulant.stderr.$$.$const_timestamp
+  readonly export const_combined_stderr=/tmp/pullulant.stderr.$$.combined
   # const_owned_folder_list to chmod
   readonly export const_owned_folder_list="/usr/local /var/chef /opt /Library/Caches/Homebrew"
   readonly export postgresql_dir="/usr/local/var/postgres"
@@ -30,11 +31,11 @@ function package-config {
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
+  readonly export home_dir=${HOME}
   readonly export modules_dir=./installers
   readonly export helpers_dir=./helpers
-  readonly export bash_files_dir="./files/home"
-  readonly export home_dir=${HOME}
   readonly export backup_dir=${home_dir}/.backup/$const_timestamp
+  readonly export bash_files_dir="./files/home"
   readonly export rsync_home_dir="./files/home/"
   readonly export rsync_atom_dir="./files/atom/"
   readonly export zsh_rsync_home_dir="./files/zsh/"
@@ -47,6 +48,7 @@ function package-config {
     opts_verbose
     opts_dryrun
     opts_force
+    opts_ignore_errors
     opts_suppress_headers
     opts_skip_sprout_wrap
     opts_skip_brew_upgrade

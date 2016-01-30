@@ -103,7 +103,13 @@ function check_exit {
   real_status=$?
   status=${real_status}
 
-  [[ -n "${ignore_error}" ]] && status=0
+  if [ -n "${ignore_error}" -a $status -ne 0 ]; then
+    status=0
+    commands_ignored=$(($commands_ignored + 1))
+  else
+    [[ $status -eq 0 ]] && commands_completed=$(($commands_completed + 1))
+    [[ $status -ne 0 ]] && commands_failed=$(($commands_failed + 1))
+  fi
 
   if [ -n "${cmd_prints}" ]; then
     return $status
@@ -119,15 +125,19 @@ function check_exit {
         fi
       fi
     fi
-  else # error
-    [[ -z "${cmd_verbose}" ]]       && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
-    [[ -s "${const_cmd_stderr}" ]]  && printf "\n${bldred}$(cat ${const_cmd_stderr})${txtrst}\n"
+  else # error – print a little icon
+    [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
 
-    printf "\n"
-    printf "${txtrst}  Command: ${bldred}${cmd}\n"
-    printf "${txtrst}Exit code: ${bldred}$status\n"
-    printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
-    abort $status
+    if [ -n "${opts_ignore_errors}" ]; then
+      cat ${const_cmd_stderr} >> ${const_combined_stderr}
+      status=0
+    else
+      [[ -s "${const_cmd_stderr}" ]]  && printf "\n${bldred}$(cat ${const_cmd_stderr})${txtrst}\n"
+      printf "\n"
+      printf "${txtrst}  Command: ${bldred}${cmd}\n"
+      printf "${txtrst}Exit code: ${bldred}$status\n"
+      printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
+    fi
   fi
   return $status
 }

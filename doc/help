@@ -1,21 +1,20 @@
  ___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant (or gently: 'pu')                                                      |
+|  Pullulant (or gently: 'pu')                                                 |
 |  Development Environment Installer v1.1.2.                                        |
-|  Git rev e1f458d.                                                                 |
+|  Git rev b5bcd2f.                                                                 |
 |___________________________________________________________________________________|
-
+                                                                                    
 Installers:
-   permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap,
-   monofonts, postgresql, zsh, preferences, home, osx
-
+   permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap, monofonts,    
+   postgresql, zsh, preferences, home, atom, osx    
+                                                                                    
 Helpers:
-   brew-update, brew-upgrade, brew-wipe, postgres-install,
-   postgres-reinstall, postgres-start, postgres-stop, postgres-wipe,
-   sudo-disable, sudo-enable
+   brew-update, brew-upgrade, brew-wipe, postgres-install, postgres-reinstall,    
+   postgres-start, postgres-stop, postgres-wipe, sudo-disable, sudo-enable    
+                                                                                    
 
-
-Usage: ./pu -a [-S] [-B] [-Z]                     [ output ]
+Usage: ./pu -a [-S] [-B] [-Z] [-I]                [ output ]
        ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
        ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
    Or: ./pu [-l|-h|-H|-x]
@@ -28,10 +27,16 @@ Full run:
   -a          run [a]ll installers in their order
   -S          [S]proutwrap is disabled during the install
   -B          [B]rew-upgrade is disabled
+  -I          [I]gnore errors and continue. Do not stop when runners fail.
+              In this mode any command that failed will have it's STDOUT and
+              STDERR captured for later debugging.
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
               eg: ./pu -r 'zsh osx' -r home
+
+  -f          [F]orce  applies to some installers, ie. brew (--force) and
+              zsh (overwrites current)
 
 Homebrew control:
               -C -F -L flags allow picking specific subset of the install.
@@ -44,7 +49,6 @@ Homebrew control:
               These apply to all brew commands:
   -R          [R]einstall each formulae during brew install
   -K          Relin[K] all brew formulas/casks during install
-  -f          [F]orce all brew commands with --force
 
 Zsh
   -Z          Do not change the default shell to Zsh (it's still installed)
@@ -89,3 +93,4 @@ Examples:
       For example, to enable password-less sudo, use 'sudo-enable' helper:
 
       ./pu -r sudo-enable
+[0;34m[0;34m

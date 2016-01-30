@@ -62,15 +62,15 @@ function pu-short-header {
 }
 
 function pu-installers-helpers {
-  local installer_list=$(pu-indent-list "$installers" 70 '   ')
-  local helper_list=$(pu-indent-list "$helpers"    70 '   ')
+  local installer_list=$(pu-indent-list "$installers" 80 "   ")
+  local helper_list=$(pu-indent-list "$helpers"    80 "   ")
 
   printf "                                                                                    \n"
-  printf "Installers:\n"
-  printf "${txtylw}%-68s ${txtrst}\n" "$installer_list"
+  printf "${txtrst}Installers:\n"
+  printf "${bldylw}%-68s \n" "$installer_list"
   printf "                                                                                    \n"
-  printf "Helpers:\n"
-  printf "${txtylw}%-68s ${txtrst}\n" "$helper_list"
+  printf "${txtrst}Helpers:\n"
+  printf "${bldylw}%-68s \n" "$helper_list"
   printf "                                                                                    \n"
 
   pu-list-current-runners
@@ -78,7 +78,7 @@ function pu-installers-helpers {
 
 function pu-list-current-runners {
   linebreak="\n"
-  local run_list=$(pu-indent-list "$runners"    70 '   ')
+  local run_list=$(pu-indent-list "$runners"    80 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
     printf "Run List:\n"
     printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
@@ -99,7 +99,7 @@ function pu-print-section-header {
 
 function pu-print-help {
   # ar:SBLRKFCfqnvlhHxp
-  printf "Usage: ./$(basename $0) -a [-S] [-B] [-Z]                     [ output ]\n"
+  printf "Usage: ./$(basename $0) -a [-S] [-B] [-Z] [-I]                [ output ]\n"
   printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B]    [ output ]\n"
   printf "       ./$(basename $0) -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]\n"
   printf "   Or: ./$(basename $0) [-l|-h|-H|-x]\n\n"
@@ -111,6 +111,9 @@ Full run:
   -a          run [a]ll installers in their order
   -S          [S]proutwrap is disabled during the install
   -B          [B]rew-upgrade is disabled
+  -I          [I]gnore errors and continue. Do not stop when runners fail.
+              In this mode any command that failed will have it's STDOUT and
+              STDERR captured for later debugging.
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)

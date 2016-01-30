@@ -1,4 +1,4 @@
-# Pullulant 
+# Pullulant
 # Bootstrap Dev Environment on Mac OS-X
 
 ## WTF?
@@ -7,7 +7,7 @@ The project essentially combines nearly hundred small steps into modular pieces 
 
 With this installer everything is right at your fingertips: you can change things, or fix any issues instantly and easily.
 
-This project is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too brittle seemingly, especially lately around HomeBrew, and kind of difficult to fix (see appendix 1). 
+This project is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too brittle seemingly, especially lately around HomeBrew, and kind of difficult to fix (see appendix 1).
 
 Installer relies on [HomeBrew](http://brew.sh/), [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap), and about 2K lines of bash scripting to deliver your shell goodies to the door, all while customizing your environment to look like and serve you, the oh-mightly-powerful Developer, with all of it's shine. Try it! :)
 
@@ -147,27 +147,26 @@ are defined, and overrides the packages the script itself defines.
 
 ```
 > ./pu -x
- ___________________________________________________________________________________
+___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant (or gently: 'pu')                                                      |
+|  Pullulant (or gently: 'pu')                                                 |
 |  Development Environment Installer v1.1.2.                                        |
-|  Git rev e1f458d.                                                                 |
+|  Git rev b5bcd2f.                                                                 |
 |___________________________________________________________________________________|
 
 Installers:
-  permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap,
-  monofonts, postgresql, zsh, preferences, home, osx
+  permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap, monofonts,    
+  postgresql, zsh, preferences, home, atom, osx    
 
 Helpers:
-  brew-update, brew-upgrade, brew-wipe, postgres-install,
-  postgres-reinstall, postgres-start, postgres-stop, postgres-wipe,
-  sudo-disable, sudo-enable
+  brew-update, brew-upgrade, brew-wipe, postgres-install, postgres-reinstall,    
+  postgres-start, postgres-stop, postgres-wipe, sudo-disable, sudo-enable    
 
 
-Usage: ./pu -a [-S] [-B] [-Z]                     [ output ]
-       ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
-       ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
-   Or: ./pu [-l|-h|-H|-x]
+Usage: ./pu -a [-S] [-B] [-Z] [-I]                [ output ]
+      ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
+      ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
+  Or: ./pu [-l|-h|-H|-x]
 
 
 Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
@@ -177,10 +176,16 @@ Full run:
  -a          run [a]ll installers in their order
  -S          [S]proutwrap is disabled during the install
  -B          [B]rew-upgrade is disabled
+ -I          [I]gnore errors and continue. Do not stop when runners fail.
+             In this mode any command that failed will have it's STDOUT and
+             STDERR captured for later debugging.
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
  -r runner   run only a specified [r]unner (helper or installer)
              eg: ./pu -r 'zsh osx' -r home
+
+ -f          [F]orce  applies to some installers, ie. brew (--force) and
+             zsh (overwrites current)
 
 Homebrew control:
              -C -F -L flags allow picking specific subset of the install.
@@ -193,7 +198,6 @@ Homebrew control:
              These apply to all brew commands:
  -R          [R]einstall each formulae during brew install
  -K          Relin[K] all brew formulas/casks during install
- -f          [F]orce all brew commands with --force
 
 Zsh
  -Z          Do not change the default shell to Zsh (it's still installed)
@@ -238,7 +242,7 @@ Examples:
      For example, to enable password-less sudo, use 'sudo-enable' helper:
 
      ./pu -r sudo-enable
-
+[0;34m[0;34m
 ```
 
 ## Acknowledgements
@@ -255,4 +259,4 @@ The following people assisted in building this tool:
 
 ## Appendix
 
- 1. SproutWrap is difficult to fix when it breaks. For each sprout-something cookbook you must fork it first, fix the problem, then fork sprout-wrap, point to your fixed version in the Cheffile, then run it your forked version, and also maintain it until Pivotal merges your changes. Just not really that awesome of a process. 
+ 1. SproutWrap is difficult to fix when it breaks. For each sprout-something cookbook you must fork it first, fix the problem, then fork sprout-wrap, point to your fixed version in the Cheffile, then run it your forked version, and also maintain it until Pivotal merges your changes. Just not really that awesome of a process.
