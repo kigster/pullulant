@@ -3,7 +3,7 @@
     saveOnBuild: true
   core:
     themes: [
-      "native-ui"
+      "atom-material-ui"
       "an-old-hope-syntax"
     ]
   editor:
@@ -89,5 +89,9 @@
       autoClose: true
   "tool-bar":
     position: "Left"
+  "tree-view":
+    hideIgnoredNames: true
+    hideVcsIgnoredFiles: true
+    squashDirectoryNames: true
   welcome:
     showOnStartup: false
