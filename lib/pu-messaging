@@ -99,10 +99,10 @@ function pu-print-section-header {
 
 function pu-print-help {
   # ar:SBLRKFCfqnvlhHxp
-  printf "Usage: ./$(basename $0) -a [-S] [-B] [-Z] [-I]                [ output ]\n"
-  printf "       ./$(basename $0) -r 'runner1 runner2 ...' [-S] [-B]    [ output ]\n"
-  printf "       ./$(basename $0) -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]\n"
-  printf "   Or: ./$(basename $0) [-l|-h|-H|-x]\n\n"
+  printf "Usage: $(basename $0) -a [-S] [-B] [-Z] [-I]                [ output ]\n"
+  printf "       $(basename $0) -r 'runner1 runner2 ...' [-S] [-B]    [ output ]\n"
+  printf "       $(basename $0) -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]\n"
+  printf "   Or: $(basename $0) [-l|-h|-H|-x]\n\n"
   printf "
 Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
 
@@ -117,7 +117,7 @@ Full run:
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
-              eg: ./$(basename $0) -r 'zsh osx' -r home
+              eg: $(basename $0) -r 'zsh osx' -r home
 
   -f          [F]orce – applies to some installers, ie. brew (--force) and
               zsh (overwrites current)
@@ -150,11 +150,11 @@ Help & Info:
   -x          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-    ./$(basename $0) -a                         # install everything
-    ./$(basename $0) -r reinstall-postgres      # run just reinstall-postgres
-    ./$(basename $0) -r brew-wipe -r homebrew   # wipe and reinstall homebrew
-    ./$(basename $0) -r homebrew -F -pv         # only brew formulas verbose
-    ./$(basename $0) -aSB                       # install everything, minus
+    $(basename $0) -a                         # install everything
+    $(basename $0) -r reinstall-postgres      # run just reinstall-postgres
+    $(basename $0) -r brew-wipe -r homebrew   # wipe and reinstall homebrew
+    $(basename $0) -r homebrew -F -pv         # only brew formulas verbose
+    $(basename $0) -aSB                       # install everything, minus
                                     # homebrew and sprout-wrap
 "
 }
@@ -180,6 +180,6 @@ function pu-print-detailed-usage {
 
       For example, to enable password-less sudo, use 'sudo-enable' helper:
 
-      ./$(basename $0) -r sudo-enable
+      $(basename $0) -r sudo-enable
 "
 }

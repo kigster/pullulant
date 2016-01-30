@@ -12,7 +12,15 @@
 #_______________________________________________________________________________
 #
 
-source "lib/pu-loader"
+function setup {
+  export original_dir=$(pwd)
+  export pu_home="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+  cd ${pu_home}
+  source "lib/pu-loader"
+}
+
+setup
 
 while getopts "ar:SBLIRKFCfqnvlhHxpZ" opt; do
   case $opt in

@@ -47,4 +47,3 @@ for script in ${scripts[@]}; do
 done
 
 dkenv
-services_intro

@@ -26,6 +26,7 @@ function on_exit {
 function finish {
   exit_status=${1-0}
   on_exit && success
+  cd ${original_dir}
   exit ${exit_status}
 }
 function success {
@@ -39,6 +40,7 @@ function success {
 function abort {
   [[ "$sudoers_enabled" ]] && sudo-disable
   on_exit && failure
+  cd ${original_dir}
   exit $*
 }
 function failure {

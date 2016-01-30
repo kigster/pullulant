@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function home {
+function bash_install {
   run "rsync -a ${rsync_home_dir} ${HOME}"
 
   ln -nfs ~/.bashrc ~/.bash_login
@@ -19,4 +19,6 @@ function home {
     run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
     run "echo 'source ~/.bashrc' >> ~/.bash_profile"
   fi
+  local rc="${HOME}/.bashrc"
+  [[ -n "$(grep PU_HOME $rc)" ]] || run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}; unalias pu 2>/dev/null' >> $rc "
 }
