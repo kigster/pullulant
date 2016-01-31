@@ -27,7 +27,7 @@ function zsh_install {
   run "rsync -a ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
 
   rc=${HOME}/.zshrc
-  [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
+  [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i '' -e 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
   [[ -n "$(grep PU_HOME $rc)" ]] || run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}; unalias pu' >> $rc "
 }
 

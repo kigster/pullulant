@@ -151,7 +151,7 @@ function main {
   [[ ${commands_completed} -gt 0 ]] && printf "${bldwht}%5d${bldgrn} commands ran successfully\n" $commands_completed
   [[ ${commands_ignored} -gt 0 ]]   && printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored\n" $runners_ignored
   [[ ${commands_failed} -gt 0 ]]    && printf "${bldwht}%5d${bldred} commands failed\n"  $commands_failed
-
+  echo
   [[ $status -eq 0 && $runners_completed -gt 0 ]] && finish
   [[ $runners_started -eq 0 ]] && {
     printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
