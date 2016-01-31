@@ -44,6 +44,6 @@ function oh-my-zsh-installer {
 }
 
 function zsh-permissions {
-  run "chmod -R 750 /usr/local/share/zsh"
-  run "chmod -R 750 /usr/local/Cellar/zsh"
+  run "mkdir -p /usr/local/share/zsh && chmod -R 750 /usr/local/share/zsh"
+  run "mkdir -p /usr/local/Cellar/zsh && chmod -R 750 /usr/local/Cellar/zsh"
 }
