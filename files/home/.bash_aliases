@@ -37,6 +37,10 @@ alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"
 alias be="bundle exec"
 alias ber="bundle exec rake"
 
+alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
+alias ppjson="jq '.'"
+alias b64paste='pbpaste | base64 --decode'
+
 function py {
   [[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"
 }
