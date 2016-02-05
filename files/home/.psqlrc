@@ -1,0 +1,6 @@
+\pset pager
+\timing
+\set PROMPT1 '(%n@%M:%>) [%/] > '
+\set PROMPT2 ''
+\encoding unicode
+SET search_path TO public,extensions
