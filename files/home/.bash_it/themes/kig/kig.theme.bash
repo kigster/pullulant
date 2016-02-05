@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # encoding: UTF-8
 
-SCM_THEME_PROMPT_DIRTY=" ${red}✗"
-SCM_THEME_PROMPT_CLEAN=" ${green}✓"
-SCM_THEME_PROMPT_PREFIX=" ${yellow}|${reset_color}"
-SCM_THEME_PROMPT_SUFFIX="${yellow}|"
+SCM_THEME_PROMPT_DIRTY=" ${bldred}✗"
+SCM_THEME_PROMPT_CLEAN=" ${bldgrn}✓"
+SCM_THEME_PROMPT_PREFIX=" ${bldylw}|${reset_color}"
+SCM_THEME_PROMPT_SUFFIX="${bldylw}|"
 
-RVM_THEME_PROMPT_PREFIX="|"
-RVM_THEME_PROMPT_SUFFIX="|"
+RBENV_THEME_PROMPT_PREFIX="[ruby-"
+RBENV_THEME_PROMPT_SUFFIX="]"
 VIRTUALENV_THEME_PROMPT_PREFIX='|'
 VIRTUALENV_THEME_PROMPT_SUFFIX='|'
 
@@ -20,11 +20,11 @@ function pullulant_environment {
   echo -e ""
 }
 function pullulant_where {
-  echo -e "${green}[${purple}${USER}@${yellow}${HOSTNAME}${green}]${reset_color}"
+  echo -e "${bldgrn}[${bldgrn}${USER}@${bldylw}${HOSTNAME}${bldgrn}]${reset_color}"
 }
 
 function prompt_command() {
-  PS1="\n${green}$(python_version_prompt)${bldblu}$(pullulant_where) ${orange}in ${reset_color}\w\n${yellow}$(scm_char)$(scm_prompt_info) ${yellow}→${white}${reset_color} "
+  PS1="\n${bldblk}$(rbenv_version_prompt)$(pullulant_where)${orange} in ${reset_color}\w\n${txtylw}$(scm_char)$(scm_prompt_info) ${bldylw}→${lbdwht}${reset_color}${white} "
 }
 
 PROMPT_COMMAND=prompt_command;
