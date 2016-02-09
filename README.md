@@ -1,23 +1,26 @@
-# Pullulant
-# Bootstrap Dev Environment on Mac OS-X
+# Pullulant – Bootstrap Your Dev Environment on Mac OS-X
 
-## WTF?
+Just tell me what to run, I don't have time for this README.
 
-The project essentially combines nearly hundred small steps into modular pieces that run one after anoterh. This is what you need to do – `curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash` in order to kick off a fully automated (even unattended) setup of the development environment for projects involving building javascript, nodejs, ruby, python, C/C++, or even Arduino applications on on Mac OS-X. This installer condenses a ton of personal experience and taste and merges it with that of Pivotal Labs. It's design  gives you an easy way to use modules that can be run all at once, or one at a time.
+```
+curl -fsSL 'http://sw.im/pu-bootstrap' | /usr/bin/env bash
+```
 
-With this installer everything is right at your fingertips: you can change things, or fix any issues instantly and easily.
+## Pu-what?
 
-This project is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too brittle seemingly, especially lately around HomeBrew, and kind of difficult to fix (see appendix 1).
+"Pullulant" – it is Latin for "Sprout". [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) is a large chunk and an inspiration for this install, so the names gives credit where credit is due.
 
-Installer relies on [HomeBrew](http://brew.sh/), [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap), and about 2K lines of bash scripting to deliver your shell goodies to the door, all while customizing your environment to look like and serve you, the oh-mightly-powerful Developer, with all of it's shine. Try it! :)
+## Why Do I Need This?
 
-I mean – just check out the sexy prompt you might get after running it (as well as the usage flags LOL).
+This project is the basis for setting local dev environment of several San Francisco startups and independents – it captures the setup that originated as a small wrapper around [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) cookbook. But the cookbooks were too small and too brittle, and kind of difficult to fix (see appendix 1). So the shell script grew.
+
+Now Pullulant combines nearly a hundred small steps into modular chunks that run one after another as part of a fully automated (even unattended) setup of the development environment. This is a great setup for projects involving building javascript, nodejs, ruby, python, C/C++, or even Arduino applications on Mac OS-X. This installer condenses a ton of personal experience and taste and merges it with that of Pivotal Labs. It's design gives you an easy way to use modules that can be run all at once, or one at a time.
+
+Installer relies on [HomeBrew](http://brew.sh/), [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap), and about 3K lines of bash scripting to deliver your shell goodies to the door, all while customizing your environment to look like and serve you, the oh-mightly-powerful Developer, with all of it's shine. Try it! :)
+
+I mean – just check out the sexy ZSH prompt you might get after running it (as well as the usage flags LOL).
 
 ![Pu Usage](doc/pu.png)
-
-## What's that name?
-
-"Pullulant" – it is Latin for "Sprout". [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap) is a large chunk of this install, so the names gives credit where credit is due.
 
 ## Pre-Install – OS-X Preparation
 
@@ -149,24 +152,24 @@ are defined, and overrides the packages the script itself defines.
 > ./pu -x
 ___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant (or gently: 'pu')                                                 |
-|  Development Environment Installer v1.1.2.                                        |
-|  Git rev b5bcd2f.                                                                 |
+|  Pullulant (or gently: 'pu')                                                      |
+|  Development Environment Installer v1.2.0.                                        |
+|  Git rev 4e61bfa.                                                                 |
 |___________________________________________________________________________________|
 
 Installers:
   permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap, monofonts,    
-  postgresql, zsh, preferences, home, atom, osx    
+  postgresql, zsh_install, preferences, bash_install, atom, osx    
 
 Helpers:
   brew-update, brew-upgrade, brew-wipe, postgres-install, postgres-reinstall,    
   postgres-start, postgres-stop, postgres-wipe, sudo-disable, sudo-enable    
 
 
-Usage: ./pu -a [-S] [-B] [-Z] [-I]                [ output ]
-      ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
-      ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
-  Or: ./pu [-l|-h|-H|-x]
+Usage: pu -a [-S] [-B] [-Z] [-I]                [ output ]
+      pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
+      pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
+  Or: pu [-l|-h|-H|-x]
 
 
 Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
@@ -182,7 +185,7 @@ Full run:
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
  -r runner   run only a specified [r]unner (helper or installer)
-             eg: ./pu -r 'zsh osx' -r home
+             eg: pu -r 'zsh osx' -r home
 
  -f          [F]orce  applies to some installers, ie. brew (--force) and
              zsh (overwrites current)
@@ -200,7 +203,7 @@ Homebrew control:
  -K          Relin[K] all brew formulas/casks during install
 
 Zsh
- -Z          Do not change the default shell to Zsh (it's still installed)
+ -Z          Change the default shell to Zsh
 
 Output control:
  -p          su[p]press pretty section headers for more compact output
@@ -215,12 +218,12 @@ Help & Info:
  -x          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-   ./pu -a                         # install everything
-   ./pu -r reinstall-postgres      # run just reinstall-postgres
-   ./pu -r brew-wipe -r homebrew   # wipe and reinstall homebrew
-   ./pu -r homebrew -F -pv         # only brew formulas verbose
-   ./pu -aSB                       # install everything, minus
-                                   # homebrew and sprout-wrap
+   pu -a                         # install everything
+   pu -r reinstall-postgres      # run just reinstall-postgres
+   pu -r brew-wipe -r homebrew   # wipe and reinstall homebrew
+   pu -r homebrew -F -pv         # only brew formulas verbose
+   pu -aSB                       # install everything, minus
+                                 # homebrew and sprout-wrap
 
  Runner:
      Most common usage is with the -a  flag, that runs all installers.
@@ -241,8 +244,8 @@ Examples:
 
      For example, to enable password-less sudo, use 'sudo-enable' helper:
 
-     ./pu -r sudo-enable
-[0;34m[0;34m
+     pu -r sudo-enable
+
 ```
 
 ## Acknowledgements

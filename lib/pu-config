@@ -23,7 +23,16 @@ function package-config {
   readonly export const_cmd_stderr=/tmp/pullulant.stderr.$$.$const_timestamp
   readonly export const_combined_stderr=/tmp/pullulant.stderr.$$.combined
   # const_owned_folder_list to chmod
-  readonly export const_owned_folder_list="/usr/local /var/chef /opt /Library/Caches/Homebrew"
+  readonly export const_owned_folder_list="
+    /usr/local/Cellar
+    /usr/local/bin
+    /usr/local/opt
+    /usr/local/lib
+    /usr/local/share
+    /usr/local/include
+    /var/chef
+    /opt
+    /Library/Caches/Homebrew"
   readonly export postgresql_dir="/usr/local/var/postgres"
 
   # Path that includes rbenv and pyenv
@@ -57,7 +66,7 @@ function package-config {
     opts_brew_formulae_only
     opts_brew_casks_only
     opts_brew_link_only
-    opts_dont_change_shell
+    opts_change_shell_to_zsh
   "
 
   for option in ${pu_options}; do

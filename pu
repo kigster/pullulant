@@ -62,7 +62,7 @@ while getopts "ar:SBLIRKFCfqnvlhHxpZ" opt; do
     #========================= Other          =======================
 
     Z)
-    export opts_dont_change_shell=yes     ;;
+    export opts_change_shell_to_zsh=yes     ;;
 
     #========================= Output Control =======================
     p)

@@ -1,23 +1,23 @@
  ___________________________________________________________________________________
 |                                                                                   |
 |  Pullulant (or gently: 'pu')                                                 |
-|  Development Environment Installer v1.1.2.                                        |
-|  Git rev b5bcd2f.                                                                 |
+|  Development Environment Installer v1.2.0.                                        |
+|  Git rev 4e61bfa.                                                                 |
 |___________________________________________________________________________________|
                                                                                     
 Installers:
    permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap, monofonts,    
-   postgresql, zsh, preferences, home, atom, osx    
+   postgresql, zsh_install, preferences, bash_install, atom, osx    
                                                                                     
 Helpers:
    brew-update, brew-upgrade, brew-wipe, postgres-install, postgres-reinstall,    
    postgres-start, postgres-stop, postgres-wipe, sudo-disable, sudo-enable    
                                                                                     
 
-Usage: ./pu -a [-S] [-B] [-Z] [-I]                [ output ]
-       ./pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
-       ./pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
-   Or: ./pu [-l|-h|-H|-x]
+Usage: pu -a [-S] [-B] [-Z] [-I]                [ output ]
+       pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
+       pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
+   Or: pu [-l|-h|-H|-x]
 
 
 Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
@@ -33,7 +33,7 @@ Full run:
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
-              eg: ./pu -r 'zsh osx' -r home
+              eg: pu -r 'zsh osx' -r home
 
   -f          [F]orce  applies to some installers, ie. brew (--force) and
               zsh (overwrites current)
@@ -51,7 +51,7 @@ Homebrew control:
   -K          Relin[K] all brew formulas/casks during install
 
 Zsh
-  -Z          Do not change the default shell to Zsh (it's still installed)
+  -Z          Change the default shell to Zsh
 
 Output control:
   -p          su[p]press pretty section headers for more compact output
@@ -66,12 +66,12 @@ Help & Info:
   -x          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-    ./pu -a                         # install everything
-    ./pu -r reinstall-postgres      # run just reinstall-postgres
-    ./pu -r brew-wipe -r homebrew   # wipe and reinstall homebrew
-    ./pu -r homebrew -F -pv         # only brew formulas verbose
-    ./pu -aSB                       # install everything, minus
-                                    # homebrew and sprout-wrap
+    pu -a                         # install everything
+    pu -r reinstall-postgres      # run just reinstall-postgres
+    pu -r brew-wipe -r homebrew   # wipe and reinstall homebrew
+    pu -r homebrew -F -pv         # only brew formulas verbose
+    pu -aSB                       # install everything, minus
+                                  # homebrew and sprout-wrap
 
   Runner:
       Most common usage is with the -a  flag, that runs all installers.
@@ -92,5 +92,4 @@ Examples:
 
       For example, to enable password-less sudo, use 'sudo-enable' helper:
 
-      ./pu -r sudo-enable
-[0;34m[0;34m
+      pu -r sudo-enable

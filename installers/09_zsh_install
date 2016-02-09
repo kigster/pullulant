@@ -20,7 +20,7 @@ function zsh_install {
   #run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
   oh-my-zsh-installer
 
-  [[ -z "$(echo $SHELL | grep zsh)" && -z "${opts_dont_change_shell}" ]] && run "chsh -s /usr/local/bin/zsh"
+  [[ -z "$(echo $SHELL | grep zsh)" && -n "${opts_change_shell_to_zsh}" ]] && run "chsh -s /usr/local/bin/zsh"
 
   run "rsync -a ${zsh_rsync_home_dir}.zshrc ${HOME}/"
   run "rsync -a ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
