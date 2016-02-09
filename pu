@@ -25,14 +25,14 @@ setup
 while getopts "ar:SBLIRKFCfqnvlhHxpZ" opt; do
   case $opt in
     a)
-    export runners=${installers}          ;;
+    export Application__runners=${installers}          ;;
     r)
     [[ "${OPTARG}" == "sudo-enable"  ]] && export skip_sudo_disable=true
     [[ "${OPTARG}" == "sudo-disable" ]] && export sudoers_enabled=true
-    if [ -z "$runners" ]; then
-      export runners="$OPTARG"
+    if [ -z "${Application__runners}" ]; then
+      export Application__runners="$OPTARG"
     else
-      export runners="$runners $OPTARG"
+      export Application__runners="${Application__runners} $OPTARG"
     fi                                    ;;
 
     #========================= Runner Stuff =========================
@@ -78,93 +78,38 @@ while getopts "ar:SBLIRKFCfqnvlhHxpZ" opt; do
 
     x)
     ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
-    cat doc/help; finish;                 ;;
+    cat doc/help; Application.finish;                 ;;
     h)
     pu-welcome-screen-short
     pu-print-help
-    finish;                               ;;
+    Application.finish;                               ;;
     H)
     pu-welcome-screen-short
     pu-print-help
     pu-print-detailed-usage
-    finish;                               ;;
+    Application.finish;                               ;;
 
     l)
     pu-short-header
     pu-installers-helpers
-    finish;                               ;;
+    Application.finish;                               ;;
     \?)
     pu-print-help
     printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
-    abort 126
+    Application.abort 126
     ;;
     :)
     printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
-    abort 127
+    Application.abort 127
     ;;
   esac
 done
 
-function main {
-  # loop over installers, and if either passed as an argument or no arguments
-  #" at all – run it."
-
-  # By now we should have $runners set to either the whole set of installers
-  # or to something specific passed via the flag. It should not be blank.
-  [[ -z "${runners}" ]] || on_start
-
-  local runners_started=0
-  local runners_ignored=0
-  local runners_completed=0
-
-  export commands_failed=0
-  export commands_completed=0
-  export commands_ignored=0
-
-  for runner in $runners; do
-    # my arrays start with a 1
-    export runners_started=$((runners_started + 1))
-
-    [[ $runners_started -eq 1 ]] && pu-short-header
-
-    # I so much rather prefer dashes in the function and file names than underscores.
-    # Dashes just feel like a continuation. Underscores are from another era. Jurassic.
-    pu-print-section-header ${runner}
-
-    export status=
-    eval ${runner}
-    status=${status:-1}
-
-    if [ ${status:-1} -ne 0 ]; then
-      printf "${bldred}Non-zero status ${status} from '${runner}' runner :( ...\n${txtrst}"
-      [[ ${opts_ignore_errors} ]] || abort $status
-      export runners_ignored=$((runners_ignored + 1))
-    fi
-
-    runners_completed=$(($runners_completed + 1))
-  done
-
-  printf "\n"
-  [[ ${runners_completed} -gt 0 ]]  && printf "${bldwht}%5d${bldgrn} runners succeeded\n" $runners_completed
-  [[ ${runners_ignored} -gt 0 ]]    && printf "${bldwht}%5d${bldylw} runners failed, but were ignored\n"  $runners_ignored
-  sep
-  [[ ${commands_completed} -gt 0 ]] && printf "${bldwht}%5d${bldgrn} commands ran successfully\n" $commands_completed
-  [[ ${commands_ignored} -gt 0 ]]   && printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored\n" $runners_ignored
-  [[ ${commands_failed} -gt 0 ]]    && printf "${bldwht}%5d${bldred} commands failed\n"  $commands_failed
-  echo
-  [[ $status -eq 0 && $runners_completed -gt 0 ]] && finish
-  [[ $runners_started -eq 0 ]] && {
-    printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
-    finish
-  }
-  [[ $status -ne 0 ]] && abort $status
-  finish
-}
 
 #______________________________________________________________________________
 #
 export args=$*
 
-main args
+Application.main args
 
 # EOF

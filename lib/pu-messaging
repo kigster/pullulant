@@ -39,7 +39,7 @@ function pu-long-header {
 function pu-short-header {
   printf "${bldwht}\n"
   printf "${bldylw}Pullulant (aka 'pu'),  ${bldwht}Version $(cat VERSION), Ref $(pu-git-revision)\n\n"
-  local runner_list=$(pu-indent-list "$runners"    70 '')
+  local runner_list=$(pu-indent-list "${Application__runners}"    70 '')
   printf "Run List: ${bldylw}${runner_list}${bldwht}\n"
   printf "Enabled Options: ${bldylw}"
   printf "${txtrst}"
@@ -78,7 +78,7 @@ function pu-installers-helpers {
 
 function pu-list-current-runners {
   linebreak="\n"
-  local run_list=$(pu-indent-list "$runners"    80 '   ')
+  local run_list=$(pu-indent-list "${Application__runners}"    80 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
     printf "Run List:\n"
     printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
@@ -135,7 +135,7 @@ Homebrew control:
   -K          Relin[K] all brew formulas/casks during install
 
 Zsh
-  -Z          Do not change the default shell to Zsh (it's still installed)
+  -Z          Change the default shell to Zsh
 
 Output control:
   -p          su[p]press pretty section headers for more compact output
@@ -155,7 +155,7 @@ Examples:
     $(basename $0) -r brew-wipe -r homebrew   # wipe and reinstall homebrew
     $(basename $0) -r homebrew -F -pv         # only brew formulas verbose
     $(basename $0) -aSB                       # install everything, minus
-                                    # homebrew and sprout-wrap
+                                  # homebrew and sprout-wrap
 "
 }
 

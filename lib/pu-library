@@ -11,44 +11,126 @@
 #_______________________________________________________________________________
 # encoding: UTF-8
 
-function on_start {
+trap EventHandler.onCtrlC INT
+
+function EventHandler.onCtrlC {
+  printf "\n\n\n${bakred}${bldwht}   CTRL-C: Aborting installer.    ${txtrst}\n"
+  Application.finish
+}
+function EventHandler.onStart {
   run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
   [[ "$sudoers_enabled" ]] && pu-print-section-header "sudo-enable" && sudo-enable
 }
 
-function on_exit {
+function EventHandler.onExit {
   [[ "$sudoers_enabled" ]] && sudo-disable
   run "rm -rf ${const_cmd_stderr} # hide-command"
   run "rm -rf ${const_cmd_stdout} # hide-command"
-  return 1
+
+  [[ -n "${exit_status}" ]] && exit_status=${status-0}
+
+  Application.printSummary
+  # Application.printExitStatus $exit_status
+  echo ${exit_status}
 }
 
-function finish {
-  exit_status=${1-0}
-  on_exit && success
-  cd ${original_dir}
-  exit ${exit_status}
-}
-function success {
-  printf "${txtblk}"
-  sep "\n\n"
-  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
-  sep
-  printf "\n${txtrst}"
+function Application.main {
+  Application.begin
+
+  # loop over installers, and if either passed as an argument or no arguments
+  #" at all – run it."
+  for local_runner in ${Application__runners}; do
+    Application.executeRunner $local_runner
+  done
+
+  Application.finish
 }
 
-function abort {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  on_exit && failure
-  cd ${original_dir}
-  exit $*
+function Application.begin {
+  # By now we should have ${Application__runners} set to either the whole set of installers
+  # or to something specific passed via the flag. It should not be blank.
+  [[ -z "${Application__runners}" ]] || EventHandler.onStart
+
+  export ${Application__runners_started}=0
+  export ${Application__runners_ignored}=0
+  export ${Application__runners_completed}=0
+
+  export commands_failed=0
+  export commands_completed=0
+  export commands_ignored=0
 }
-function failure {
-  printf "${txtblk}"
-  sep "\n\n"
-  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
+
+function Application.finish {
+  Application.exit
+}
+
+function Application.abort {
+  status=$1
+  Application.exit
+}
+
+function Application.exit() {
+  cd ${original_dir}
+  local __status=$(EventHandler.onExit)
+  exit $(($__status+0))
+}
+
+function Application.printExitStatus() {
+  exit_status=${1-${status}}
+  if [ $exit_status -eq 0 ]; then
+    printf "${txtblk}"
+    sep "\n\n"
+    printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
+    sep
+    printf "\n${txtrst}"
+  else
+    printf "${txtblk}"
+    sep "\n\n"
+    printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
+    sep
+    printf "\n${txtrst}"
+    end
+  fi
+}
+
+function Application.printSummary {
+  printf "\n"
+  [[ ${${Application__runners_completed}} -gt 0 ]]  && printf "${bldwht}%5d${bldgrn} runners succeeded\n" ${Application__runners_completed}
+  [[ ${${Application__runners_ignored}} -gt 0 ]]    && printf "${bldwht}%5d${bldylw} runners failed, but were ignored\n"  $Application__${Application__runners_ignored}
   sep
-  printf "\n${txtrst}"
+  [[ ${commands_completed} -gt 0 ]] && printf "${bldwht}%5d${bldgrn} commands ran successfully\n" $commands_completed
+  [[ ${commands_ignored} -gt 0 ]]   && printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored\n" $Application__${Application__runners_ignored}
+  [[ ${commands_failed} -gt 0 ]]    && printf "${bldwht}%5d${bldred} commands failed\n"  $commands_failed
+  echo
+  [[ $status -eq 0 && ${Application__runners_completed} -gt 0 ]] && Application.finish
+  [[ ${Application__runners_started} -eq 0 ]] && {
+    printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
+  }
+}
+
+function Application.executeRunner {
+  runner=${1}
+
+  # my arrays start with a 1
+  export ${Application__runners_started}=$((${Application__runners_started} + 1))
+
+  [[ ${Application__runners_started} -eq 1 ]] && pu-short-header
+
+  # I so much rather prefer dashes in the function and file names than underscores.
+  # Dashes just feel like a continuation. Underscores are from another era. Jurassic.
+  pu-print-section-header ${runner}
+
+  export status=
+  eval ${runner}
+  export status=${status:-1}
+
+  if [ ${status:-1} -ne 0 ]; then
+    printf "${bldred}Non-zero status ${status} from '${runner}' runner :( ...\n${txtrst}"
+    [[ -z "${opts_ignore_errors}" ]] && Application.abort $status
+    export ${Application__runners_ignored}=$((${Application__runners_ignored} + 1))
+  fi
+
+  export ${Application__runners_completed}=$((${Application__runners_completed} + 1))
 }
 
 function run {
@@ -138,7 +220,7 @@ function check_exit {
       printf "\n"
       printf "${txtrst}  Command: ${bldred}${cmd}\n"
       printf "${txtrst}Exit code: ${bldred}$status\n"
-      printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
+      printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must Application.abort.\n\n"
     fi
   fi
   return $status
