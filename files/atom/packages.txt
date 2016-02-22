@@ -12,7 +12,6 @@ file-watcher@0.4.0
 git-plus@5.12.1
 git-status@0.3.4
 language-chef@0.8.0
-language-docker-master@1.1.6
 linter-checkbashisms@0.1.5
 minimap@4.19.0
 native-ui@0.16.1
