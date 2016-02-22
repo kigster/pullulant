@@ -41,6 +41,9 @@ alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
 alias ppjson="jq '.'"
 alias b64paste='pbpaste | base64 --decode'
 
+# followed by user name
+alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
+
 function py {
   [[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"
 }
