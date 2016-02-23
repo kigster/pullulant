@@ -23,11 +23,12 @@ export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export WS=$HOME/workspace
 export PGUSER=postgres
 
-if [ -n "$(which atom)" ]; then
-  export EDITOR=atom
-else
-  export EDITOR=vim
-fi
+# Pullulant
+export PU_HOME=/Users/hired/workspace/kig/pullulant
+export PATH=$PATH:${PU_HOME}
+unalias pu 2>/dev/null
+
+export EDITOR=vim
 
 if [ ! -z "$(echo $SHELL | grep bash)" -a ! -z "$(which brew)" ]; then
   if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -46,4 +47,6 @@ for script in ${scripts[@]}; do
   fi
 done
 
-dkenv
+rb      # init rbenv
+
+dkenv   # init docker
