@@ -18,11 +18,12 @@ function setup {
 
   cd ${pu_home}
   source "lib/pu-loader"
+
 }
 
 setup
 
-while getopts "ar:SBLIRKFCfqnvlhHxpZ" opt; do
+while getopts "ar:SBPLIRKFCfqnvlhHxpZ" opt; do
   case $opt in
     a)
     export runners=${installers}          ;;
@@ -45,6 +46,8 @@ while getopts "ar:SBLIRKFCfqnvlhHxpZ" opt; do
     export opts_force=" --force "         ;;
     I)
     export opts_ignore_errors=yes         ;;
+    P)
+    export opts_rsync_backup=             ;;
 
     #========================= Home Brew ============================
 

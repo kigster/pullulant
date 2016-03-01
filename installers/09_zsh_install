@@ -22,9 +22,9 @@ function zsh_install {
 
   [[ -z "$(echo $SHELL | grep zsh)" && -n "${opts_change_shell_to_zsh}" ]] && run "chsh -s /usr/local/bin/zsh"
 
-  run "rsync -a ${zsh_rsync_home_dir}.zshrc ${HOME}/"
-  run "rsync -a ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
-  run "rsync -a ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
+  run "rsync ${opts_verbose} ${opts_rsync_backup} -a ${zsh_rsync_home_dir}.zshrc ${HOME}/"
+  run "rsync ${opts_verbose} ${opts_rsync_backup} -a ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
+  run "rsync ${opts_verbose} ${opts_rsync_backup} -a ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
 
   rc=${HOME}/.zshrc
   [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i '' -e 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"

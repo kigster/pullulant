@@ -72,6 +72,8 @@ function package-config {
   for option in ${pu_options}; do
     eval "export ${option}="
   done
+
+  opts_rsync_backup=" -b --suffix=~pullulant-backup "
 }
 
 function pu_option_value {

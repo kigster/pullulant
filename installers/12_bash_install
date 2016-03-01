@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 function bash_install {
-  run "rsync -a ${rsync_home_dir} ${HOME}"
+  run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
 
   ln -nfs ~/.bashrc ~/.bash_login
   $(grep bashrc ~/.bash_profile > /dev/null)
