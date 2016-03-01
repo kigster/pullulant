@@ -44,9 +44,32 @@ alias b64paste='pbpaste | base64 --decode'
 # followed by user name
 alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
 
-function py {
-  [[ -z "$(which pyenv)" ]] || eval "$(pyenv init -)"
+bbinit() {
+  b=$1
+  have_it=$(which ${b})
+  if [ -n "${have_it}" ]; then
+    eval "$(${b} init -)"
+  fi
 }
-function rb {
-  [[ -z "$(which rbenv)" ]] || eval "$(rbenv init -)"
+
+# use it like this:
+# initialize pyenv
+# py
+# shortcut to pyenv:
+# py versions
+
+py() {
+  if [ -n "$*" ]; then
+    pyenv $*
+  else
+    bbinit "pyenv"
+  fi
+}
+
+rb() {
+  if [ -n "$*" ]; then
+    rbenv $*
+  else
+    bbinit "rbenv"
+  fi
 }
