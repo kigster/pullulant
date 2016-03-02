@@ -37,7 +37,7 @@ if [ ! -z "$(echo $SHELL | grep bash)" -a ! -z "$(which brew)" ]; then
 fi
 
 # load user's custom zsh file
-scripts=(.bash_colors .bash_docker .bash_services .bash_aliases .zsh-${USER} )
+scripts=(.bash_colors .bash_docker .bash_services .bash_aliases .bash_${USER} )
 
 for script in ${scripts[@]}; do
   if [ -s "${HOME}/${script}" ]; then
