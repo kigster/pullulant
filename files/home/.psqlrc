@@ -1,7 +1,7 @@
 -- don't output commands as we run them
 \set QUIET 1
 -- set how to output numbers (this turns on thousdand separators)
-\pset numericlocale
+-- \pset numericlocale
 -- stop using less to page output
 \pset pager
 -- By default, NULL displays as an empty space. Is it actually an empty
@@ -33,6 +33,7 @@
 \set version 'SELECT version();'
 \set extensions 'select * from pg_available_extensions;'
 \set active 'select pid,client_addr,client_port,waiting,state,substring(query for 100) as query from pg_stat_activity where state != ''idle'';'
-\set top5 'select substring(query for 100) as query, to_char(total_time/1000/60, ''999,990D00'') as total_time_mins, calls, to_char(total_time/calls, ''999,990D00'') latency_ms, rows rows_returned from pg_stat_statements order by total_time desc limit 5;'
+\set top5 'select substring(query for 100) as query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
+\set top5all 'select  query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
 SET search_path TO public,extensions
 \timing
