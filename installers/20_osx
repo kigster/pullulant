@@ -16,4 +16,7 @@ function osx {
   # run "sudo defaults delete /Library/Preferences/com.apple.SoftwareUpdate CatalogURL"
   run "sudo ln -nfs /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport"
   printf "${bldgrn}You should now be able to run command ${bldwht}airport -s${bldgrn} to can local wifi networks\n"
+
+  run "rsync ${opts_verbose} ${opts_rsync_backup} -a files/applications /Applications"
+
 }
