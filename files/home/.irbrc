@@ -2,12 +2,6 @@ require 'colored2'
 require 'rubygems'
 require 'irb/completion'
 
-# irb history
-IRB.conf[:EVAL_HISTORY] = 1000
-IRB.conf[:SAVE_HISTORY] = 1000
-IRB.conf[:HISTORY_FILE] = File::expand_path("~/.irbhistory")
-
-# load .railsrc in rails environments
 railsrc_path = File.expand_path('~/.irbrc_rails')
 if ( ENV['RAILS_ENV'] || defined? Rails ) && File.exist?( railsrc_path )
   begin
@@ -36,6 +30,10 @@ module Kernel
 end
 
 
+# irb history
+IRB.conf[:EVAL_HISTORY]     = 1000
+IRB.conf[:SAVE_HISTORY]     = 1000
+IRB.conf[:HISTORY_FILE]     = File::expand_path('~/.irbhistory')
 IRB.conf[:IRB_NAME]         = ('I'.red << 'R'.yellow << 'B'.green).dark.bold
 IRB.conf[:MATH_MODE]        = false
 IRB.conf[:INSPECT_MODE]     = false
@@ -44,11 +42,9 @@ IRB.conf[:BACK_TRACE_LIMIT] = 16
 IRB.conf[:USE_LOADER]       = false
 IRB.conf[:USE_READLINE]     = true
 IRB.conf[:USE_TRACER]       = false
-IRB.conf[:SAVE_HISTORY]     = 1000
 IRB.conf[:IGNORE_SIGINT]    = true
 IRB.conf[:IGNORE_EOF]       = false
 IRB.conf[:DEBUG_LEVEL]      = 0
-
 
 IRB.conf[:PROMPT][:KIG] = {
   :AUTO_INDENT => true,
