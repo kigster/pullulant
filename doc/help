@@ -1,20 +1,20 @@
  ___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant (or gently: 'pu')                                                 |
+|  Pullulant (or gently: 'pu')                                       (B          |
 |  Development Environment Installer v1.2.0.                                        |
-|  Git rev 4e61bfa.                                                                 |
+|  Git rev 1a7e692.                                                                 |
 |___________________________________________________________________________________|
                                                                                     
-Installers:
+(BInstallers:
    permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap, monofonts,    
    postgresql, zsh_install, preferences, bash_install, atom, osx    
                                                                                     
-Helpers:
+(BHelpers:
    brew-update, brew-upgrade, brew-wipe, postgres-install, postgres-reinstall,    
    postgres-start, postgres-stop, postgres-wipe, sudo-disable, sudo-enable    
                                                                                     
 
-Usage: pu -a [-S] [-B] [-Z] [-I]                [ output ]
+(BUsage: pu -a [-S] [-B] [-Z] [-I]                [ output ]
        pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
        pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
    Or: pu [-l|-h|-H|-x]
@@ -30,6 +30,7 @@ Full run:
   -I          [I]gnore errors and continue. Do not stop when runners fail.
               In this mode any command that failed will have it's STDOUT and
               STDERR captured for later debugging.
+  -P          No backu[P] for rsync of bash and zsh files (default is to backup)
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
@@ -51,7 +52,7 @@ Homebrew control:
   -K          Relin[K] all brew formulas/casks during install
 
 Zsh
-  -Z          Change the default shell to Zsh
+  -Z          Do not change the default shell to Zsh (it's still installed)
 
 Output control:
   -p          su[p]press pretty section headers for more compact output
@@ -71,16 +72,16 @@ Examples:
     pu -r brew-wipe -r homebrew   # wipe and reinstall homebrew
     pu -r homebrew -F -pv         # only brew formulas verbose
     pu -aSB                       # install everything, minus
-                                  # homebrew and sprout-wrap
+                                    # homebrew and sprout-wrap
 
   Runner:
-      Most common usage is with the -a  flag, that runs all installers.
+      Most common usage is with the -a (B flag, that runs all installers.
       Installers are bash modules located in the ./installers folder. Each
       installer has a bash function that matches the name of the file.
 
       The -r flag can be supplied more than once, or once but with multiple
-      arguments in quotes, eg -r 'runner1 runner2' or -r runner1
-      -r runner2. Presence of this flag indicates that only specified
+      arguments in quotes, eg -r 'runner1 runner2'(B or -r runner1
+      -r runner2(B. Presence of this flag indicates that only specified
       runnings will run.
 
   Helpers
