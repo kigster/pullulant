@@ -1,50 +1,45 @@
 #!/usr/bin/env bash
 # encoding: UTF-8
 
-SCM_THEME_PROMPT_DIRTY=" ${bldred}🅾️  "
-SCM_THEME_PROMPT_CLEAN=" ${bldgrn}✅  "
-SCM_THEME_PROMPT_PREFIX=" ${bldylw}|${reset_color}"
-SCM_THEME_PROMPT_SUFFIX="${bldylw}|"
+SCM_THEME_PROMPT_DIRTY="${bldred} ☂ "
+SCM_THEME_PROMPT_CLEAN="${bldgrn} ✔ "
+SCM_THEME_PROMPT_PREFIX=" ${txtblu}[${txtrst}${txtblk}"
+SCM_THEME_PROMPT_SUFFIX="${txtrst}${txtblu}]"
 
-RBENV_THEME_PROMPT_PREFIX="[ruby-"
+RBENV_THEME_PROMPT_PREFIX="[rb-"
 RBENV_THEME_PROMPT_SUFFIX="]"
-VIRTUALENV_THEME_PROMPT_PREFIX='|'
-VIRTUALENV_THEME_PROMPT_SUFFIX='|'
+VIRTUALENV_THEME_PROMPT_PREFIX='[py-'
+VIRTUALENV_THEME_PROMPT_SUFFIX=']'
 
+export italic='\e[3;30m' # italic
 
 function python_version_prompt {
-  echo -e "[$(python --version 2>&1 | sed 's/[^.0-9]//g')]"
+  echo -e "${VIRTUALENV_THEME_PROMPT_PREFIX}$(python --version 2>&1 | sed 's/[^.0-9]//g')${VIRTUALENV_THEME_PROMPT_SUFFIX}"
 }
+
 function pullulant_environment {
   # TODO: make this dynamic!
   # echo -e "${red}[tbd]${reset_color}"
   echo -e ""
 }
 function pullulant_where {
-  echo -e "${bldgrn}[${bldgrn}${USER}@${bldylw}${HOSTNAME}${bldgrn}]${reset_color}"
+  echo -e "${txtrst}${txtblu}[${bldblu}${USER}${txtrst}${txtblu}@${bldblu}${HOSTNAME}${txtrst}${txtblu}]$(proper_reset)"
 }
 
-function proper_resets {
-  if [ -z "${reset_info}" ]; then
-    txtgrn=$(tput setaf 2)
-    txtblu=$(tput setaf 4)
-    bldwht=$(tput bold)
-    rsttxt=$(tput sgr0)
-    reset_info=true
-  fi
+function proper_reset {
+  [[ -z ${reset_seq} ]] && reset_seq=$(tput sgr0)
+  echo $reset_seq
 }
 
 function command_status {
   code=$1
-  [[ $code -eq 0 ]] && echo -e " 💚 "
-  [[ $code -ne 0 ]] && echo -e " 💔 "
+  [[ $code -eq 0 ]] && echo -e " ✔ "
+  [[ $code -ne 0 ]] && echo -e "❗️ "
 }
 
 function prompt_command() {
   result=$?
-  proper_resets
-
-  PS1="\n${bldblk}$(rbenv_version_prompt)$(pullulant_where)${orange} in ${reset_color}\w$(command_status $result)\n${txtylw}$(scm_char)$(scm_prompt_info)${bldblu} ➜ ${txtrst} "
+  PS1="\n${bldblk}$(rbenv_version_prompt)$(python_version_prompt)$(pullulant_where) $(scm_char)$(scm_prompt_info)\n${bldgrn}in ${txtrst}${italic}${txtgrn}\w$(command_status $result)$(proper_reset)\n ⤷ "
 }
 
 PROMPT_COMMAND=prompt_command;
