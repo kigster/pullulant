@@ -9,7 +9,7 @@ color_spacers=${bldblk}
 color_ruby=${txtpur}
 color_python=${txtpur}
 color_time=${bldylw}
-color_pwd=${txtblu}
+color_pwd=${bldblu}
 
 SCM_THEME_PROMPT_DIRTY="${bldred} ☂ "
 SCM_THEME_PROMPT_CLEAN="${bldgrn} ✔ "
@@ -33,7 +33,7 @@ function ruby_prompt {
 
 function date_time() {
   if [ "$1" == "color" ]; then
-    date "+${txtylw}%A, ${bldgrn}%I:%M%p"
+    date "+${txtylw}%A, ${bldylw}%I:%M%p"
   else
     date "+%A, %I:%M%p"
   fi
@@ -64,11 +64,16 @@ function top_prompt() {
   printf "\033[1000D\033[${len}C$(date_time color)"
 }
 
+function sep() {
+  len=$(($COLUMNS - 2))
+  printf "${undblu}%*.*s\n" $len $len " "
+} 
 function prompt_command() {
   local result=$?
+  local sep="$(sep)"
   local top_row="$(pullulant_where)$(ruby_prompt)$(python_prompt) ${txtgrn}$(scm_char)$(scm_prompt_info)"
   local bottom_row="$(top_prompt)\n${color_pwd}in \w$(command_status $result)$(proper_reset)\n ⤷ "
-  PS1="${top_row}${bottom_row}"
+  PS1="${sep}\n${top_row}${bottom_row}"
 }
 
 PROMPT_COMMAND=prompt_command;
