@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # encoding: UTF-8
+source ~/.bash_colors
 
 PYTHON_PROMPT_OFF=${PYTHON_PROMPT_OFF-''}
 RUBY_PROMPT_OFF=${RUBY_PROMPT_OFF-''}
@@ -32,7 +33,7 @@ function ruby_prompt {
 
 function date_time() {
   if [ "$1" == "color" ]; then
-    date "+${bldylw}%A, ${bldred}%I:%M%p"
+    date "+${txtylw}%A, ${bldgrn}%I:%M%p"
   else
     date "+%A, %I:%M%p"
   fi
@@ -43,7 +44,7 @@ function pullulant_environment {
   echo -e ""
 }
 function pullulant_where {
-  echo -e "${orange}${USER}${txtrst}${txtblu} @ ${bldylw}${HOSTNAME}$(proper_reset)"
+  echo -e "${orange}${USER}${txtrst}${txtblu} @ ${txtylw}${HOSTNAME}$(proper_reset)"
 }
 
 function proper_reset {
@@ -53,7 +54,7 @@ function proper_reset {
 
 function command_status {
   code=$1
-  [[ $code -eq 0 ]] && echo -e " ${bldgrn} ♺  "
+  [[ $code -eq 0 ]] && echo -e " ${bldgrn} ✔  ${txtrst}"
   [[ $code -ne 0 ]] && echo -e " ${bldwht}❗️ ${txtrst}"
 }
 
@@ -65,8 +66,8 @@ function top_prompt() {
 
 function prompt_command() {
   local result=$?
-  local top_row="$(pullulant_where)$(ruby_prompt)$(python_prompt) ${bldgrn}$(scm_char)${bldylw}$(scm_prompt_info)"
-  local bottom_row="$(top_prompt)\n${txtgrn}in ${color_pwd}\w$(command_status $result)$(proper_reset)\n ⤷ "
+  local top_row="$(pullulant_where)$(ruby_prompt)$(python_prompt) ${txtgrn}$(scm_char)$(scm_prompt_info)"
+  local bottom_row="$(top_prompt)\n${color_pwd}in \w$(command_status $result)$(proper_reset)\n ⤷ "
   PS1="${top_row}${bottom_row}"
 }
 
