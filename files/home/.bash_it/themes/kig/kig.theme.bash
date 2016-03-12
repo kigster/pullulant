@@ -1,17 +1,8 @@
 #!/usr/bin/env bash
 # encoding: UTF-8
 
-SCM_THEME_PROMPT_DIRTY="${bldred} ☂ "
-SCM_THEME_PROMPT_CLEAN="${bldgrn} ✔ "
-SCM_THEME_PROMPT_PREFIX=" ${bldblk}[${txtrst}${txtpur}"
-SCM_THEME_PROMPT_SUFFIX="${txtrst}${bldblk}]"
-
-RBENV_THEME_PROMPT_PREFIX=''
-RBENV_THEME_PROMPT_SUFFIX=''
-VIRTUALENV_THEME_PROMPT_PREFIX=''
-VIRTUALENV_THEME_PROMPT_SUFFIX=''
-
-export italic='\e[3;30m' # italic
+PYTHON_PROMPT_OFF=${PYTHON_PROMPT_OFF-''}
+RUBY_PROMPT_OFF=${RUBY_PROMPT_OFF-''}
 
 color_spacers=${bldblk}
 color_ruby=${txtpur}
@@ -19,8 +10,24 @@ color_python=${txtpur}
 color_time=${bldylw}
 color_pwd=${txtblu}
 
-function python_version_prompt {
-  echo -e "${VIRTUALENV_THEME_PROMPT_PREFIX}$(env python --version 2>&1 | sed 's/[^.0-9]//g')${VIRTUALENV_THEME_PROMPT_SUFFIX}"
+SCM_THEME_PROMPT_DIRTY="${bldred} ☂ "
+SCM_THEME_PROMPT_CLEAN="${bldgrn} ✔ "
+SCM_THEME_PROMPT_PREFIX=" ${bldblk}(${txtwht}"
+SCM_THEME_PROMPT_SUFFIX="${txtrst}${bldblk})"
+
+RBENV_THEME_PROMPT_PREFIX=' ('
+RBENV_THEME_PROMPT_SUFFIX=')'
+VIRTUALENV_THEME_PROMPT_PREFIX=' ('
+VIRTUALENV_THEME_PROMPT_SUFFIX=')'
+
+export italic='\e[3;30m' # italic
+
+
+function python_prompt {
+  [[ -z "$PYTHON_PROMPT_OFF" ]] && echo -e "${VIRTUALENV_THEME_PROMPT_PREFIX}${color_python}$(env python --version 2>&1 | sed 's/[^.0-9]//g')${VIRTUALENV_THEME_PROMPT_SUFFIX}"
+}
+function ruby_prompt {
+  [[ -z "$RUBY_PROMPT_OFF" ]] && echo -e "${color_ruby}$(rbenv_version_prompt)"
 }
 
 function date_time() {
@@ -58,7 +65,7 @@ function top_prompt() {
 
 function prompt_command() {
   local result=$?
-  local top_row="$(pullulant_where) ${color_spacers}━━━━━━┥ ${color_ruby}$(rbenv_version_prompt)${color_spacers}┝━━━━━━━ ${color_python} $(python_version_prompt)${color_spacers} ${txtylw}$(scm_char)${txtylw}$(scm_prompt_info)"
+  local top_row="$(pullulant_where)$(ruby_prompt)$(python_prompt) ${bldgrn}$(scm_char)${bldylw}$(scm_prompt_info)"
   local bottom_row="$(top_prompt)\n${txtgrn}in ${color_pwd}\w$(command_status $result)$(proper_reset)\n ⤷ "
   PS1="${top_row}${bottom_row}"
 }
