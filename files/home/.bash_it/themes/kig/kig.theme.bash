@@ -81,7 +81,7 @@ function top_prompt() {
 }
 
 function sep() {
-  len=$(($COLUMNS - 2))
+  len=$(($COLUMNS ))
   printf "${undblu}%*.*s\n" $len $len " "
 }
 function prompt_command() {
