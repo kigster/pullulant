@@ -5,11 +5,17 @@ source ~/.bash_colors
 PYTHON_PROMPT_OFF=${PYTHON_PROMPT_OFF-''}
 RUBY_PROMPT_OFF=${RUBY_PROMPT_OFF-''}
 
+
+export drkwht='\e[2;48m' # italic
+#export drkred='\e[1;30m' # italic
+export drkblu='\e[7;34m' # italic
+
 color_spacers=${bldblk}
 color_ruby=${txtpur}
 color_python=${txtpur}
-color_time=${bldylw}
-color_pwd=${bldblu}
+color_time=${bakred}
+color_pwd_path=${txtblu}
+color_pwd_cwd=${bldgrn}
 
 SCM_THEME_PROMPT_DIRTY="${bldred} ☂ "
 SCM_THEME_PROMPT_CLEAN="${bldgrn} ✔ "
@@ -21,8 +27,6 @@ RBENV_THEME_PROMPT_SUFFIX=')'
 VIRTUALENV_THEME_PROMPT_PREFIX=' ('
 VIRTUALENV_THEME_PROMPT_SUFFIX=')'
 
-export italic='\e[3;30m' # italic
-
 
 function python_prompt {
   [[ -z "$PYTHON_PROMPT_OFF" ]] && echo -e "${VIRTUALENV_THEME_PROMPT_PREFIX}${color_python}$(env python --version 2>&1 | sed 's/[^.0-9]//g')${VIRTUALENV_THEME_PROMPT_SUFFIX}"
@@ -33,10 +37,21 @@ function ruby_prompt {
 
 function date_time() {
   if [ "$1" == "color" ]; then
-    date "+${txtylw}%A, ${bldylw}%I:%M%p"
+    date "+${color_time} %A, %I:%M%p  "
   else
     date "+%A, %I:%M%p"
   fi
+}
+
+function short_uptime() {
+  echo -n $(uptime | awk 'BEGIN{FS=":"}{print $4}')
+}
+
+function cur_dir() {
+  dir=$(basename $PWD)
+  path=$(dirname $PWD)
+  path=~${path#${HOME}}
+  echo -n "${path}/${color_pwd_cwd}${dir}"
 }
 
 function pullulant_environment {
@@ -60,19 +75,20 @@ function command_status {
 
 function top_prompt() {
   local now=$(date_time)
-  local len=$(($COLUMNS - ${#now} - 1))
-  printf "\033[1000D\033[${len}C$(date_time color)"
+  local up=$(short_uptime)
+  local len=$(($COLUMNS - ${#now} - ${#up} - 5  ))
+  printf "\033[1000D\033[${len}C${drkblu} ${up} ${txtrst}$(date_time color)${txtrst}"
 }
 
 function sep() {
   len=$(($COLUMNS - 2))
   printf "${undblu}%*.*s\n" $len $len " "
-} 
+}
 function prompt_command() {
   local result=$?
   local sep="$(sep)"
   local top_row="$(pullulant_where)$(ruby_prompt)$(python_prompt) ${txtgrn}$(scm_char)$(scm_prompt_info)"
-  local bottom_row="$(top_prompt)\n${color_pwd}in \w$(command_status $result)$(proper_reset)\n ⤷ "
+  local bottom_row="$(top_prompt)\n${color_pwd_path}in $(cur_dir)$(command_status $result)$(proper_reset)\n ⤷ "
   PS1="${sep}\n${top_row}${bottom_row}"
 }
 
