@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # encoding: UTF-8
-source ~/.bash_colors
 
 PYTHON_PROMPT_OFF=${PYTHON_PROMPT_OFF-''}
 RUBY_PROMPT_OFF=${RUBY_PROMPT_OFF-''}
@@ -27,7 +26,6 @@ RBENV_THEME_PROMPT_SUFFIX=')'
 VIRTUALENV_THEME_PROMPT_PREFIX=' ('
 VIRTUALENV_THEME_PROMPT_SUFFIX=')'
 
-
 function python_prompt {
   [[ -z "$PYTHON_PROMPT_OFF" ]] && echo -e "${VIRTUALENV_THEME_PROMPT_PREFIX}${color_python}$(env python --version 2>&1 | sed 's/[^.0-9]//g')${VIRTUALENV_THEME_PROMPT_SUFFIX}"
 }
@@ -48,10 +46,14 @@ function short_uptime() {
 }
 
 function cur_dir() {
-  dir=$(basename $PWD)
-  path=$(dirname $PWD)
-  path=~${path#${HOME}}
-  echo -n "${path}/${color_pwd_cwd}${dir}"
+  local path=$(dirname $PWD)
+  local dir="$(basename $PWD)"
+  [[ "$path" == '/' && "$dir" == '/' ]] && dir= 
+  path=${path/$HOME/\~}
+  [[ $PWD == $HOME ]] && path='~' && dir=''
+  result="${path}/${color_pwd_cwd}${dir}"
+  result=${result/\/\//\//}
+  echo -n $result
 }
 
 function pullulant_environment {
@@ -88,7 +90,7 @@ function prompt_command() {
   local result=$?
   local sep="$(sep)"
   local top_row="$(pullulant_where)$(ruby_prompt)$(python_prompt) ${txtgrn}$(scm_char)$(scm_prompt_info)"
-  local bottom_row="$(top_prompt)\n${color_pwd_path}in $(cur_dir)$(command_status $result)$(proper_reset)\n ⤷ "
+  local bottom_row="$(top_prompt)\n${color_pwd_path}in $(cur_dir)$(command_status $result)$(proper_reset)\n ⤷  "
   PS1="${sep}\n${top_row}${bottom_row}"
 }
 
