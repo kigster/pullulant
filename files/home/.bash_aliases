@@ -41,6 +41,9 @@ alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
 alias ppjson="jq '.'"
 alias b64paste='pbpaste | base64 --decode'
 
+alias al='cd ~/arduino/libraries'
+alias ae='cd ~/projects/eclipse'
+alias j='bundle exec jekyll serve --watch -D --baseurl ""'
 # followed by user name
 alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
 
@@ -58,7 +61,7 @@ bbinit() {
 # shortcut to pyenv:
 # py versions
 
-py() {
+function pyenv_init() {
   if [ -n "$*" ]; then
     pyenv $*
   else
@@ -66,10 +69,15 @@ py() {
   fi
 }
 
-rb() {
+function rbenv_init() {
   if [ -n "$*" ]; then
     rbenv $*
   else
     bbinit "rbenv"
   fi
+}
+
+weather() {
+  zipcode=$1
+  ansiweather -l $zipcode -u imperial -a1
 }

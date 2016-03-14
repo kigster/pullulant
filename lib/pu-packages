@@ -16,7 +16,7 @@ function package-config {
     source "${custom_packages_file}"
   }
 
-  # List of Brew Formulas to install and link
+  # List of Brew Formulas to install and l`ink
   [[ -n "${brew_packages}" ]] || export brew_packages="
     rbenv
     ruby-build
@@ -62,6 +62,8 @@ function package-config {
     jq
     cmake
     tmux
+    ansiweather
+    go
   "
 
   [[ -n "${brew_casks}" ]] || export brew_casks="
@@ -77,12 +79,11 @@ function package-config {
     google-chrome
     google-drive
     google-hangouts
-    atom
+    atom-beta
     virtualbox
     slack
     dockertoolbox
     docker
-    docker-compose
     kitematic
     java
     teamviewer

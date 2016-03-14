@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function preferences {
+function prefs {
   cleanup_prefs
   run "cp -prf ./files/library-preferences/*  ${HOME}/Library/Preferences"
 }

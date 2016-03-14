@@ -11,6 +11,7 @@
 #_______________________________________________________________________________
 #
 function add_hostname {
+  sudo-enable
   hostname="$1"
   result=$(grep $hostname /etc/hosts)
   if [ $? -ne 0 ]; then
@@ -20,7 +21,7 @@ function add_hostname {
   fi
 }
 
-function hostnames {
+function etc_hosts {
   for hostname in $local_hosts; do
     add_hostname $hostname
   done

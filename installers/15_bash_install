@@ -12,13 +12,12 @@
 #
 function bash_install {
   run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
-
   ln -nfs ~/.bashrc ~/.bash_login
-  $(grep bashrc ~/.bash_profile > /dev/null)
-  if [ $? -eq 1 ]; then
-    run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
-    run "echo 'source ~/.bashrc' >> ~/.bash_profile"
-  fi
   local rc="${HOME}/.bashrc"
   [[ -n "$(grep PU_HOME $rc)" ]] || run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}; unalias pu 2>/dev/null' >> $rc "
+}
+
+# shortcut
+function _bash {
+  bash_install
 }

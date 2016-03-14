@@ -65,3 +65,22 @@ function services_intro {
   printf "Service Status:\n"
   services
 }
+
+function my-services {
+  if [ "$1" == "up" ]; then
+    cmd=load
+  elif [ "$1" == "down" ]; then
+    cmd=unload
+  else
+    echo "usage: wanelo-deps [ up | down ]"
+    return
+  fi
+  service=$2
+  if [ ! -z "$cmd" ]; then
+     cd ~/Library/LaunchAgentsDisabled/
+     for file in `ls -1 *${service}*.plist`; do
+       echo $cmd $file
+       launchctl $cmd -w $file
+     done
+  fi
+}

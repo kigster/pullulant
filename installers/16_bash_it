@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+function bash_it {
+  [[ -d '~/.bash_it' && -z "${opts_force}" ]] && return
+
+  #run "git clone https://github.com/kigster/bash-it.git ~/.bash_it"
+  run "cp -rp ~/workspace/kigster/bash-it/ ~/.bash_it"
+  run "rm -f ~/.bash_profile.bak"
+  run "cd ~/.bash_it && echo 'n'| ./install.sh"
+  run "sed -i.bak 's/bobby/powerline-multiline/g' ~/.bash_profile"
+  run "source ~/.bash_it/bash_it.sh && bash-it enable alias atom bundler docker git heroku homebrew homebrew-cask npm osx rails textmate vim"
+  run "source ~/.bash_it/bash_it.sh && bash-it enable plugin docker git hub node osx postgres rbenv ruby ssh textmate nginx"
+  $(grep bashrc ~/.bash_profile > /dev/null)
+  if [ $? -eq 1 ]; then
+    run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
+    run "echo 'source ~/.bashrc' >> ~/.bash_profile"
+  fi
+
+}

@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 
 export rubyinstall_ran=
-function rubyinstall {
+function ruby_install {
   [[ -n "${rubyinstall_ran}" ]] && return
   run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
   for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do

@@ -27,26 +27,22 @@ export PGUSER=postgres
 export PU_HOME=/Users/hired/workspace/kig/pullulant
 export PATH=$PATH:${PU_HOME}
 unalias pu 2>/dev/null
-
+export PROJECT_PATHS="~/workspace/kig:~/workspace:~/cpp"
 export EDITOR=vim
 
-if [ ! -z "$(echo $SHELL | grep bash)" -a ! -z "$(which brew)" ]; then
-  if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
-  fi
-fi
+function load_locals() {
+  # load user's custom zsh file
+  local scripts=(.bash_colors .bash_functions .bash_docker .bash_services .bash_aliases .bash_${USER} )
+  local highlight='\e[7;34m'
+  local reset='\e[0;0m'
+  for script in ${scripts[@]}; do
+    printf "Sourcing in ${highlight}${script}${reset}...\n"
+    if [ -s "${HOME}/${script}" ]; then
+      source "${HOME}/${script}"
+    else
+      printf "Whoops, ${highlight}${script}${reset} was not found, ignoring...\n"
+    fi
+  done
+}
 
-# load user's custom zsh file
-scripts=(.bash_colors .bash_docker .bash_services .bash_aliases .bash_${USER} )
-
-for script in ${scripts[@]}; do
-  if [ -s "${HOME}/${script}" ]; then
-    source "${HOME}/${script}"
-  else
-    printf "${script} was not found, ignored...\n"
-  fi
-done
-
-rb      # init rbenv
-
-dkenv   # init docker
+load_locals

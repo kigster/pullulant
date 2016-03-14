@@ -25,7 +25,7 @@
 \set VERBOSITY verbose
 \encoding unicode
 \echo 'What is up!'
-\echo 'Type :version to see the PostgreSQL version.' 
+\echo 'Type :version to see the PostgreSQL version.'
 \echo 'Type :extensions to see the available extensions.'
 \echo 'Type :active to see all currently executing queries.'
 \echo 'Type :top5 to see top 5 time consuming queries as reported by pg_stat_statements.'
