@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+# List of Brew Formulas to install and l`ink
+brew_packages+="
+  rbenv
+  ruby-build
+  node
+  npm
+  homebrew/dupes/rsync
+  bash-completion
+  redis
+  nginx
+  libxml2
+  libxslt
+  libiconv
+  libzip
+  zlib
+  zsh
+  openssl
+  libmemcached
+  vim
+  wget
+  htop
+  pcre
+  nmap
+  hub
+  ack
+  haproxy
+  elasticsearch
+  qt
+  the_silver_searcher
+  imagemagick
+  pstree
+  tree
+  pyenv
+  awscli
+  awsebcli
+  aws-as
+  aws-cloudsearch
+  aws-elasticbeanstalk
+  aws-elasticache
+  aws-mon
+  jq
+  cmake
+  tmux
+  ansiweather
+  go
+"
+
+brew_casks+="
+  clion
+  webstorm
+  rubymine
+  shiftit
+  istat-menus
+  iterm2
+  slack
+  gitx
+  github-desktop
+  google-chrome
+  google-drive
+  google-hangouts
+  atom-beta
+  virtualbox
+  slack
+  dockertoolbox
+  docker
+  kitematic
+  java
+  teamviewer
+  alfred
+"
+
+brew_relink_packages+="
+  libxml2
+  libxslt
+  libiconv
+  libzip
+  zlib
+  openssl
+"
+
+# these hosts will be added to /etc/hosts as 127.0.0.1
+# eg. local.mydomain.com
+local_hosts+="
+"
+
+# these nodejs modules will be install using npm
+nodejs_modules+="
+  bower
+  ember-cli
+"
+
+# This is the ruby version that will be installed using rbenv
+# the first one in the list will be set as the default. At least one
+# is required to keep going with SproutWrap.
+rbenv_ruby_versions=("2.2.3" "2.3.0")

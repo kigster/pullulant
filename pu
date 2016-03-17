@@ -23,7 +23,17 @@ function setup {
 
 setup
 
-while getopts "ar:SBPLIRKFCfqnvlhHxpZ" opt; do
+function package-config {
+  package_file="${pu_home}/templates/${opts_template}/packages"
+  if [ -s "${package_file}" ]; then
+    source ${package_file}
+  else
+    printf "${bakred}ERROR: Unable to find file ${package_file} for template '${opts_template}' ${txtrst}\n\n" >&2
+    abort 131
+  fi
+}
+
+while getopts "ar:SBPLIRKFCfqnvlhHxpZt:" opt; do
   case $opt in
     a)
     export runners=${installers}          ;;
@@ -36,79 +46,87 @@ while getopts "ar:SBPLIRKFCfqnvlhHxpZ" opt; do
       export runners="$runners $OPTARG"
     fi                                    ;;
 
+    #========================= Template     =========================
+
+    t)
+      export opts_template=${OPTARG}        ;;
     #========================= Runner Stuff =========================
 
     S)
-    export opts_skip_sprout_wrap=yes      ;;
+      export opts_skip_sprout_wrap=yes      ;;
     B)
-    export opts_skip_brew_upgrade=yes     ;;
+      export opts_skip_brew_upgrade=yes     ;;
     f)
-    export opts_force=" --force "         ;;
+      export opts_force=" --force "         ;;
     I)
-    export opts_ignore_errors=yes         ;;
+      export opts_ignore_errors=yes         ;;
     P)
-    export opts_rsync_backup=             ;;
+      export opts_rsync_backup=             ;;
 
     #========================= Home Brew ============================
 
     F)
-    export opts_brew_formulae_only=yes    ;;
+      export opts_brew_formulae_only=yes    ;;
     C)
-    export opts_brew_casks_only=yes       ;;
+      export opts_brew_casks_only=yes       ;;
     L)
-    export opts_brew_link_only=yes        ;;
+      export opts_brew_link_only=yes        ;;
     R)
-    export opts_brew_reinstall=yes        ;;
+      export opts_brew_reinstall=yes        ;;
     K)
-    export opts_brew_link_force=yes       ;;
+      export opts_brew_link_force=yes       ;;
 
     #========================= Other          =======================
 
     Z)
-    export opts_change_shell_to_zsh=yes     ;;
+      export opts_change_shell_to_zsh=yes     ;;
 
     #========================= Output Control =======================
     p)
-    export opts_suppress_headers=yes      ;;
+      export opts_suppress_headers=yes      ;;
     q)
-    export opts_quiet=yes                 ;;
+      export opts_quiet=yes                 ;;
     n)
-    export opts_dryrun=yes                ;;
+      export opts_dryrun=yes                ;;
     v)
-    export opts_verbose=" -v ";           ;;
+      export opts_verbose=" -v ";           ;;
 
     #========================= Help and Info ========================
 
     x)
-    ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
-    cat doc/help; finish;                 ;;
+      ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
+      cat doc/help; finish;                 ;;
     h)
-    pu-welcome-screen-short
-    pu-print-help
-    finish;                               ;;
+      pu-welcome-screen-short
+      pu-print-help
+      finish;                               ;;
     H)
-    pu-welcome-screen-short
-    pu-print-help
-    pu-print-detailed-usage
-    finish;                               ;;
+      pu-welcome-screen-short
+      pu-print-help
+      pu-print-detailed-usage
+      finish;                               ;;
 
     l)
-    pu-short-header
-    pu-installers-helpers
-    finish;                               ;;
+      pu-short-header
+      pu-installers-helpers
+      finish;                               ;;
     \?)
-    pu-print-help
-    printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
-    abort 126
-    ;;
+      pu-print-help
+      printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
+      abort 126
+      ;;
     :)
-    printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
-    abort 127
+      printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
+      abort 127
     ;;
   esac
 done
 
 function main {
+
+  # Load package definitions based on the <-t template> setting.
+  package-config
+
   # loop over installers, and if either passed as an argument or no arguments
   #" at all – run it."
 

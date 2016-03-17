@@ -67,6 +67,7 @@ function package-config {
     opts_brew_casks_only
     opts_brew_link_only
     opts_change_shell_to_zsh
+    opts_template
   "
 
   for option in ${pu_options}; do
@@ -74,6 +75,7 @@ function package-config {
   done
 
   opts_rsync_backup=" -b --suffix=~pullulant-backup "
+  opts_template='default'
 }
 
 function pu_option_value {
