@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
+# https://github.com/kigster/pullulant/
+#
+# Distributed under MIT License
+#_______________________________________________________________________________
+#
+export bash_it_plugins+="aws"
+
+export bash_it_aliases+="aws"
+
+export bash_it_completions="aws"
+"
+# List of Brew Formulas to install and l`ink
+[[ -n "${brew_packages}" ]] || brew_packages="
+  ack
+  ansiweather
+  aws-as
+  aws-cloudsearch
+  aws-elasticache
+  aws-elasticbeanstalk
+  aws-mon
+  awscli
+  awsebcli
+"
+
+export brew_casks="kitematic dockertoolbox"
+
+export brew_relink_packages+=""
+
+export nodejs_modules="
+  node-aws
+  node-aws-beanstalk
+  node-aws-cli
+  node-aws-cloudfront-sg
+  node-aws-helpers
+  node-aws-kinesis-stream
+  node-aws-lambda
+  node-aws-lambda-deploy
+  node-aws-lambda-log
+  node-aws-sqs-stream
+  node-awssum
+"

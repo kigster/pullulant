@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
+# https://github.com/kigster/pullulant/
+#
+# Distributed under MIT License
+#_______________________________________________________________________________
+
+export pythoninstall_ran=
+function python_install {
+  [[ -n "${pythoninstall_ran}" ]] && return
+  run "echo Verifying that the python versions ${pyenv_python_versions[*]} are installed"
+  for pyenv_python_version in ${pyenv_python_versions[@]}; do
+    status=$(pyenv versions | grep ${pyenv_python_version})
+    if [ $? -ne 0 ]; then
+      run 'printf "${bldylw}Installing python from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
+      run "pyenv install ${opts_verbose} ${pyenv_python_version}"
+      run "eval $(pyenv init -) && pyenv rehash"
+      export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    fi
+  done
+
+  run "pyenv global ${pyenv_python_versions[0]}"
+  export pythoninstall_ran=yes
+}

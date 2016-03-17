@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# (c) 2016 Konstantin Gredeskoul
-# https://github.com/kigster
-#
-# For project Pullulant
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
 # https://github.com/kigster/pullulant/
 #
-# MIT License
+# Distributed under MIT License
 #_______________________________________________________________________________
-
 sudoers_dir="/private/etc/sudoers.d"
 export sudoers_enabled=
 

@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# (c) 2016 Konstantin Gredeskoul
-# https://github.com/kigster
-#
-# For project Pullulant
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
 # https://github.com/kigster/pullulant/
+#
+# Distributed under MIT License
 # Portions of this code were developed with sponsorship from GoShippo.com
 #
-# MIT License
 #_______________________________________________________________________________
 #
 
