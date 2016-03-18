@@ -16,6 +16,18 @@ function package-config {
     source "${custom_packages_file}"
   }
 
+  [[ -n "${bash_it_plugins}" ]] || export bash_it_plugins="
+    docker git hub node osx postgres ruby ssh nginx 
+  "
+
+  [[ -n "${bash_it_aliases}" ]] || export bash_it_aliases="
+    atom bundler docker git heroku homebrew homebrew-cask npm osx rails vim
+  "
+
+  [[ -n "${bash_it_completions}" ]] || export bash_it_completions="
+    brew bundler capistrano gem git hub npm pip rake ssh
+  "
+
   # List of Brew Formulas to install and l`ink
   [[ -n "${brew_packages}" ]] || export brew_packages="
     rbenv

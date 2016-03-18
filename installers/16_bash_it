@@ -15,23 +15,26 @@ function use_newer_bash() {
   local newer_bash=
   [[ -n "$(grep \"${newer_bash}\" /etc/shells)" ]] && return
   run "echo ${newer_bash} | sudo tee -a /etc/shells"
-  local current_shell=$(finger kig | grep Shell | awk 'BEGIN{FS="Shell: "}{print $2}')
+  local current_shell=$(finger ${USER} | grep Shell | awk 'BEGIN{FS="Shell: "}{print $2}')
   if [[ "${current_shell}" != "${newer_bash}" && -s "${newer_bash}" ]] ; then
-    run "printf \"${bldylw}%s:\" Please enter your password, to change your shell to the latest BASH: # show-stdout"
-    run "chsh -s ${newer_bash}"
+    run "sudo chsh -s ${newer_bash} ${USER}"
   fi
 }
 
 function bash_it {
-  [[ -d '~/.bash_it' && -z "${opts_force}" ]] && return
-  [[ -d '~/.bash_it' ]] && run "rm -rf ~/.bash_it"
+  status=0
+  [[ -d ${bash_it_home} && -z "${opts_force}" ]] && return
+  [[ -d ${bash_it_home} ]] && run "rm -rf ${bash_it_home}"
 
-  run "git clone https://github.com/kigster/bash-it.git ~/.bash_it"
+  run "git clone https://github.com/kigster/bash-it.git ${bash_it_home}"
   run "rm -f ~/.bash_profile.bak"
-  run "cd ~/.bash_it && echo 'n'| ./install.sh"
+  run "cd ${bash_it_home} && echo 'n'| ./install.sh && cd -"
   run "sed -i.bak 's/bobby/powerline-multiline/g' ~/.bash_profile"
-  run "source ~/.bash_it/bash_it.sh && bash-it enable alias atom bundler docker git heroku homebrew homebrew-cask npm osx rails textmate vim"
-  run "source ~/.bash_it/bash_it.sh && bash-it enable plugin docker git hub node osx postgres rbenv ruby ssh textmate nginx"
+
+  [[ -n "${bash_it_aliases}"     ]] && run "bash -l -c 'bash-it enable alias  ${bash_it_aliases}'"
+  [[ -n "${bash_it_plugins}"     ]] && run "bash -l -c 'bash-it enable plugin ${bash_it_plugins}'"
+  [[ -n "${bash_it_completions}" ]] && run "bash -l -c 'bash-it enable completion ${bash_it_completions}'"
+
   $(grep bashrc ~/.bash_profile > /dev/null)
   if [ $? -eq 1 ]; then
     run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
