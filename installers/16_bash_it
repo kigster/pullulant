@@ -13,8 +13,8 @@
 function bash_it {
   [[ -d '~/.bash_it' && -z "${opts_force}" ]] && return
 
-  #run "git clone https://github.com/kigster/bash-it.git ~/.bash_it"
-  run "cp -rp ~/workspace/kigster/bash-it/ ~/.bash_it"
+  run "git clone https://github.com/kigster/bash-it.git ~/.bash_it"
+  #run "cp -rp ~/workspace/kigster/bash-it/ ~/.bash_it"
   run "rm -f ~/.bash_profile.bak"
   run "cd ~/.bash_it && echo 'n'| ./install.sh"
   run "sed -i.bak 's/bobby/powerline-multiline/g' ~/.bash_profile"
