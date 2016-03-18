@@ -49,6 +49,7 @@ function package-config {
   readonly export rsync_atom_dir="./files/atom/"
   readonly export zsh_rsync_home_dir="./files/zsh/"
   readonly export custom_packages_file="${HOME}/.pullulant_packages"
+  readonly export bash_it_home="${HOME}/.bash_it"
 
   # these can be overridden by the flags
   readonly export pu_options="
