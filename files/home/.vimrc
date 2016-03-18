@@ -18,7 +18,7 @@
 :set background=dark
 
 set t_Co=256
-"colorscheme dark-ruby
+colorscheme evolution
 
 set guicursor+=n-v-c:blinkon0
 set guifont=Consolas:h16

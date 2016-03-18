@@ -26,10 +26,9 @@ export WS=$HOME/workspace
 export PGUSER=postgres
 
 # Pullulant
-export PU_HOME=/Users/hired/workspace/kig/pullulant
+export PU_HOME=${HOME}/workspace/pullulant
 export PATH=$PATH:${PU_HOME}
 unalias pu 2>/dev/null
-export PROJECT_PATHS="~/workspace/kig:~/workspace:~/cpp"
 export EDITOR=vim
 
 function load_locals() {
