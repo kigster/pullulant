@@ -51,7 +51,6 @@ function package-config {
     libmemcached
     vim
     wget
-    htop
     pcre
     nmap
     hub
@@ -91,7 +90,7 @@ function package-config {
     google-chrome
     google-drive
     google-hangouts
-    atom-beta
+    beta-atom
     virtualbox
     slack
     dockertoolbox
