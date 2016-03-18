@@ -10,11 +10,23 @@
 # MIT License
 #_______________________________________________________________________________
 #
+
+function use_newer_bash() {
+  local newer_bash=
+  [[ -n "$(grep \"${newer_bash}\" /etc/shells)" ]] && return
+  run "echo ${newer_bash} | sudo tee -a /etc/shells"
+  local current_shell=$(finger kig | grep Shell | awk 'BEGIN{FS="Shell: "}{print $2}')
+  if [[ "${current_shell}" != "${newer_bash}" && -s "${newer_bash}" ]] ; then
+    run "printf \"${bldylw}%s:\" Please enter your password, to change your shell to the latest BASH: # show-stdout"
+    run "chsh -s ${newer_bash}"
+  fi
+}
+
 function bash_it {
   [[ -d '~/.bash_it' && -z "${opts_force}" ]] && return
+  [[ -d '~/.bash_it' ]] && run "rm -rf ~/.bash_it"
 
   run "git clone https://github.com/kigster/bash-it.git ~/.bash_it"
-  #run "cp -rp ~/workspace/kigster/bash-it/ ~/.bash_it"
   run "rm -f ~/.bash_profile.bak"
   run "cd ~/.bash_it && echo 'n'| ./install.sh"
   run "sed -i.bak 's/bobby/powerline-multiline/g' ~/.bash_profile"
@@ -26,4 +38,7 @@ function bash_it {
     run "echo 'source ~/.bashrc' >> ~/.bash_profile"
   fi
 
+  use_newer_bash
 }
+
+
