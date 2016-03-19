@@ -99,6 +99,7 @@ function package-config {
     java
     teamviewer
     alfred
+    atom-beta
   "
 
   [[ -n "${brew_relink_packages}" ]] || export brew_relink_packages="
