@@ -1,17 +1,25 @@
 #!/usr/bin/env bash
-
-[[ -n "${bash_it_plugins}" ]] || bash_it_plugins="
+#_______________________________________________________________________________
+#
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
+# https://github.com/kigster/pullulant/
+#
+# Distributed under MIT License
+#_______________________________________________________________________________
+#
+bash_it_plugins+="
   ruby
   rbenv
   rvm
 "
 
-[[ -n "${bash_it_aliases}" ]] || bash_it_aliases="
+bash_it_aliases+="
   bundler
   rails
 "
 
-[[ -n "${bash_it_completions}" ]] || bash_it_completions="
+bash_it_completions+="
   rake
   capistrano
   bundler
@@ -62,4 +70,4 @@ nodejs_modules+="
 # This is the ruby version that will be installed using rbenv
 # the first one in the list will be set as the default. At least one
 # is required to keep going with SproutWrap.
-rbenv_ruby_versions=("2.3.0" "2.2.4")
+rbenv_ruby_versions+=("2.3.0" "2.2.4")

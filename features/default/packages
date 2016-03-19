@@ -44,10 +44,10 @@
   openssl
   pcre
   pstree
-  rbenv
-  ruby-build  
   qt
+  rbenv
   redis
+  ruby-build
   ruby-build
   the_silver_searcher
   tmux
@@ -60,9 +60,9 @@
 "
 
 [[ -n "${brew_casks}" ]] || brew_casks="
-  1password-beta
+  Caskroom/versions/1password-beta
   alfred
-  atom-beta
+  Caskroom/versions/atom-beta
   github-desktop
   gitx
   google-chrome

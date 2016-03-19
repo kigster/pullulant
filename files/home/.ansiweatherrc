@@ -3,4 +3,4 @@ daylight:true
 fetch_cmd:ftp -V -o -
 units:metric
 daylight:true
-api_key:008d03ed2a9f0c6f263f52fcaca7ba8d
+api_key:

@@ -6,8 +6,6 @@
 # https://github.com/kigster/pullulant/
 #
 # Distributed under MIT License
-# Portions of this code were developed with sponsorship from GoShippo.com
-#
 #_______________________________________________________________________________
 #
 
@@ -23,14 +21,47 @@ function setup {
 setup
 
 function package-config {
-  package_file="${pu_home}/templates/${opts_template}/packages"
-  if [ -s "${package_file}" ]; then
-    source ${package_file}
-  else
-    printf "${bakred}ERROR: Unable to find file ${package_file} for template '${opts_template}' ${txtrst}\n\n" >&2
-    abort 131
-  fi
+  pu-long-header
+  declare -a features=(default ${opts_features})
+  printf "\n\n"
+  for feature in "${features[@]}"; do
+    printf "   ${txtwht}${bldblu}Loading package definitions from feature ${txtblk}${bakylw} ◀︎ ${feature} ▶︎ ${txtrst}  \n"
+    # if the feature has slashes, assume complete pathname
+    local feature_with_path=$(echo $feature | grep  '/')
+    if [ "${feature_with_path}" != "${feature}" ]; then
+      package_file="${pu_home}/features/${feature}/packages"
+    else
+      package_file="$feature"
+    fi
+    if [ -s "${package_file}" ]; then
+      source ${package_file}
+    else
+      printf "${bldred}ERROR: Unable to find feature ${feature}: ${bldwht}${package_file} does not exist?${txtrst}\n\n" >&2
+      abort 131
+    fi
+  done
+
+  source "${pu_home}/lib/pu-uniq-packages"
+
+  if [ -t 0 ]; then stty -echo -icanon -icrnl time 0 min 0; fi
+  keypress=''
+
+  printf "\n${txtwht}   ${undylw}Attention:${txtrst} Please review the run parameters above.\n   If something is wrong or missing, hit Ctrl-C to abort.\n"
+  for wait in {20..1}; do
+    keypress="`cat -v`"
+    printf "\033[1000D   You have ${bldylw}${wait}${txtrst} seconds until start. ${bldgrn}Press ANY key to continue.${txtrst}"
+    sleep 1
+    keypress="`cat -v`"
+    if [ "x$keypress" != "x" ]; then
+      break
+    fi
+    echo
+  done
+  if [ -t 0 ]; then stty sane; fi
+  clear
 }
+
+opts_features=""
 
 while getopts "ar:SBPLIRKFCfqnvlhHxpZt:" opt; do
   case $opt in
@@ -45,10 +76,10 @@ while getopts "ar:SBPLIRKFCfqnvlhHxpZt:" opt; do
       export runners="$runners $OPTARG"
     fi                                    ;;
 
-    #========================= Template     =========================
+    #========================= Features     =========================
 
     t)
-      export opts_template=${OPTARG}        ;;
+      export opts_features+=" $OPTARG "     ;;
     #========================= Runner Stuff =========================
 
     S)

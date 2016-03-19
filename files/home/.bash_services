@@ -10,33 +10,35 @@
 # MIT License
 #_______________________________________________________________________________
 
-function load {
+function service-start {
   cd ~/Library/LaunchAgents >/dev/null
   launchctl load -w *$1*
   cd - >/dev/null
   echo
-  running $1
+  is-service-running $1
 }
-function unload {
+function service-stop {
   cd ~/Library/LaunchAgents>/dev/null
   launchctl unload -w *$1*
   cd - >/dev/null
   echo
-  running $1
+  is-service-running $1
 }
-function reload {
-  unload $1
-  load $1
+function service-restart {
+  service-stop $1
+  service-start $1
 }
-function loaded {
+
+function are-services-running {
   printf "\n"
   while test ${#} -gt 0
   do
-    running $1
+    is-service-running $1
     shift
   done
 }
-function running {
+
+function is-service-running {
   pattern=$1
   [[ -n "${ZSH_VERSION}" ]] && setopt null_glob
   definitions=$(find ~/Library/LaunchAgents -name '*.plist' | grep ${pattern} | wc -l)
@@ -49,8 +51,9 @@ function running {
     [[ $processes -ne 0 ]] && printf "${bldwht}%14s is ${bldylw}running, but undefined ($(echo $processes | sed -E 's/\s//g') processes)${txtrst}\n" $pattern
   fi
 }
+
 function services {
-  loaded nginx haproxy postgres redis memcached elastic solr mysql
+  are-services-running ${SERVICE_LIST:-$service_list}
 }
 
 function services_intro {

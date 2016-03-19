@@ -8,14 +8,13 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-export bash_it_plugins+="aws"
+bash_it_plugins+="aws"
 
-export bash_it_aliases+="aws"
+bash_it_aliases+="aws"
 
-export bash_it_completions="aws"
-"
-# List of Brew Formulas to install and l`ink
-[[ -n "${brew_packages}" ]] || brew_packages="
+bash_it_completions+="aws"
+# List of Brew Formulas to install and link
+brew_packages+="
   ack
   ansiweather
   aws-as
@@ -27,11 +26,11 @@ export bash_it_completions="aws"
   awsebcli
 "
 
-export brew_casks="kitematic dockertoolbox"
+brew_casks+="kitematic dockertoolbox"
 
-export brew_relink_packages+=""
+brew_relink_packages+=""
 
-export nodejs_modules="
+nodejs_modules+="
   node-aws
   node-aws-beanstalk
   node-aws-cli

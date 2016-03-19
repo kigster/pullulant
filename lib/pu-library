@@ -56,7 +56,8 @@ function run {
   ignore_error=${2-""}
   status=0
   if [ ! -z "${opts_dryrun}" ]; then
-    printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
+    [[ "${cmd}"  =~ "printf" ]]  && eval "$cmd 2>${const_cmd_stderr}"
+    [[ "${cmd}"  =~ "printf" ]]  || printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
   else
     check_exit "$cmd" $ignore_error
   fi
@@ -129,16 +130,18 @@ function check_exit {
     fi
   else # error – print a little icon
     [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
+    [[ -s "${const_cmd_stderr}" ]]  && printf "\n${txtred}$(cat ${const_cmd_stderr})${txtrst}\n"
+
+    printf "\n"
+    printf "${txtrst}  Command: ${bldred}${cmd}\n"
+    printf "${txtrst}Exit code: ${bldred}$status\n"
+    printf "${txtrst}   Result: ${bldred}${runner}\n\n"
 
     if [ -n "${opts_ignore_errors}" ]; then
       cat ${const_cmd_stderr} >> ${const_combined_stderr}
       status=0
     else
-      [[ -s "${const_cmd_stderr}" ]]  && printf "\n${bldred}$(cat ${const_cmd_stderr})${txtrst}\n"
-      printf "\n"
-      printf "${txtrst}  Command: ${bldred}${cmd}\n"
-      printf "${txtrst}Exit code: ${bldred}$status\n"
-      printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
+      printf "${bldred} runner must abort."
     fi
   fi
   return $status

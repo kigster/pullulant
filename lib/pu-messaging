@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# (c) 2016 Konstantin Gredeskoul
-# https://github.com/kigster
-#
-# For project Pullulant
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
 # https://github.com/kigster/pullulant/
 #
-# MIT License
+# Distributed under MIT License
 #_______________________________________________________________________________
 #
 source "${bash_files_dir}/.bash_colors"
@@ -29,20 +27,20 @@ function pu-git-revision {
 function pu-long-header {
   printf " ___________________________________________________________________________________\n"
   printf "|                                                                                   |\n"
-  printf "|  ${txtgrn}Pullulant (or gently: 'pu')                                       ${txtrst}🌹  🌻  🍄  🦀  🎃  |\n"
-  printf "|  ${txtylw}Development Environment Installer v${bldblu}$(cat VERSION).${txtwht}                                        |\n"
+  printf "|  ${bldgrn}Pullulant™ (or gently: 'pu')                                       ${txtrst}🌹  🌻  🍄    🎃  |\n"
+  printf "|  ${txtylw}Development Environment Installer ${bldylw}(Version $(cat VERSION)).${txtwht}                               |\n"
+  printf "|  ${bldblu}© 2016 Konstantin Gredeskoul, MIT License.${txtwht}                                       |\n"
   printf "|  Git rev ${txtgrn}$(pu-git-revision).${txtwht}                                                                 |\n"
   printf "|___________________________________________________________________________________|\n"
   pu-installers-helpers
 }
 
 function pu-short-header {
-  printf "${bldwht}\n"
-  printf "${bldylw}Pullulant (aka 'pu'),  ${bldwht}Version $(cat VERSION), Ref $(pu-git-revision)\n\n"
-  local runner_list=$(pu-indent-list "$runners"    70 '')
-  printf "Run List: ${bldylw}${runner_list}${bldwht}\n"
-  printf "Enabled Options: ${bldylw}"
-  printf "${txtrst}"
+  printf "${txtwht}${bakgrn}Pullulant (aka 'pu'),  ${txtblk}${bakpur} Version $(cat VERSION), Ref $(pu-git-revision)    ${bakgrn}   ✔︎   ${txtrst}\n\n"
+  local runner_list=$(pu-indent-list "$runners"    70 '       ')
+  printf "Run List:\n${bldylw}${runner_list}${bldwht}\n\n"
+  printf "Enabled Options:\n${bldylw}"
+  printf "${txtrst}       "
   count=0
   for option in ${pu_options}; do
     option_value=$(pu_option_value $option)
@@ -67,10 +65,10 @@ function pu-installers-helpers {
 
   printf "                                                                                    \n"
   printf "${txtrst}Installers:\n"
-  printf "${bldylw}%-68s \n" "$installer_list"
+  printf "${txtylw}%-68s \n" "$installer_list"
   printf "                                                                                    \n"
   printf "${txtrst}Helpers:\n"
-  printf "${bldylw}%-68s \n" "$helper_list"
+  printf "${txtylw}%-68s \n" "$helper_list"
   printf "                                                                                    \n"
 
   pu-list-current-runners
@@ -80,9 +78,11 @@ function pu-list-current-runners {
   linebreak="\n"
   local run_list=$(pu-indent-list "$runners"    80 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "Run List:\n"
-    printf "${bldylw}%-68s ${txtrst}\n" "$run_list"
+    printf "${bldwht}${undylw}                                                                                    \n\n"
+    printf "${txtrst}Current Run List:\n"
+    printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
   fi
+  printf "${bldwht}${undylw}                                                                                    \n${txtrst}"
 }
 
 function pu-welcome-screen-short {

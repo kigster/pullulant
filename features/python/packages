@@ -8,23 +8,23 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-[[ -n "${bash_it_plugins}" ]] || bash_it_plugins="
+bash_it_plugins+="
   pyenv python
 "
 
 # List of Brew Formulas to install and l`ink
-[[ -n "${brew_packages}" ]] || brew_packages="
+brew_packages+="
   pyenv
 "
 
-[[ -n "${brew_casks}" ]] || brew_casks="
+brew_casks+="
   pycharm
   webstorm
   atom-beta
   textmate
 "
 
-[[ -n "${brew_relink_packages}" ]] || brew_relink_packages="
+brew_relink_packages+="
   libiconv
   libxml2
   libxslt
@@ -35,11 +35,9 @@
 
 # these hosts will be added to /etc/hosts as 127.0.0.1
 # eg. local.mydomain.com
-[[ -n "${local_hosts}" ]] || local_hosts="
-"
+local_hosts+=""
 
 # these nodejs modules will be install using npm
-[[ -n "${nodejs_modules}" ]] || nodejs_modules="
-"
+nodejs_modules+=""
 
-[[ -n "${pyenv_python_versions}" ]] || pyenv_python_versions=("2.7.11")
+pyenv_python_versions=("2.7.11")
