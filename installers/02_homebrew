@@ -72,7 +72,7 @@ function brew_relink {
 function brew_cask_install {
   package=$1
   [[ -d "${var_brew_cask_appdir}/${package}" ]] || {
-    run "brew install Caskroom/cask/${package} ${opts_force} --appdir=${var_brew_cask_appdir}"
+    run "brew cask install ${opts_force} --appdir=${var_brew_cask_appdir} ${package}"
   }
 }
 
