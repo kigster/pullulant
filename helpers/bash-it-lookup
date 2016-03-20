@@ -39,4 +39,3 @@ function bash-it-lookup() {
     unset matches
   done
 }
-q

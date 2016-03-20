@@ -11,13 +11,16 @@
 #_______________________________________________________________________________
 
 function service-start {
+  [[ -z "$1" ]] && echo "Usage: $0 service-name" && return
   cd ~/Library/LaunchAgents >/dev/null
   launchctl load -w *$1*
   cd - >/dev/null
   echo
   is-service-running $1
 }
+
 function service-stop {
+  [[ -z "$1" ]] && echo "Usage: $0 service-name" && return
   cd ~/Library/LaunchAgents>/dev/null
   launchctl unload -w *$1*
   cd - >/dev/null
@@ -25,6 +28,7 @@ function service-stop {
   is-service-running $1
 }
 function service-restart {
+  [[ -z "$1" ]] && echo "Usage: $0 service-name" && return
   service-stop $1
   service-start $1
 }
@@ -39,6 +43,7 @@ function are-services-running {
 }
 
 function is-service-running {
+  [[ -z "$1" ]] && echo "Usage: $0 service-name" && return
   pattern=$1
   [[ -n "${ZSH_VERSION}" ]] && setopt null_glob
   definitions=$(find ~/Library/LaunchAgents -name '*.plist' | grep ${pattern} | wc -l)
@@ -52,7 +57,7 @@ function is-service-running {
   fi
 }
 
-function services {
+function services-status {
   are-services-running ${SERVICE_LIST:-$service_list}
 }
 
@@ -66,16 +71,21 @@ function services_intro {
   printf "   ${bldgrn}running ${txtrst}<service>          ${bldwht}check if a service is running\n"
   printf "   ${bldgrn}services${txtrst}                   ${bldwht}list common web services with their status\n\n"
   printf "Service Status:\n"
-  services
+  services-status
 }
 
-function my-services {
+function available-services {
+  brew_services=$(find /usr/local/Cellar -name 'homebrew*.plist' | sed 's#/usr/local/Cellar##g' | awk 'BEGIN{FS="/"}{print $2}' | sort | uniq)
+  echo "${brew_services[*]}"
+}
+
+function services {
   if [ "$1" == "up" ]; then
     cmd=load
   elif [ "$1" == "down" ]; then
     cmd=unload
   else
-    echo "usage: wanelo-deps [ up | down ]"
+    echo "usage: services [ up | down ]"
     return
   fi
   service=$2

@@ -8,37 +8,9 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-bash_it_plugins+="
-  docker git hub node osx postgres ssh nginx
-"
-
-bash_it_aliases+="
-  atom docker git heroku homebrew homebrew-cask npm osx vim
-"
-
-bash_it_completions+="
-  brew git hub ssh
-"
-# List of Brew Formulas to install and l`ink
-brew_packages+="
-  node
-  npm
-  openssl
-  wget
-  zlib
-"
-
-brew_casks+="
-  webstorm
-  atom-beta
-  textmate
-"
-
-brew_relink_packages+="
-"
-
-# these nodejs modules will be install using npm
-nodejs_modules+="
-  bower
-  ember-cli
-"
+bash_it_plugins+="javascript node nvm"
+bash_it_aliases+="npm"
+bash_it_completions+="npm"
+brew_packages+=" node npm  "
+brew_casks+=" webstorm "
+nodejs_modules+=" bower ember-cli "

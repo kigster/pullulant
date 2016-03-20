@@ -6,10 +6,9 @@
 # https://github.com/kigster/pullulant/
 #
 # Distributed under MIT License
+#
+# FEATURE: Web Depdencies
 #_______________________________________________________________________________
 #
-bash_it_plugins+=" pyenv python "
-brew_packages+=" pyenv "
-brew_casks+=" pycharm webstorm "
-brew_relink_packages+=" libmemcached "
-pyenv_python_versions=("2.7.11")
+[[ -n "${bash_it_plugins}" ]] || bash_it_plugins="nginx"
+[[ -n "${brew_packages}" ]]   || brew_packages=" elasticsearch haproxy nginx redis solr rabbitmq "
