@@ -85,6 +85,19 @@ function pu-list-current-runners {
   printf "${bldwht}${undylw}                                                                                    \n${txtrst}"
 }
 
+function pu-list-features {
+  source "lib/pu-features"
+
+  linebreak="\n"
+  local run_list=$(pu-indent-list "$(pu-features)"    80 '   ')
+  if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
+    printf "${bldwht}${undylw}                                                                                    \n\n"
+    printf "${txtrst}Current Feature List:\n"
+    printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
+  fi
+  printf "${bldwht}${undylw}                                                                                    \n${txtrst}"
+}
+
 function pu-welcome-screen-short {
   pu-long-header
   printf "\n${txtrst}"
@@ -116,6 +129,19 @@ Full run:
               STDERR captured for later debugging.
   -P          No backu[P] for rsync of bash and zsh files (default is to backup)
 
+Features
+  -t 'feature1 feature2...'
+              List of features to run in adition to the 'default'. Features add
+              a number of brew packages, nodejs modules and more, depending on a
+              feature. For example, 'ruby' feature installs rubymine, and other
+              ruby-specific tools.
+
+              Take a look at the 'features' folder for more information. Note that the
+              'default' feature always runs, and contains the definition of
+              the variables other features can extend.
+
+              Currently available features: ${bldgrn}$(echo $(pu-features))${txtrst}
+
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
               eg: $(basename $0) -r 'zsh osx' -r home
@@ -146,6 +172,7 @@ Output control:
 
 Help & Info:
   -l          [l]ist available runners – helpers and installers
+  -T          list available fea[T]ures
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
   -x          same as -H but in plain ascii (also saves into doc/help)

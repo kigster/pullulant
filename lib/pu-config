@@ -50,6 +50,10 @@ function package-config {
   readonly export custom_packages_file="${HOME}/.pullulant_packages"
   readonly export bash_it_home="${HOME}/.bash_it"
   readonly export service_list="nginx haproxy postgres redis memcached elastic solr mysql"
+  
+  [[ -n "$(which apm)" ]] && apm=apm
+  [[ -n "$(which apm-beta)" ]] && apm="apm-beta"
+
   # these can be overridden by the flags
   readonly export pu_options="
     opts_quiet
