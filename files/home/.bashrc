@@ -34,16 +34,16 @@ export EDITOR=vim
 function load_locals() {
   # load user's custom zsh file
   local scripts=(.bash_colors .bash_functions .bash_docker .bash_services .bash_aliases .bash_${USER} )
-  local highlight='\e[7;43m'
-  local reset='\e[0;0m'
+  printf $bldwht
   for script in ${scripts[@]}; do
-    printf "Sourcing in ${highlight}${script}${reset}...\n"
     if [ -s "${HOME}/${script}" ]; then
+      printf "${bakblu}Loading in ${bakgrn}%-20s${txtrst}\n" $script
       source "${HOME}/${script}"
     else
-      printf "Whoops, ${highlight}${script}${reset} was not found, ignoring...\n"
+      printf "${txtrst}Whoops, ${bldred}${script}${txtrst} was not found, ignoring...${txtrst}\n"
     fi
   done
+  echo
 }
 
 load_locals
