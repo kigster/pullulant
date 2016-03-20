@@ -12,11 +12,11 @@
 # whose name or description matches one of the search terms provided as arguments.
 #
 # Usage:
-#   ❯ source helpers/bashitlookup
-#   ❯ bash-it-lookup <search term1> <term2> <term3> ....
+#    ❯ source helpers/bashitlookup
+#    ❯ bash-it-lookup <search term1> <term2> <term3> ....
 # Example:
-#   ❯ source helpers/bash-it-lookup
-#   ❯ bash-it-lookup ruby rbenv rvm gem rake
+#    ❯ source helpers/bash-it-lookup
+#    ❯ bash-it-lookup ruby rbenv rvm gem rake
 #  aliases: bundler
 #  plugins: chruby,chruby-auto,rbenv,ruby,rvm
 #  completions: gem,rake

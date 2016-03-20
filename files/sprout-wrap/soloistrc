@@ -4,12 +4,9 @@ recipes:
 # base (required by sprout)
 - homebrew
 - sprout-base
-# - sprout-base::bash_it
-# - sprout-bash-it
 
 # settings
 - sprout-osx-settings
-# - sprout-osx-settings::dock_preferences
 - sprout-ssh::known_hosts_github
 
 # development (general)
