@@ -1,4 +1,5 @@
-# Pullulant – Bootstrap Your Dev Environment on Mac OS-X
+# Pullulant
+## Bootstrap Your Dev Environment on Mac OS-X in Minutes
 
 Just tell me what to run, I don't have time for this README.
 
