@@ -18,9 +18,9 @@ Now Pullulant combines nearly a hundred small steps into modular chunks that run
 
 Installer relies on [HomeBrew](http://brew.sh/), [Sprout-Wrap](https://github.com/pivotal-sprout/sprout-wrap), and about 3K lines of bash scripting to deliver your shell goodies to the door, all while customizing your environment to look like and serve you, the oh-mightly-powerful Developer, with all of it's shine. Try it! :)
 
-I mean – just check out the sexy ZSH prompt you might get after running it (as well as the usage flags LOL).
+I mean – just check out the sexy BASH prompt (based on the 'Powerline Multiline' theme and "Bash-It" framework) that you will get after running it :)
 
-![Pu Usage](doc/pu.png)
+![Pu Usage](doc/pu-bash.png)
 
 ## Pre-Install – OS-X Preparation
 
@@ -134,6 +134,8 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
  * Hangouts
 
 ## Driving the Installer
+
+![Pu Usage](doc/pu.png)
 
 You should inspect the configuration and packages defined in two files:
 
