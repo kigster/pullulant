@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
+# https://github.com/kigster/pullulant/
+#
+# Distributed under MIT License
+#_______________________________________________________________________________
+#
+
+
+function dedup_list() {
+  list=$*
+  echo "${list[*]}" | tr ' ' '\n' | sort | uniq | tr '\n' ' '
+}
+
+[[ -n "${bash_it_plugins}" ]]       && bash_it_plugins=$(dedup_list "$bash_it_plugins")
+[[ -n "${bash_it_aliases}" ]]       && bash_it_aliases=$(dedup_list "$bash_it_aliases")
+[[ -n "${bash_it_completions}" ]]   && bash_it_completions=$(dedup_list "$bash_it_completions")
+[[ -n "${brew_packages}" ]]         && brew_packages=$(dedup_list "$brew_packages")
+[[ -n "${brew_casks}" ]]            && brew_casks=$(dedup_list "$brew_casks")
+[[ -n "${brew_relink_packages}" ]]  && brew_relink_packages=$(dedup_list "$brew_relink_packages")
+[[ -n "${local_hosts}" ]]           && local_hosts=$(dedup_list "$local_hosts")
+[[ -n "${nodejs_modules}" ]]        && nodejs_modules=$(dedup_list "$nodejs_modules")
+[[ -n "${ruby_modules}" ]]          && ruby_modules=$(dedup_list "$ruby_modules")
+[[ -n "${python_modules}" ]]        && python_modules=$(dedup_list "$python_modules")
+[[ -n "${rbenv_ruby_versions}" ]]   && rbenv_ruby_versions=($(dedup_list "${rbenv_ruby_versions[*]}"))
+[[ -n "${pyenv_python_versions}" ]] && pyenv_python_versions=($(dedup_list "${pyenv_python_versions[*]}"))

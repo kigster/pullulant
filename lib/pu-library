@@ -11,58 +11,6 @@
 #_______________________________________________________________________________
 # encoding: UTF-8
 
-function on_start {
-  run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
-  [[ "$sudoers_enabled" ]] && pu-print-section-header "sudo-enable" && sudo-enable
-}
-
-function on_exit {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  run "rm -rf ${const_cmd_stderr} # hide-command"
-  run "rm -rf ${const_cmd_stdout} # hide-command"
-  return 1
-}
-
-function finish {
-  exit_status=${1-0}
-  on_exit && success
-  cd ${original_dir}
-  exit ${exit_status}
-}
-function success {
-  printf "${txtblk}"
-  sep "\n\n"
-  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
-  sep
-  printf "\n${txtrst}"
-}
-
-function abort {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  on_exit && failure
-  cd ${original_dir}
-  exit $*
-}
-function failure {
-  printf "${txtblk}"
-  sep "\n\n"
-  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
-  sep
-  printf "\n${txtrst}"
-}
-
-function run {
-  cmd=$1
-  ignore_error=${2-""}
-  status=0
-  if [ ! -z "${opts_dryrun}" ]; then
-    printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
-  else
-    check_exit "$cmd" $ignore_error
-  fi
-  return $status
-}
-
 function check_exit {
   local cmd=$1
   local ignore_error=${2-""}
@@ -103,21 +51,22 @@ function check_exit {
   fi
 
   real_status=$?
-  status=${real_status}
+  last_command_status=${real_status}
 
-  if [ -n "${ignore_error}" -a $status -ne 0 ]; then
-    status=0
+  if [ -n "${ignore_error}" -a $last_command_status -ne 0 ]; then
+    last_command_status=0
     commands_ignored=$(($commands_ignored + 1))
-  else
-    [[ $status -eq 0 ]] && commands_completed=$(($commands_completed + 1))
-    [[ $status -ne 0 ]] && commands_failed=$(($commands_failed + 1))
+  elif [  $last_command_status -ne 0  ]; then
+    commands_failed=$(($commands_failed + 1))
   fi
+
+  [[ $last_command_status -eq 0 ]] && commands_completed=$(($commands_completed + 1))
 
   if [ -n "${cmd_prints}" ]; then
-    return $status
+    return $last_command_status
   fi
 
-  if [ "$status" -eq 0 ]; then
+  if [ "$last_command_status" -eq 0 ]; then
     if [ -z "${cmd_quiet}" ]; then
       if [ -z "${cmd_verbose}" ]; then
         if [ $real_status -ne 0 ]; then
@@ -129,17 +78,80 @@ function check_exit {
     fi
   else # error – print a little icon
     [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
+    [[ -s "${const_cmd_stderr}" ]] && printf "\n${txtred}$(cat ${const_cmd_stderr})${txtrst}\n"
 
-    if [ -n "${opts_ignore_errors}" ]; then
+    [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
       cat ${const_cmd_stderr} >> ${const_combined_stderr}
-      status=0
-    else
-      [[ -s "${const_cmd_stderr}" ]]  && printf "\n${bldred}$(cat ${const_cmd_stderr})${txtrst}\n"
-      printf "\n"
-      printf "${txtrst}  Command: ${bldred}${cmd}\n"
-      printf "${txtrst}Exit code: ${bldred}$status\n"
-      printf "${txtrst}   Result: ${bldred}${runner}${txtrst} runner must abort.\n\n"
-    fi
+      last_command_status=0
+      return 0
+    }
+
+    printf "\n"
+    printf "${txtrst}  Command: ${bldred}${cmd}\n"
+    printf "${txtrst}Exit code: ${bldred}$last_command_status\n"
+    printf "${txtrst}   Result: ${bldred}${runner}\n\n"
+
+    [[ "${opts_continue_on_runner_error}" == "yes" ]] && {
+      printf "${bldred}ERROR: ${bldwht}runner ${runner} must abort!!"
+      runners_aborted=$(($runners_aborted + 1))
+      kill -USR1 $$
+    }
+    [[ "${opts_continue_on_runner_error}" == "yes" ]] || abort
   fi
-  return $status
+  
+  return $last_command_status
+}
+
+function on_start {
+  run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
+  [[ "$sudoers_enabled" ]] && pu-print-section-header "sudo-enable" && sudo-enable
+}
+
+function success {
+  printf "${txtblk}"
+  sep "\n\n"
+  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
+  sep
+  printf "\n${txtrst}"
+}
+
+function abort {
+  [[ "$sudoers_enabled" ]] && sudo-disable
+  on_exit && failure
+  cd ${original_dir}
+  exit $*
+}
+function failure {
+  printf "${txtblk}"
+  sep "\n\n"
+  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
+  sep
+  printf "\n${txtrst}"
+}
+
+function on_exit {
+  [[ "$sudoers_enabled" ]] && sudo-disable
+  rm -rf ${const_cmd_stderr} # hide-command"
+  rm -rf ${const_cmd_stdout} # hide-command"
+  return 1
+}
+
+function finish {
+  exit_last_command_status=${1-0}
+  on_exit && success
+  cd ${original_dir}
+  exit ${exit_status}
+}
+
+function run {
+  cmd=$1
+  ignore_error=${2-""}
+  last_command_status=0
+  if [ ! -z "${opts_dryrun}" ]; then
+    [[ "${cmd}"  =~ "printf" ]]  && eval "$cmd 2>${const_cmd_stderr}"
+    [[ "${cmd}"  =~ "printf" ]]  || printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
+  else
+    check_exit "$cmd" $ignore_error
+  fi
+  return $last_command_status
 }

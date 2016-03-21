@@ -7,13 +7,16 @@
 #
 # Distributed under MIT License
 #_______________________________________________________________________________
-sudoers_dir="/private/etc/sudoers.d"
-export sudoers_enabled=
+#
+bash_it_plugins+=" pyenv python "
+brew_packages+=" pyenv "
+brew_casks+=" pycharm webstorm "
+brew_relink_packages+=" libmemcached "
+python_modules+="
+  requests
+  nose
+  spec
+  scapy
+"
 
-sudo-enable() {
-  run "[[ -d ${sudoers_dir} ]] || sudo mkdir -p ${sudoers_dir}"
-  [[ -s ${sudoers_dir}/${USER} ]] || {
-    echo 'kig ALL=(ALL) NOPASSWD: ALL' | sudo tee -a ${sudoers_dir}/kig
-    export sudoers_enabled=true
-  }
-}
+pyenv_python_versions=("2.7.11")

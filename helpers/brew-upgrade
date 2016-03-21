@@ -14,17 +14,18 @@ export brew_has_been_upgraded=
 function brew-upgrade {
   if [ -z "$(which brew)" ]; then
     run "echo 'Brew is not installed!'"
-    status=200
+    last_command_status=200
     return
   fi
   if [ ! -z "$opts_skip_brew_upgrade" ]; then
     run "echo 'Skipping brew upgrade...'"
-    status=0
+    last_command_status=0
     return
   fi
   if [ -z "$brew_has_been_upgraded" ]; then
     run "printf '${bldylw}Upgrading every homebrew formula and cask, please wait while its fermenting...${txtrst}\n'"
     run "brew upgrade --cleanup"
+    [[ $last_command_status -ne 0 ]] && brew-repair
     export brew_has_been_upgraded=yes
   fi
 }

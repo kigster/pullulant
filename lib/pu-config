@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# (c) 2016 Konstantin Gredeskoul
-# https://github.com/kigster
-#
-# For project Pullulant
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
 # https://github.com/kigster/pullulant/
 #
-# MIT License
+# Distributed under MIT License
 #_______________________________________________________________________________
+#
 #
 function package-config {
   # Script-level Constants
@@ -50,6 +49,10 @@ function package-config {
   readonly export zsh_rsync_home_dir="./files/zsh/"
   readonly export custom_packages_file="${HOME}/.pullulant_packages"
   readonly export bash_it_home="${HOME}/.bash_it"
+  readonly export service_list="nginx haproxy postgres redis memcached elastic solr mysql"
+
+  [[ -n "$(which apm)" ]] && apm=apm
+  [[ -n "$(which apm-beta)" ]] && apm="apm-beta"
 
   # these can be overridden by the flags
   readonly export pu_options="
@@ -58,7 +61,8 @@ function package-config {
     opts_verbose
     opts_dryrun
     opts_force
-    opts_ignore_errors
+    opts_continue_on_runner_error
+    opts_continue_on_statement_error
     opts_suppress_headers
     opts_skip_sprout_wrap
     opts_skip_brew_upgrade
@@ -68,6 +72,7 @@ function package-config {
     opts_brew_casks_only
     opts_brew_link_only
     opts_change_shell_to_zsh
+    opts_features
   "
 
   for option in ${pu_options}; do
@@ -75,6 +80,7 @@ function package-config {
   done
 
   opts_rsync_backup=" -b --suffix=~pullulant-backup "
+  opts_features='default'
 }
 
 function pu_option_value {

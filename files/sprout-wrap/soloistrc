@@ -4,12 +4,9 @@ recipes:
 # base (required by sprout)
 - homebrew
 - sprout-base
-- sprout-base::bash_it
-- sprout-bash-it
 
 # settings
 - sprout-osx-settings
-- sprout-osx-settings::dock_preferences
 - sprout-ssh::known_hosts_github
 
 # development (general)
@@ -23,15 +20,6 @@ node_attributes:
   versions:
     bash_it: 'master'
   sprout:
-    rbenv:
-      rubies:
-        2.2.3: {}
-        2.3.0: {}
-      default_ruby: 2.2.3
-    pyenv:
-      pythons:
-        2.7.11: {}
-      default_python: 2.7.11
     git:
       prefix: ''
       domain: reinvent.one
@@ -79,4 +67,4 @@ node_attributes:
       tile_size: 25
       magnification: false
     bash_it:
-      theme: kig
+      theme: powerline-multiline

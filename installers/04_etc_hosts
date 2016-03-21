@@ -25,6 +25,6 @@ function etc_hosts {
   for hostname in $local_hosts; do
     add_hostname $hostname
   done
-  export status=0
-  return $status
+  export last_command_status=0
+  return $last_command_status
 }

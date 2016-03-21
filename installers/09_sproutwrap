@@ -18,7 +18,7 @@ function sproutwrap {
     return
   fi
 
-  ruby_install                   # won't run again, if ran already
+  install_ruby                   # won't run again, if ran already
   prepare_sprout_wrap_folder    # checkout and prepare folders for chef
   replace_configuration         # overwrite configuration with our own
   run_soloist                   # run the f$$$er
@@ -31,9 +31,10 @@ function run_soloist {
   run 'eval "$(rbenv init -)"' "ignore_error"
   eval "$(rbenv init -)"
   [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
+  printf "Current ruby version is ${bldwht}${bakpur}%s${txtrst}\n" "$(cat .ruby-version)"
   run "bundle              # show-stdout"
   run "bundle exec soloist # show-stdout"
-  export status=$?
+  export last_command_status=$?
   run "cd ${HOME}/workspace/pullulant"
 }
 
@@ -50,8 +51,8 @@ function prepare_sprout_wrap_folder {
 }
 
 function replace_configuration {
-  run "cp ./files/sprout-wrap/* ${sprout_wrap_home}"
-  run "rm -f ${sprout_wrap_home}/.ruby-version"
+  run "cp -f ./files/sprout-wrap/* ${sprout_wrap_home}"
+  run "cp -f ./files/sprout-wrap/.ruby-version ${sprout_wrap_home}"
   run "rm -f ${sprout_wrap_home}/Cheffile.lock"
   # so that the damn Nokogiri gets built with the latest possible version,
   # not the ancient damn stupidity checked into the lock file.

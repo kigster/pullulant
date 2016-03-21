@@ -6,14 +6,9 @@
 # https://github.com/kigster/pullulant/
 #
 # Distributed under MIT License
+#
+# FEATURE: Web Depdencies
 #_______________________________________________________________________________
-sudoers_dir="/private/etc/sudoers.d"
-export sudoers_enabled=
-
-sudo-enable() {
-  run "[[ -d ${sudoers_dir} ]] || sudo mkdir -p ${sudoers_dir}"
-  [[ -s ${sudoers_dir}/${USER} ]] || {
-    echo 'kig ALL=(ALL) NOPASSWD: ALL' | sudo tee -a ${sudoers_dir}/kig
-    export sudoers_enabled=true
-  }
-}
+#
+[[ -n "${bash_it_plugins}" ]] || bash_it_plugins="nginx"
+[[ -n "${brew_packages}" ]]   || brew_packages=" elasticsearch haproxy nginx redis solr rabbitmq "

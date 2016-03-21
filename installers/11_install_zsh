@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function zsh_install {
+function install_zsh {
   zsh-permissions
 
   rsync_opts=""
@@ -27,7 +27,8 @@ function zsh_install {
   run "rsync ${opts_verbose} ${opts_rsync_backup} -a ${zsh_rsync_home_dir}.oh-my-zsh/ ${HOME}/.oh-my-zsh"
 
   rc=${HOME}/.zshrc
-  [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i '' -e 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
+  [[ -f "$rc" ]] || touch $rc
+  [[ -n "$(grep THEME=\"${var_zsh_theme}\" $rc)" ]]  || run "sed -i.bak -e 's/ZSH_THEME=\".*\"/ZSH_THEME=\"${var_zsh_theme}\"/g' $rc"
   [[ -n "$(grep PU_HOME $rc)" ]] || run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}; unalias pu' >> $rc "
 }
 

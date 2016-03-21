@@ -18,6 +18,6 @@ function postgres-start {
 
   run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents"
   run "launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
-  status=0
-  return $status
+  last_command_status=0
+  return $last_command_status
 }

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+
+export brew_has_been_upgraded=
+function brew-repair {
+  if [ -z "$(which brew)" ]; then
+    run "echo 'Brew is not installed!'"
+    last_command_status=200
+    return
+  fi
+  run "cd /usr/local"
+  run "git status"
+  run "git rev-parse HEAD"
+  run "git rev-parse master"
+  run "git rev-parse origin/master"
+  run "git remote"
+  run "git remote show origin"
+  run "git fetch --all"
+  run "git reset --hard origin/master"
+  run "git checkout master"
+  run "git status"
+  run "git pull origin master"
+  run "git rev-parse HEAD"
+  run "brew update -v"
+  run "git rev-parse HEAD"
+  run "git status"
+  run "brew outdated"
+  run "brew upgrade -v"
+  run "brew outdated"
+  #run "brew reinstall -v --build-from-source rsync"
+  run "brew prune"
+  run "brew doctor"
+  run "brew update"
+  run "brew upgrade"
+  run "cd -"
+}

@@ -10,12 +10,20 @@
 # MIT License
 #_______________________________________________________________________________
 
+function install_ruby_modules {
+  [[ -n "${ruby_modules}" ]] && {
+    for gem in ${ruby_modules}; do
+      run "gem install --no-ri --no-rdoc $gem"
+    done
+  }
+}
+
 export rubyinstall_ran=
-function ruby_install {
+function install_ruby {
   [[ -n "${rubyinstall_ran}" ]] && return
   run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
   for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
-    status=$(rbenv versions | grep ${rbenv_ruby_version})
+    last_command_status=$(rbenv versions | grep ${rbenv_ruby_version})
     if [ $? -ne 0 ]; then
       run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
       run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
@@ -23,8 +31,9 @@ function ruby_install {
       [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
       export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     fi
+    run "rbenv global #{rbenv_ruby_version} # show-stdout "
+    install_ruby_modules
   done
-
   run "rbenv global ${rbenv_ruby_versions[0]}"
   export rubyinstall_ran=yes
 }

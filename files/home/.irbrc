@@ -46,21 +46,20 @@ IRB.conf[:IGNORE_SIGINT]    = true
 IRB.conf[:IGNORE_EOF]       = false
 IRB.conf[:DEBUG_LEVEL]      = 0
 
-IRB.conf[:PROMPT][:KIG] = {
-  :AUTO_INDENT => true,
-  :PROMPT_I    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i   >".bold.green + ' '.clear,
-  :PROMPT_S    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i>[%l]".bold.blue + ' '.clear,
-  :PROMPT_C    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i*  >".green.italic + ' '.clear,
-  :RETURN      => "%80s".yellow + "   ⬅︎ ┝━".blue.bold  + "━" * 50 + "\n"# used to printf
-}
 
-IRB.conf[:PROMPT][:DUDE] = {
+IRB.conf[:PROMPT][:PULLULANT] = {
   :PROMPT_I => "%N" + "(%m):%03n:%i> ".black.bold,
   :PROMPT_S => "%N" + "(%m):%03n:%i%l ".dark,
   :PROMPT_C => "%N" + "(%m):%03n:%i* ".dark,
   :RETURN => " ⤷ %s\n" # used to printf
 }
 
-IRB.conf[:PROMPT_MODE]  = :DUDE
+IRB.conf[:PROMPT_MODE]  = :PULLULANT
 
-
+IRB.conf[:PROMPT][:PULLULANT_HUGE] = {
+  :AUTO_INDENT => true,
+  :PROMPT_I    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i   >".bold.green + ' '.clear,
+  :PROMPT_S    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i>[%l]".bold.blue + ' '.clear,
+  :PROMPT_C    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i*  >".green.italic + ' '.clear,
+  :RETURN      => "%80s".yellow + "   ⬅︎ ┝━".blue.bold  + "━" * 50 + "\n"# used to printf
+}
