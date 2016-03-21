@@ -112,35 +112,59 @@ function pu-print-section-header {
 
 function pu-print-help {
   # ar:SBLRKFCfqnvlhHxp
-  printf "Usage: $(basename $0) -a [-S] [-B] [-Z] [-I]                [ output ]\n"
-  printf "       $(basename $0) -r 'runner1 runner2 ...' [-S] [-B]    [ output ]\n"
-  printf "       $(basename $0) -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]\n"
-  printf "   Or: $(basename $0) [-l|-h|-H|-x]\n\n"
+  printf "Usage:\n"
+  printf "  $(basename $0) -a          [features] [-S] [-B] [-Z] [-iI] [fmt]\n"
+  printf "  $(basename $0) [runners]   [features] [-S] [-B]            [fmt]\n"
+  printf "  $(basename $0) -r homebrew [features] [-L|-F|-C] [-R] [-f] [-K] [fmt]\n"
+  printf "\nOr for Help:\n"
+  printf "  $(basename $0) [-l|-T|-h|-H|-x]\n"
   printf "
-Where, runner is either an installer or a helper, and output is '[-n] [-q|-v] [-p]'
+Where:
+  [runners]   is one or more installers or helpers passed via '-r' flag, like
+              so: ' ... -r install_bash -r bash_it -r osx ...'
+              Print the available list by running '$(basename $0) -l'
 
-Global Flags:
-Full run:
-  -a          run [a]ll installers in their order
-  -S          [S]proutwrap is disabled during the install
-  -B          [B]rew-upgrade is disabled
-  -I          [I]gnore errors and continue. Do not stop when runners fail.
-              In this mode any command that failed will have it's STDOUT and
-              STDERR captured for later debugging.
-  -P          No backu[P] for rsync of bash and zsh files (default is to backup)
+  [fmt]       is combination of flags controlling the output you see on the 
+              screen: [-n] [-q|-v] [-p]
 
-Features
-  -t 'feature1 feature2...'
-              List of features to run in adition to the 'default'. Features add
-              a number of brew packages, nodejs modules and more, depending on a
-              feature. For example, 'ruby' feature installs rubymine, and other
-              ruby-specific tools.
+  [features]  is a list of enabled features (see below).
 
-              Take a look at the 'features' folder for more information. Note that the
-              'default' feature always runs, and contains the definition of
-              the variables other features can extend.
+Full Run (All installers):
+  -a          run [a]ll installers in their order (from the 'installers' dir)
+    -S        [S]proutwrap is disabled during the install
+    -B        [B]rew-upgrade is disabled
+    -P        No backu[P] for rsync of bash and zsh files (default is to backup)
 
-              Currently available features: ${bldgrn}$(echo $(pu-features))${txtrst}
+Error Handing: 
+              Default error handling is pessimistic: installer stops upon any 
+              error code returned from a single 'run' statement.
+
+              You can control error handling at two levels:
+
+  -i          [i]gnore errors and continue to the next 'run' statement.
+
+  -I          Stops running the current installer that produced an error, skips 
+              the rest of it, and continues to the next installer. For example,
+              in this mode, if one homebrew package fails to install, the rest
+              of homebrew installer will be skipped, and the next installer in
+              the run list will begin.
+
+Features:
+  -t feature1 -t feature2 ...
+
+              List of features to run in addition to the 'default'. Features add
+              a number of brew packages, nodejs modules, bash-it plugins and 
+              aliases grouped together for a specific purpose. For example, 'ruby' 
+              feature installs RubyMine IDE, and other ruby-specific tools, while
+              'python' feature installs PyCharm IDE and python-specific tools.
+
+              Take a look at the 'features' folder for more information. Note 
+              that the 'default' feature always runs, and contains the definition 
+              of the variables other features can extend.
+
+              Available Features: ${bldgrn}$(echo $(pu-features))${txtrst}
+
+  -T          List available fea[T]ures in the 'features' folder.
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
@@ -149,7 +173,7 @@ Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -f          [F]orce – applies to some installers, ie. brew (--force) and
               zsh (overwrites current)
 
-Homebrew control:
+
               -C -F -L flags allow picking specific subset of the install.
               The flags can mix. Adding all three is the same as adding none.
 
@@ -162,7 +186,7 @@ Homebrew control:
   -K          Relin[K] all brew formulas/casks during install
 
 Zsh
-  -Z          Do not change the default shell to Zsh (it's still installed)
+  -Z          Change the default shell to ZSH and install 'oh-my-zsh'
 
 Output control:
   -p          su[p]press pretty section headers for more compact output
@@ -172,18 +196,36 @@ Output control:
 
 Help & Info:
   -l          [l]ist available runners – helpers and installers
-  -T          list available fea[T]ures
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
   -x          same as -H but in plain ascii (also saves into doc/help)
 
 Examples:
-    $(basename $0) -a                         # install everything
+    # install everything with the default (small) set of packages:
+    $(basename $0) -a                         
+    
+    # install everything with additional packages and plugins enabled
+    # suitable for ruby,python,node development, as well as install 
+    # services used in web development such as nginx, haproxy, etc, as well
+    # as install the packages and plugins for managing AWS infrastructure.
+    $(basename $0) -a -t ruby -t python -t nodejs -t web -t aws 
+
+    # use a helper (not an installer) to wipe clean and reinstall postgresql
+    # from brew, create a new UTF8 database, and ensure it's running after.
     $(basename $0) -r reinstall-postgres      # run just reinstall-postgres
-    $(basename $0) -r brew-wipe -r homebrew   # wipe and reinstall homebrew
-    $(basename $0) -r homebrew -F -pv         # only brew formulas verbose
-    $(basename $0) -aSB                       # install everything, minus
-                                    # homebrew and sprout-wrap
+
+    # wipe and reinstall homebrew, with additional ruby packages included
+    $(basename $0) -r brew-wipe   -r homebrew -t ruby
+
+    # repair and install all brew packages, with additional python packages
+    $(basename $0) -r brew-repair -r homebrew -t python
+
+    # when installing brew packages, skip casks or linking, and only install
+    # formulas. Use verbose output.
+    $(basename $0) -r homebrew -F -pv
+
+    # install everything, minus homebrew and sprout-wrap
+    $(basename $0) -aSB -t ruby -t python -t nodejs -t web -t aws       
 "
 }
 
