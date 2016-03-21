@@ -55,12 +55,12 @@ function homebrew {
   }
 
   result=$(which gsed)
-  status=$?
-  if [ $status -ne 0 ]; then
+  last_command_status=$?
+  if [ $last_command_status -ne 0 ]; then
     run "brew install gnu-sed"
     run "ln -nfs /usr/local/bin/gsed /usr/local/bin/sed"
   fi
-  status=$?
+  last_command_status=$?
 }
 
 function brew_relink {

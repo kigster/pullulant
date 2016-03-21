@@ -24,7 +24,7 @@ function install_if_not_installed {
   return 0
 }
 
-function nodejs {
+function install_nodejs {
   result=$(which node)
   if [ -z "$result" ]; then
     run "brew install nodejs --force"

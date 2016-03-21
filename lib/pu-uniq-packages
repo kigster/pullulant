@@ -23,5 +23,7 @@ function dedup_list() {
 [[ -n "${brew_relink_packages}" ]]  && brew_relink_packages=$(dedup_list "$brew_relink_packages")
 [[ -n "${local_hosts}" ]]           && local_hosts=$(dedup_list "$local_hosts")
 [[ -n "${nodejs_modules}" ]]        && nodejs_modules=$(dedup_list "$nodejs_modules")
+[[ -n "${ruby_modules}" ]]          && ruby_modules=$(dedup_list "$ruby_modules")
+[[ -n "${python_modules}" ]]        && python_modules=$(dedup_list "$python_modules")
 [[ -n "${rbenv_ruby_versions}" ]]   && rbenv_ruby_versions=($(dedup_list "${rbenv_ruby_versions[*]}"))
 [[ -n "${pyenv_python_versions}" ]] && pyenv_python_versions=($(dedup_list "${pyenv_python_versions[*]}"))

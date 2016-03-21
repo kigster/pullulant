@@ -1,10 +1,15 @@
 "*":
   build:
+    notificationOnRefresh: true
+    overrideThemeColors: false
+    panelVisibility: "Keep Visible"
     saveOnBuild: true
+    scrollOnError: true
   core:
+    excludeVcsIgnoredPaths: false
     themes: [
-      "atom-material-ui"
-      "an-old-hope-syntax"
+      "one-dark-ui"
+      "robin-hood-syntax"
     ]
   editor:
     invisibles: {}
@@ -12,8 +17,11 @@
     showInvisibles: true
   "exception-reporting":
     userId: "ea855b00-5a85-5c2f-8f19-6c1ab68a4909"
+  "git-diff":
+    showIconsInEditorGutter: true
   "linter-checkbashisms": {}
-  minimap: {}
+  minimap:
+    displayMinimapOnLeft: true
   "terminal-plus":
     ansiColors:
       normal:

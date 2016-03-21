@@ -12,4 +12,11 @@ bash_it_plugins+=" pyenv python "
 brew_packages+=" pyenv "
 brew_casks+=" pycharm webstorm "
 brew_relink_packages+=" libmemcached "
+python_modules+="
+  requests
+  nose
+  spec
+  scapy
+"
+
 pyenv_python_versions=("2.7.11")

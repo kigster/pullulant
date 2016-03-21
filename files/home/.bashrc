@@ -21,8 +21,6 @@ export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:$NOD
 export GOPATH=$HOME/$WS/golang
 export PATH=$PATH:/usr/local/opt/go/libexec/bin:$GOPATH/bin
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
-# set this to the location of your project,
-
 export PGUSER=postgres
 
 # Pullulant

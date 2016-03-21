@@ -32,7 +32,7 @@ function init {
 
   # Strip the optional leading number in the file name, used for sorting.
   export installers=$(echo $submodules | sed -E 's/[0-9]+_//g')
-  export status=0
+  export last_command_status=0
 }
 
 init
