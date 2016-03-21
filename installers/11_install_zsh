@@ -11,16 +11,20 @@
 #_______________________________________________________________________________
 #
 function install_zsh {
+  [[ -z "$opts_change_shell_to_zsh" ]] && {
+    run "printf '${bldgrn}skipping ZSH installation due to -Z flag not set.${txtrst}\n'"
+    return 0
+  }
+
   zsh-permissions
 
   rsync_opts=""
 
   [[ -n "${opts_force}" ]] && run "rm -rf ${HOME}/.oh-my-zsh ${HOME}/.zsh* ${HOME}/.zcomp*"
 
-  #run 'sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
   oh-my-zsh-installer
 
-  [[ -z "$(echo $SHELL | grep zsh)" && -n "${opts_change_shell_to_zsh}" ]] && run "chsh -s /usr/local/bin/zsh"
+  [[ -z "$(echo $SHELL | grep zsh)" && -n "${opts_change_shell_to_zsh}" ]] && run "sudo chsh -s /usr/local/bin/zsh ${USER}"
 
   run "rsync ${opts_verbose} ${opts_rsync_backup} -a ${zsh_rsync_home_dir}.zshrc ${HOME}/"
   run "rsync ${opts_verbose} ${opts_rsync_backup} -a ${zsh_rsync_home_dir}.select-prompt ${HOME}/"
