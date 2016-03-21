@@ -1,20 +1,24 @@
  ___________________________________________________________________________________
 |                                                                                   |
-|  Pullulant (or gently: 'pu')                                       (B          |
-|  Development Environment Installer v1.2.0.                                        |
-|  Git rev 1a7e692.                                                                 |
+|  Pullulant (or gently: 'pu')                                                 |
+|  Development Environment Installer (Version 1.3.0).                               |
+|   2016 Konstantin Gredeskoul, MIT License.                                       |
+|  Git rev bc43bb0.                                                                 |
 |___________________________________________________________________________________|
                                                                                     
-(BInstallers:
-   permissions, homebrew, nodejs, hostnames, rubyinstall, sproutwrap, monofonts,    
-   postgresql, zsh_install, preferences, bash_install, atom, osx    
+Installers:
+   permissions, homebrew, etc_hosts, monofonts, postgresql, sproutwrap, install_ruby,    
+   install_zsh, install_bash, bash_it, install_nodejs, install_python, osx, install_atom,    
+   prefs    
                                                                                     
-(BHelpers:
-   brew-update, brew-upgrade, brew-wipe, postgres-install, postgres-reinstall,    
-   postgres-start, postgres-stop, postgres-wipe, sudo-disable, sudo-enable    
+Helpers:
+   bash-it-lookup, brew-repair, brew-update, brew-upgrade, brew-wipe, postgres-install,    
+   postgres-reinstall, postgres-start, postgres-stop, postgres-wipe, sudo-disable,    
+   sudo-enable    
+                                                                                    
                                                                                     
 
-(BUsage: pu -a [-S] [-B] [-Z] [-I]                [ output ]
+Usage: pu -a [-S] [-B] [-Z] [-I]                [ output ]
        pu -r 'runner1 runner2 ...' [-S] [-B]    [ output ]
        pu -r homebrew [-L|-F|-C] [-R] [-f] [-K] [ output ]
    Or: pu [-l|-h|-H|-x]
@@ -31,6 +35,19 @@ Full run:
               In this mode any command that failed will have it's STDOUT and
               STDERR captured for later debugging.
   -P          No backu[P] for rsync of bash and zsh files (default is to backup)
+
+Features
+  -t 'feature1 feature2...'
+              List of features to run in adition to the 'default'. Features add
+              a number of brew packages, nodejs modules and more, depending on a
+              feature. For example, 'ruby' feature installs rubymine, and other
+              ruby-specific tools.
+
+              Take a look at the 'features' folder for more information. Note that the
+              'default' feature always runs, and contains the definition of
+              the variables other features can extend.
+
+              Currently available features: aws default nodejs python ruby web
 
 Partial run (multiple runners can be listed in quotes or multiple -r flags):
   -r runner   run only a specified [r]unner (helper or installer)
@@ -62,6 +79,7 @@ Output control:
 
 Help & Info:
   -l          [l]ist available runners  helpers and installers
+  -T          list available fea[T]ures
   -h          this [h]elp message
   -H          this help message, and explanation of helpers and installers
   -x          same as -H but in plain ascii (also saves into doc/help)
@@ -75,13 +93,13 @@ Examples:
                                     # homebrew and sprout-wrap
 
   Runner:
-      Most common usage is with the -a (B flag, that runs all installers.
+      Most common usage is with the -a  flag, that runs all installers.
       Installers are bash modules located in the ./installers folder. Each
       installer has a bash function that matches the name of the file.
 
       The -r flag can be supplied more than once, or once but with multiple
-      arguments in quotes, eg -r 'runner1 runner2'(B or -r runner1
-      -r runner2(B. Presence of this flag indicates that only specified
+      arguments in quotes, eg -r 'runner1 runner2' or -r runner1
+      -r runner2. Presence of this flag indicates that only specified
       runnings will run.
 
   Helpers
