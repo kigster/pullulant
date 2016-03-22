@@ -25,11 +25,11 @@ function use_newer_bash() {
 
 function bash_it_component() {
   local args=($*)
-  local what=$1
-  local action=$2
+  local action=$1
+  local what=$2
   local list=${args[@]:2}
   for item in ${list[@]}; do
-    run "echo bash -l -c 'bash-it $action $what $item'"
+    run "bash -l -c 'bash-it $action $what $item'"
   done
 }
 
