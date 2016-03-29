@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>build</key>
+	<real>636</real>
+	<key>license</key>
+	<string>5585-1251-9514-5812-6498</string>
+	<key>preferences</key>
+	<dict>
+		<key>Battery_ColorGraphCustomColors</key>
+		<integer>1</integer>
+		<key>Battery_ColorGraphDraining</key>
+		<string>1.00 0.84 0.00 1.00</string>
+		<key>Battery_MenubarCustomizeStates</key>
+		<integer>0</integer>
+		<key>Battery_MenubarMode</key>
+		<string>4,1</string>
+		<key>Battery_Notifications</key>
+		<array>
+			<dict>
+				<key>level</key>
+				<integer>20</integer>
+				<key>style</key>
+				<integer>0</integer>
+				<key>type</key>
+				<integer>1</integer>
+				<key>uuid</key>
+				<string>E4E1FF17-F700-4FA8-83E1-6F5F8F05199D</string>
+			</dict>
+			<dict>
+				<key>level</key>
+				<integer>10</integer>
+				<key>style</key>
+				<integer>0</integer>
+				<key>type</key>
+				<integer>0</integer>
+				<key>uuid</key>
+				<string>98AC3BA2-C014-4D60-96D4-9F0E7A125DFB</string>
+			</dict>
+		</array>
+		<key>Battery_TimeSize</key>
+		<integer>16</integer>
+		<key>CPU_MenubarGraphBreakdowns</key>
+		<integer>1</integer>
+		<key>CPU_MenubarGraphCustomColors</key>
+		<integer>1</integer>
+		<key>CPU_MenubarGraphSystem</key>
+		<string>1.00 0.92 0.00 1.00</string>
+		<key>CPU_MenubarGraphUser</key>
+		<string>0.11 0.92 0.00 1.00</string>
+		<key>CPU_MenubarGraphWidth</key>
+		<real>45</real>
+		<key>CPU_MenubarMode</key>
+		<string>100,0,6</string>
+		<key>Diagnostics_Enabled</key>
+		<integer>1</integer>
+		<key>Diagnostics_Sent_3.2</key>
+		<true/>
+		<key>Disks_MenubarGraphActivityCustomColors</key>
+		<integer>1</integer>
+		<key>Disks_MenubarGraphActivityRead</key>
+		<string>1.00 0.84 0.00 1.00</string>
+		<key>Disks_MenubarGroupItems</key>
+		<integer>0</integer>
+		<key>Disks_MenubarMode</key>
+		<string>100,8,9</string>
+		<key>Memory_MenubarMode</key>
+		<string>100,1,3</string>
+		<key>Network_AppSort</key>
+		<integer>0</integer>
+		<key>Network_DataFormat</key>
+		<integer>1</integer>
+		<key>Network_DecimalLevel</key>
+		<integer>0</integer>
+		<key>Network_GraphCustomColors</key>
+		<integer>1</integer>
+		<key>Network_GraphDownload</key>
+		<string>1.00 0.17 0.00 1.00</string>
+		<key>Network_GraphMode</key>
+		<integer>1</integer>
+		<key>Network_GraphShowBackground</key>
+		<integer>1</integer>
+		<key>Network_GraphUpload</key>
+		<string>0.94 0.94 0.00 1.00</string>
+		<key>Network_GraphWidth</key>
+		<real>46</real>
+		<key>Network_MenubarMode</key>
+		<string>4,1,0</string>
+		<key>Network_TextBold</key>
+		<integer>1</integer>
+		<key>StatusItems-Order</key>
+		<array>
+			<integer>6</integer>
+			<integer>4</integer>
+			<integer>3</integer>
+			<integer>2</integer>
+			<integer>1</integer>
+		</array>
+	</dict>
+	<key>version</key>
+	<real>5.1100001335144043</real>
+</dict>
+</plist>
