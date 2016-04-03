@@ -28,20 +28,19 @@ export PU_HOME=%PU_HOME%
 export PATH=$PATH:${PU_HOME}
 unalias pu 2>/dev/null
 export EDITOR=vim
-
+export DEBUG=false
 function load_locals() {
   # load user's custom zsh file
   local scripts=(.bash_colors .bash_functions .bash_docker .bash_services .bash_aliases .bash_${USER} )
-  printf $bldwht
+  [[ $DEBUG == true ]] && printf $bldwht
   for script in ${scripts[@]}; do
     if [ -s "${HOME}/${script}" ]; then
-      printf "${bakblu}Loading in ${bakgrn}%-20s${txtrst}\n" $script
+      [[ $DEBUG == true ]] && printf "${bakblu}Loading in ${bakgrn}%-20s${txtrst}\n" $script
       source "${HOME}/${script}"
     else
-      printf "${txtrst}Whoops, ${bldred}${script}${txtrst} was not found, ignoring...${txtrst}\n"
+      [[ $DEBUG == true ]] && printf "${txtrst}${bldred}${script}${txtrst} was not found${txtrst}\n"
     fi
   done
-  echo
 }
 
 load_locals
