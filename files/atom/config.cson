@@ -1,4 +1,14 @@
 "*":
+  "activate-power-mode":
+    particles:
+      size: {}
+      spawnCount: {}
+      totalCount: {}
+    screenShake: {}
+  "atom-html-preview":
+    triggerOnSave: true
+  "atom-webbrowser":
+    homepage: "http://localhost:4000/"
   build:
     notificationOnRefresh: true
     overrideThemeColors: false
@@ -7,11 +17,14 @@
     scrollOnError: true
   core:
     excludeVcsIgnoredPaths: false
+    openEmptyEditorOnStart: false
     themes: [
-      "one-dark-ui"
-      "robin-hood-syntax"
+      "atom-dark-ui"
+      "an-old-hope-syntax"
     ]
   editor:
+    autoIndentOnPaste: false
+    fontSize: 13
     invisibles: {}
     showIndentGuide: true
     showInvisibles: true
@@ -19,9 +32,15 @@
     userId: "ea855b00-5a85-5c2f-8f19-6c1ab68a4909"
   "git-diff":
     showIconsInEditorGutter: true
+  "git-plus": {}
+  "git-status": {}
   "linter-checkbashisms": {}
   minimap:
+    absoluteMode: true
     displayMinimapOnLeft: true
+    plugins:
+      "git-diff": true
+      "git-diffDecorationsZIndex": 0
   "terminal-plus":
     ansiColors:
       normal:
