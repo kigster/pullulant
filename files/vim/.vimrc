@@ -32,11 +32,12 @@ nnoremap <silent> <Space> :nohl<CR><C-l>
 map ,t :Vipe bundle exec rspec <c-r>%:<c-r>=line('.')<cr><cr>
 map ,y :Vipe<cr>
 
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip  
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
 " set *.hamlc files to haml syntax
+:autocmd BufRead,BufNewFile *.json setfiletype json
+:autocmd BufRead,BufNewFile *.nmap setfiletype nmap
 :autocmd BufRead,BufNewFile *.hamlc setfiletype haml
+
 :autocmd FileType cpp setlocal shiftwidth=4 tabstop=4
 :autocmd BufNewFile,BufReadPost *.ino,*.pde set filetype=cpp
-
-

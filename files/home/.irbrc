@@ -1,4 +1,3 @@
-require 'colored2'
 require 'rubygems'
 require 'irb/completion'
 
@@ -7,6 +6,31 @@ if ( ENV['RAILS_ENV'] || defined? Rails ) && File.exist?( railsrc_path )
   begin
     load railsrc_path
   rescue Exception
+  end
+end
+
+TRIES = 2
+begin
+  tries ||= TRIES
+  require 'colored2'
+  printf "That worked! ".bold.green + "See?".bold.yellow + "\n" if tries != TRIES
+rescue Exception
+
+  if tries == TRIES
+    printf "Installing gem 'colored2' to provide you with pretty colors, 1 sec...\n"
+    %x(gem install colored2)
+    Gem.clear_paths
+    tries -= 1
+    retry
+  end
+
+  class String
+    def noop
+      self
+    end
+    %i(clear dark black yellow red blue green bold italic cyan on).each do |m|
+      alias_method m, :noop;
+    end
   end
 end
 
