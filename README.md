@@ -78,6 +78,14 @@ by running `./pu -r sudo-enable` or `./pu -r sudo-disable`.
     * iStat Menus – click install when it comes up
     * Alfred 2
 
+## Understanding the Installer
+
+Whether or not installer fully succeeded, you will, very likely, have folder `~/workspace/pullulant` where the installer resides. If you `cd` into that folder, you can then run `pu` script with various options to install more things, to clean postgresql, etc.
+
+In fact, `pu` comes with a whole bunch of modules that are meant to be part of the installer, but also a bunch that are meant to be used only when needed. Hence the terminology: `installer` vs `helper`. 
+
+See `pu -h` for more information, or scroll down to the section [Driving the Installer](#Driving%20the%20Installer).
+
 ## What's Installed
 
 ### Languages
@@ -129,7 +137,7 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
 ### Shells
 
  * Bash and Bash Completion are both installed
- * Zsh and Oh-My-Zsh are installed, and zsh is made the default (unless `-Z` flag is passed)
+ * Zsh and Oh-My-Zsh are installed, but no changes to the default shell are made — unless `-z` flag is specified. In which case zsh is setup as a default shell.
 
 ### Programming Fonts
 
