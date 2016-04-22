@@ -84,7 +84,7 @@ Whether or not installer fully succeeded, you will, very likely, have folder `~/
 
 In fact, `pu` comes with a whole bunch of modules that are meant to be part of the installer, but also a bunch that are meant to be used only when needed. Hence the terminology: `installer` vs `helper`. 
 
-See `pu -h` for more information, or scroll down to the section [Driving the Installer](#Driving%20the%20Installer).
+See `pu -h` for more information, or scroll down to the section [Driving the Installer](#driving-the-installer).
 
 ## What's Installed
 
