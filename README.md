@@ -153,7 +153,167 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
 
 ## Driving the Installer
 
-![Pu Usage](doc/pu.png)
+```
+
+ ____________________________________________________________________________________
+|                                                                                   |
+|  Pullulant (or gently: 'pu')                                                      |
+|  Development Environment Installer (Version 1.3.0).                               |
+|   2016 Konstantin Gredeskoul, MIT License.                                        |
+|  Git rev 090b40b.                                                                 |
+|___________________________________________________________________________________|
+                                                                                    
+Installers:
+   permissions, homebrew, etc_hosts, monofonts, postgresql, sproutwrap, install_ruby,    
+   install_zsh, install_bash, bash_it, install_nodejs, install_python, osx, install_atom,    
+   install_vim, prefs    
+                                                                                    
+Helpers:
+   bash-it-lookup, brew-repair, brew-update, brew-upgrade, brew-wipe, postgres-install,    
+   postgres-reinstall, postgres-start, postgres-stop, postgres-wipe, sudo-disable,    
+   sudo-enable    
+                                                                                    
+                                                                                    
+
+Usage:
+  pu -a          [features] [-S] [-B] [-Z] [-iI] [fmt]
+  pu [runners]   [features] [-S] [-B]            [fmt]
+  pu -r homebrew [features] [-L|-F|-C] [-R] [-f] [-K] [fmt]
+
+Or for Help:
+  pu [-l|-T|-h|-H|-x]
+
+Where:
+  [runners]   is one or more installers or helpers passed via '-r' flag, like
+              so: ' ... -r install_bash -r bash_it -r osx ...'
+              Print the available list by running 'pu -l'
+
+  [fmt]       is combination of flags controlling the output you see on the
+              screen: [-n] [-q|-v] [-p]
+
+  [features]  is a list of enabled features (see below).
+
+Full Run (All installers):
+  -a          run [a]ll installers in their order (from the 'installers' dir)
+    -S        [S]proutwrap is disabled during the install
+    -B        [B]rew-upgrade is disabled
+    -P        No backu[P] for rsync of bash and zsh files (default is to backup)
+
+Error Handing:
+              Default error handling is pessimistic: installer stops upon any
+              error code returned from a single 'run' statement.
+
+              You can control error handling at two levels:
+
+  -i          [i]gnore errors and continue to the next 'run' statement.
+
+  -I          Stops running the current installer that produced an error, skips
+              the rest of it, and continues to the next installer. For example,
+              in this mode, if one homebrew package fails to install, the rest
+              of homebrew installer will be skipped, and the next installer in
+              the run list will begin.
+
+Features:
+  -t feature1 -t feature2 ...
+
+              List of features to run in addition to the 'default'. Features add
+              a number of brew packages, nodejs modules, bash-it plugins and
+              aliases grouped together for a specific purpose. For example, 'ruby'
+              feature installs RubyMine IDE, and other ruby-specific tools, while
+              'python' feature installs PyCharm IDE and python-specific tools.
+
+              Take a look at the 'features' folder for more information. Note
+              that the 'default' feature always runs, and contains the definition
+              of the variables other features can extend.
+
+              Available Features: aws default nodejs python ruby web
+
+  -T          List available fea[T]ures in the 'features' folder.
+
+Partial run (multiple runners can be listed in quotes or multiple -r flags):
+  -r runner   run only a specified [r]unner (helper or installer)
+              eg: pu -r 'zsh osx' -r home
+
+  -f          [F]orce  applies to some installers, ie. brew (--force) and
+              zsh (overwrites current)
+
+Homebrew:
+              -C -F -L flags allow picking specific subset of the install.
+              The flags can mix. Adding all three is the same as adding none.
+
+  -L          Only [L]ink packages configured for brew linking
+  -C          Only [C]asks are installed from a configured list
+  -F          Only [F]ormulas are installed from a configured list
+
+              These apply to all brew commands:
+  -R          [R]einstall each formulae during brew install
+  -K          Relin[K] all brew formulas/casks during install
+
+Zsh
+  -Z          Change the default shell to ZSH and install 'oh-my-zsh'
+
+Output control:
+  -p          su[p]press pretty section headers for more compact output
+  -q          [q]uiet mode: stop printing commands before and after run.
+  -v          [v]erbose - show each command's output, and add -v to some
+  -n          dry-ru[n] print commands, but don't actually run them.
+
+Help & Info:
+  -l          [l]ist available runners  helpers and installers
+  -h          this [h]elp message
+  -H          this help message, and explanation of helpers and installers
+  -x          same as -H but in plain ascii (also saves into doc/help)
+
+Examples:
+    # install everything with the default (small) set of packages:
+    pu -a
+
+    # install everything with additional packages and plugins enabled
+    # suitable for ruby,python,node development, as well as install
+    # services used in web development such as nginx, haproxy, etc, as well
+    # as install the packages and plugins for managing AWS infrastructure.
+    pu -a -t ruby -t python -t nodejs -t web -t aws
+
+    # use a helper (not an installer) to wipe clean and reinstall postgresql
+    # from brew, create a new UTF8 database, and ensure it's running after.
+    pu -r reinstall-postgres      # run just reinstall-postgres
+
+    # wipe and reinstall homebrew, with additional ruby packages included
+    pu -r brew-wipe   -r homebrew -t ruby
+
+    # repair and install all brew packages, with additional python packages
+    pu -r brew-repair -r homebrew -t python
+
+    # when installing brew packages, skip casks or linking, and only install
+    # formulas. Use verbose output.
+    pu -r homebrew -F -pv
+
+    # install everything, minus homebrew and sprout-wrap, including
+    # features listed. Note that brew-specific portion of features
+    # is ignored in this case.
+    pu -aSB -t ruby -t python -t nodejs -t web -t aws
+
+  Runner:
+      Most common usage is with the -a  flag, that runs all installers.
+      Installers are bash modules located in the ./installers folder. Each
+      installer has a bash function that matches the name of the file.
+
+      The -r flag can be supplied more than once, or once but with multiple
+      arguments in quotes, eg -r 'runner1 runner2' or -r runner1
+      -r runner2. Presence of this flag indicates that only specified
+      runnings will run.
+
+  Helpers
+      Helpers are similar to installers, but they are not ordered, and are
+      not included in the default install. They are meant to be used ad-hoc.
+
+      You can add new installers and helpers by adding new files in the
+      corresponding folders with bash functions matching the name.
+
+      For example, to enable password-less sudo, use 'sudo-enable' helper:
+
+      pu -r sudo-enable
+```
 
 You should inspect the configuration and packages defined in two files:
 
