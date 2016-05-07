@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./pu -a -t 'python web docker nodejs'
