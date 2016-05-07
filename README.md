@@ -154,28 +154,30 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
 ## Driving the Installer
 
 ```
+┌─────────────────────────────────────────────────────────────────────────┐
+│ Pullulant™ ✩ (or gently: 'pu')                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│ OS-X Development Environment Installer (Version 1.4.0) Git Rev: 8796163        │
+│ Inspired by the SproutWrap project from Pivotal Labs                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│ (c) 2015-2016 Konstantin Gredeskoul, «http://kig.re» «github.com/kigster»      │
+│ MIT License. This software is provided with no warranty implied or explicit.   │
+└─────────────────────────────────────────────────────────────────────────┘
 
- ____________________________________________________________________________________
-|                                                                                   |
-|  Pullulant (or gently: 'pu')                                                      |
-|  Development Environment Installer (Version 1.3.0).                               |
-|   2016 Konstantin Gredeskoul, MIT License.                                        |
-|  Git rev 090b40b.                                                                 |
-|___________________________________________________________________________________|
-                                                                                    
 Installers:
-   permissions, homebrew, etc_hosts, monofonts, postgresql, sproutwrap, install_ruby,    
-   install_zsh, install_bash, bash_it, install_nodejs, install_python, osx, install_atom,    
-   install_vim, prefs    
-                                                                                    
-Helpers:
-   bash-it-lookup, brew-repair, brew-update, brew-upgrade, brew-wipe, postgres-install,    
-   postgres-reinstall, postgres-start, postgres-stop, postgres-wipe, sudo-disable,    
-   sudo-enable    
-                                                                                    
-                                                                                    
+   permissions, homebrew, etc_hosts, monofonts, postgresql, sproutwrap,
+   install_ruby, install_zsh, install_bash, bash_it, install_nodejs,
+   install_python, osx, install_atom, install_vim, prefs
 
-Usage:
+Helpers:
+   bash-it-lookup, brew-repair, brew-update, brew-upgrade, brew-wipe,
+   postgres-install, postgres-reinstall, postgres-start, postgres-stop,
+   postgres-wipe, sudo-disable, sudo-enable
+
+
+
+USAGE SUMMARY:
+
   pu -a          [features] [-S] [-B] [-Z] [-iI] [fmt]
   pu [runners]   [features] [-S] [-B]            [fmt]
   pu -r homebrew [features] [-L|-F|-C] [-R] [-f] [-K] [fmt]
@@ -184,6 +186,7 @@ Or for Help:
   pu [-l|-T|-h|-H|-x]
 
 Where:
+
   [runners]   is one or more installers or helpers passed via '-r' flag, like
               so: ' ... -r install_bash -r bash_it -r osx ...'
               Print the available list by running 'pu -l'
@@ -194,12 +197,14 @@ Where:
   [features]  is a list of enabled features (see below).
 
 Full Run (All installers):
+
   -a          run [a]ll installers in their order (from the 'installers' dir)
     -S        [S]proutwrap is disabled during the install
     -B        [B]rew-upgrade is disabled
     -P        No backu[P] for rsync of bash and zsh files (default is to backup)
 
 Error Handing:
+
               Default error handling is pessimistic: installer stops upon any
               error code returned from a single 'run' statement.
 
@@ -214,6 +219,7 @@ Error Handing:
               the run list will begin.
 
 Features:
+
   -t feature1 -t feature2 ...
 
               List of features to run in addition to the 'default'. Features add
@@ -226,18 +232,21 @@ Features:
               that the 'default' feature always runs, and contains the definition
               of the variables other features can extend.
 
-              Available Features: aws default nodejs python ruby web
+              Available Features: aws default docker nodejs python ruby web
 
   -T          List available fea[T]ures in the 'features' folder.
 
-Partial run (multiple runners can be listed in quotes or multiple -r flags):
+Partial Run
+
+              Multiple runners can be listed in quotes or multiple -r flags:
   -r runner   run only a specified [r]unner (helper or installer)
               eg: pu -r 'zsh osx' -r home
 
-  -f          [F]orce  applies to some installers, ie. brew (--force) and
+  -f          [F]orce – applies to some installers, ie. brew (--force) and
               zsh (overwrites current)
 
 Homebrew:
+
               -C -F -L flags allow picking specific subset of the install.
               The flags can mix. Adding all three is the same as adding none.
 
@@ -250,21 +259,25 @@ Homebrew:
   -K          Relin[K] all brew formulas/casks during install
 
 Zsh
+
   -Z          Change the default shell to ZSH and install 'oh-my-zsh'
 
 Output control:
+
   -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
-  -n          dry-ru[n] print commands, but don't actually run them.
+  -n          dry-ru[n] – print commands, but don't actually run them.
 
 Help & Info:
-  -l          [l]ist available runners  helpers and installers
-  -h          this [h]elp message
-  -H          this help message, and explanation of helpers and installers
-  -x          same as -H but in plain ascii (also saves into doc/help)
+
+  -l          [l]ist available runners – helpers and installers
+  -h          paginated [h]elp message in full color
+  -H          non-paginated [H]elp message in full color
+  -x          non-paginated help message with NO color, plain ASCII
 
 Examples:
+
     # install everything with the default (small) set of packages:
     pu -a
 
@@ -272,11 +285,11 @@ Examples:
     # suitable for ruby,python,node development, as well as install
     # services used in web development such as nginx, haproxy, etc, as well
     # as install the packages and plugins for managing AWS infrastructure.
-    pu -a -t ruby -t python -t nodejs -t web -t aws
+    pu -a -t 'ruby python nodejs web aws docker'
 
     # use a helper (not an installer) to wipe clean and reinstall postgresql
     # from brew, create a new UTF8 database, and ensure it's running after.
-    pu -r reinstall-postgres      # run just reinstall-postgres
+    pu -r reinstall-postgres
 
     # wipe and reinstall homebrew, with additional ruby packages included
     pu -r brew-wipe   -r homebrew -t ruby
@@ -293,26 +306,30 @@ Examples:
     # is ignored in this case.
     pu -aSB -t ruby -t python -t nodejs -t web -t aws
 
-  Runner:
-      Most common usage is with the -a  flag, that runs all installers.
-      Installers are bash modules located in the ./installers folder. Each
-      installer has a bash function that matches the name of the file.
+Runner
 
-      The -r flag can be supplied more than once, or once but with multiple
-      arguments in quotes, eg -r 'runner1 runner2' or -r runner1
-      -r runner2. Presence of this flag indicates that only specified
-      runnings will run.
+    Most common usage is with the -a  flag, that runs all installers.
+    Installers are bash modules located in the ./installers folder. Each
+    installer has a bash function that matches the name of the file.
 
-  Helpers
-      Helpers are similar to installers, but they are not ordered, and are
-      not included in the default install. They are meant to be used ad-hoc.
+    The -r flag can be supplied more than once, or once but with multiple
+    arguments in quotes, eg -r 'runner1 runner2' or -r runner1
+    -r runner2. Presence of this flag indicates that only specified
+    runnings will run.
 
-      You can add new installers and helpers by adding new files in the
-      corresponding folders with bash functions matching the name.
+Helpers
+    Helpers are similar to installers, but they are not ordered, and are
+    not included in the default install. They are meant to be used for ad-hoc
+    installations, fixes, uninstalls, etc.
 
-      For example, to enable password-less sudo, use 'sudo-enable' helper:
+    For example, to enable password-less sudo for your current account (not
+    recommended!), use 'sudo-enable' helper:
 
-      pu -r sudo-enable
+    pu -r sudo-enable
+
+Customizing
+    You can add new installers and helpers by adding new files in the
+    corresponding folders with bash functions matching the file name.
 ```
 
 You should inspect the configuration and packages defined in two files:
