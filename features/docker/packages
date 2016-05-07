@@ -1,0 +1,7 @@
+
+bash_it_aliases+=" docker docker-compose "
+bash_it_plugins+=" docker docker-machine "
+bash_it_completions+=" docker "
+brew_packages+=" docker docker-compose docker-machine docker-swarm go "
+brew_casks+=" docker "
+rbenv_ruby_versions+=("2.3.0")
