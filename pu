@@ -16,6 +16,13 @@ function setup {
   source "lib/pu-loader"
 }
 
+
+function help-command() {
+  pu-welcome-screen-short
+  pu-print-help
+  pu-print-detailed-usage
+}
+
 setup
 opts_features=""
 
@@ -85,18 +92,16 @@ while getopts "ar:SBPLiIRKFCfqnvlhHxpZTt:" opt; do
     #========================= Help and Info ========================
 
     x)
-      ./$0 -H | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
+      ./$0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
       cat doc/help; finish;                 ;;
     h)
-      pu-welcome-screen-short
-      pu-print-help
-      finish;                               ;;
+      printf "$(help-command)" | less -R
+      exit 0
+      ;;
     H)
-      pu-welcome-screen-short
-      pu-print-help
-      pu-print-detailed-usage
-      finish;                               ;;
-
+      help-command
+      exit 0
+      ;;
     l)
       pu-short-header
       pu-installers-helpers

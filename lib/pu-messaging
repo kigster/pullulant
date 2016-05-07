@@ -10,8 +10,70 @@
 #
 source "${bash_files_dir}/.bash_colors"
 
-function sep {
-  printf "____________________________________________________________________________________\n" $1
+function pu-screen-width {
+  stty -a | grep columns | awk '{print $6}'
+}
+
+function pu-width {
+  echo -n "80"
+}
+
+function pu-repeat-char {
+  local char=${1:0:1}
+  char=${char:- }
+  local width=${2:-$(pu-width)}
+  for i in {0..1000}; do
+    [[ $i -ge ${width} ]] && break
+    printf "$char"
+  done
+}
+
+function pu-line {
+  pu-repeat-char "─"
+}
+
+# set background color to something before calling this
+function pu-bar {
+  pu-repeat-char " "
+  printf "${txtrst}\n"
+}
+
+function pu-clean {
+  local text="$*"
+  printf "$text" | sed -r 's/\x1b\[[0-9;]*m?//g'
+}
+
+function pu-box-separator {
+  printf "├"
+  pu-line
+  printf "┤\n"
+}
+function pu-box-top {
+  printf "┌"
+  pu-line
+  printf "┐\n"
+}
+function pu-box-bottom {
+  printf "└"
+  pu-line
+  printf "┘\n"
+}
+function pu-box-header {
+  local text="$*"
+  local width=$(pu-width)
+  local uncolored_text=$(pu-clean "$text")
+  local remaining_space_len=$(($width - ${#uncolored_text} - 2))
+  printf "│ ${text}${txtrst} "
+  pu-repeat-char " " $remaining_space_len
+  printf "│\n"
+}
+
+function pu-underline-header {
+  local title="$*"
+  local width=80
+  printf "${undylw}%s" "$title"
+  local remaining=$(($width - ${#title}))
+  printf "%*s${txtrst}\n" $remaining " "
 }
 
 function pu-indent-list {
@@ -24,23 +86,30 @@ function pu-indent-list {
 function pu-git-revision {
   git log --pretty=oneline --abbrev-commit | head -1 | awk '{print $1}'
 }
+
 function pu-long-header {
-  printf " ___________________________________________________________________________________\n"
-  printf "|                                                                                   |\n"
-  printf "|  ${bldgrn}Pullulant™ (or gently: 'pu')                                       ${txtrst}🌹  🌻  🍄    🎃  |\n"
-  printf "|  ${txtylw}Development Environment Installer ${bldylw}(Version $(cat VERSION)).${txtwht}                               |\n"
-  printf "|  ${bldblu}© 2016 Konstantin Gredeskoul, MIT License.${txtwht}                                       |\n"
-  printf "|  Git rev ${txtgrn}$(pu-git-revision).${txtwht}                                                                 |\n"
-  printf "|___________________________________________________________________________________|\n"
+  pu-box-top
+  pu-box-header "${bldgrn}Pullulant™ ${bldred}✩${txtrst} (or gently: 'pu')"
+  pu-box-separator
+  pu-box-header "${txtgrn}OS-X Development Environment Installer ${bldylw}(Version $(cat VERSION)) ${txtpur}Git Rev: $(pu-git-revision)"
+  pu-box-header "${txtgrn}Inspired by the SproutWrap project from Pivotal Labs"
+  pu-box-separator
+  pu-box-header "${bldpur}(c) 2015-2016 Konstantin Gredeskoul, ${txtpur}«http://kig.re» «github.com/kigster»"
+  pu-box-header "MIT License. ${txtred}This software is provided with no warranty implied or explicit."
+  pu-box-bottom
+
   pu-installers-helpers
 }
 
 function pu-short-header {
-  printf "${txtwht}${bakgrn}Pullulant (aka 'pu'),  ${txtblk}${bakpur} Version $(cat VERSION), Ref $(pu-git-revision)    ${bakgrn}   ✔︎   ${txtrst}\n\n"
-  local runner_list=$(pu-indent-list "$runners"    70 '       ')
-  printf "Run List:\n${bldylw}${runner_list}${bldwht}\n\n"
-  printf "Enabled Options:\n${bldylw}"
-  printf "${txtrst}       "
+  printf "${txtrst}"
+  pu-box-top
+  pu-box-header "${bldgrn}Pullulant™ ${bldred} ✩ ${txtrst} (or gently: 'pu')                             ${txtblk}${bakpur} Version ${bakblu} $(cat VERSION) ${bakpur}"
+  pu-box-bottom
+}
+
+function pu-print-options {
+  printf "  Enabled Options:${bldylw}\n"
   count=0
   for option in ${pu_options}; do
     option_value=$(pu_option_value $option)
@@ -60,8 +129,8 @@ function pu-short-header {
 }
 
 function pu-installers-helpers {
-  local installer_list=$(pu-indent-list "$installers" 80 "   ")
-  local helper_list=$(pu-indent-list "$helpers"    80 "   ")
+  local installer_list=$(pu-indent-list "$installers" 65 "   ")
+  local helper_list=$(pu-indent-list    "$helpers"    65 "   ")
 
   printf "                                                                                    \n"
   printf "${txtrst}Installers:\n"
@@ -82,7 +151,8 @@ function pu-list-current-runners {
     printf "${txtrst}Current Run List:\n"
     printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
   fi
-  printf "${bldwht}${undylw}                                                                                    \n${txtrst}"
+  printf "${bakgrn}"
+  pu-bar
 }
 
 function pu-list-features {
@@ -95,7 +165,8 @@ function pu-list-features {
     printf "${txtrst}Current Feature List:\n"
     printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
   fi
-  printf "${bldwht}${undylw}                                                                                    \n${txtrst}"
+  printf "${bakgrn}"
+  pu-bar
 }
 
 function pu-welcome-screen-short {
@@ -103,23 +174,25 @@ function pu-welcome-screen-short {
   printf "\n${txtrst}"
 }
 
+
 function pu-print-section-header {
   [[ -n "${opts_suppress_headers}" ]] && return
-
-  printf "${bldblu}                             ___________________________\n"
-  printf "${bldblu}____________________________|${bldwht}${bakblu} %12s %-12s ${txtrst}|____________________________${txtrst}\n\n" "installing" $1
+  pu-box-top
+  pu-box-header "${bldwht}${bakblu} $*"
+  pu-box-bottom
 }
 
 function pu-print-help {
   # ar:SBLRKFCfqnvlhHxp
-  printf "Usage:\n"
+  printf "USAGE SUMMARY:\n\n"
   printf "  $(basename $0) -a          [features] [-S] [-B] [-Z] [-iI] [fmt]\n"
   printf "  $(basename $0) [runners]   [features] [-S] [-B]            [fmt]\n"
   printf "  $(basename $0) -r homebrew [features] [-L|-F|-C] [-R] [-f] [-K] [fmt]\n"
   printf "\nOr for Help:\n"
   printf "  $(basename $0) [-l|-T|-h|-H|-x]\n"
   printf "
-Where:
+$(pu-underline-header 'Where: ')
+
   [runners]   is one or more installers or helpers passed via '-r' flag, like
               so: ' ... -r install_bash -r bash_it -r osx ...'
               Print the available list by running '$(basename $0) -l'
@@ -129,13 +202,15 @@ Where:
 
   [features]  is a list of enabled features (see below).
 
-Full Run (All installers):
+$(pu-underline-header "Full Run (All installers):")
+
   -a          run [a]ll installers in their order (from the 'installers' dir)
     -S        [S]proutwrap is disabled during the install
     -B        [B]rew-upgrade is disabled
     -P        No backu[P] for rsync of bash and zsh files (default is to backup)
 
-Error Handing:
+$(pu-underline-header 'Error Handing:')
+
               Default error handling is pessimistic: installer stops upon any
               error code returned from a single 'run' statement.
 
@@ -149,7 +224,8 @@ Error Handing:
               of homebrew installer will be skipped, and the next installer in
               the run list will begin.
 
-Features:
+$(pu-underline-header 'Features:')
+
   -t feature1 -t feature2 ...
 
               List of features to run in addition to the 'default'. Features add
@@ -166,14 +242,17 @@ Features:
 
   -T          List available fea[T]ures in the 'features' folder.
 
-Partial run (multiple runners can be listed in quotes or multiple -r flags):
+$(pu-underline-header 'Partial Run')
+
+              Multiple runners can be listed in quotes or multiple -r flags:
   -r runner   run only a specified [r]unner (helper or installer)
               eg: $(basename $0) -r 'zsh osx' -r home
 
   -f          [F]orce – applies to some installers, ie. brew (--force) and
               zsh (overwrites current)
 
-Homebrew:
+$(pu-underline-header 'Homebrew:')
+
               -C -F -L flags allow picking specific subset of the install.
               The flags can mix. Adding all three is the same as adding none.
 
@@ -185,73 +264,83 @@ Homebrew:
   -R          [R]einstall each formulae during brew install
   -K          Relin[K] all brew formulas/casks during install
 
-Zsh
+$(pu-underline-header 'Zsh')
+
   -Z          Change the default shell to ZSH and install 'oh-my-zsh'
 
-Output control:
+$(pu-underline-header 'Output control:')
+
   -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.
 
-Help & Info:
-  -l          [l]ist available runners – helpers and installers
-  -h          this [h]elp message
-  -H          this help message, and explanation of helpers and installers
-  -x          same as -H but in plain ascii (also saves into doc/help)
+$(pu-underline-header 'Help & Info:')
 
-Examples:
+  -l          [l]ist available runners – helpers and installers
+  -h          paginated [h]elp message in full color
+  -H          non-paginated [H]elp message in full color
+  -x          non-paginated help message with NO color, plain ASCII
+
+$(pu-underline-header 'Examples:')
+
     # install everything with the default (small) set of packages:
-    $(basename $0) -a
+    ${bldgrn}$(basename $0) -a${txtrst}
 
     # install everything with additional packages and plugins enabled
     # suitable for ruby,python,node development, as well as install
     # services used in web development such as nginx, haproxy, etc, as well
     # as install the packages and plugins for managing AWS infrastructure.
-    $(basename $0) -a -t ruby -t python -t nodejs -t web -t aws
+    ${bldgrn}$(basename $0) -a -t 'ruby python nodejs web aws docker'${txtrst}
 
     # use a helper (not an installer) to wipe clean and reinstall postgresql
     # from brew, create a new UTF8 database, and ensure it's running after.
-    $(basename $0) -r reinstall-postgres      # run just reinstall-postgres
+    ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
 
     # wipe and reinstall homebrew, with additional ruby packages included
-    $(basename $0) -r brew-wipe   -r homebrew -t ruby
+    ${bldgrn}$(basename $0) -r brew-wipe   -r homebrew -t ruby${txtrst}
 
     # repair and install all brew packages, with additional python packages
-    $(basename $0) -r brew-repair -r homebrew -t python
+    ${bldgrn}$(basename $0) -r brew-repair -r homebrew -t python${txtrst}
 
     # when installing brew packages, skip casks or linking, and only install
     # formulas. Use verbose output.
-    $(basename $0) -r homebrew -F -pv
+    ${bldgrn}$(basename $0) -r homebrew -F -pv${txtrst}
 
     # install everything, minus homebrew and sprout-wrap, including
     # features listed. Note that brew-specific portion of features
     # is ignored in this case.
-    $(basename $0) -aSB -t ruby -t python -t nodejs -t web -t aws
+    ${bldgrn}$(basename $0) -aSB -t ruby -t python -t nodejs -t web -t aws${txtrst}
 "
 }
 
 function pu-print-detailed-usage {
   printf "
-  Runner:
-      Most common usage is with the ${bldlw}-a ${txtrst} flag, that runs all installers.
-      Installers are bash modules located in the ${modules_dir} folder. Each
-      installer has a bash function that matches the name of the file.
+$(pu-underline-header "Runner")
 
-      The -r flag can be supplied more than once, or once but with multiple
-      arguments in quotes, eg ${bldylw}-r 'runner1 runner2'${txtrst} or ${bldylw}-r runner1
-      -r runner2${txtrst}. Presence of this flag indicates that only specified
-      runnings will run.
+    Most common usage is with the ${bldlw}-a ${txtrst} flag, that runs all installers.
+    Installers are bash modules located in the ${modules_dir} folder. Each
+    installer has a bash function that matches the name of the file.
 
-  Helpers
-      Helpers are similar to installers, but they are not ordered, and are
-      not included in the default install. They are meant to be used ad-hoc.
+    The -r flag can be supplied more than once, or once but with multiple
+    arguments in quotes, eg ${bldylw}-r 'runner1 runner2'${txtrst} or ${bldylw}-r runner1
+    -r runner2${txtrst}. Presence of this flag indicates that only specified
+    runnings will run.
 
-      You can add new installers and helpers by adding new files in the
-      corresponding folders with bash functions matching the name.
+$(pu-underline-header "Helpers")
+    Helpers are similar to installers, but they are not ordered, and are
+    not included in the default install. They are meant to be used for ad-hoc
+    installations, fixes, uninstalls, etc.
 
-      For example, to enable password-less sudo, use 'sudo-enable' helper:
+    For example, to enable password-less sudo for your current account (not
+    recommended!), use 'sudo-enable' helper:
 
-      $(basename $0) -r sudo-enable
+    $(basename $0) -r sudo-enable
+
+$(pu-underline-header "Customizing")
+    You can add new installers and helpers by adding new files in the
+    corresponding folders with bash functions matching the file name.
+
+
 "
 }
