@@ -19,7 +19,6 @@
   bash
   bash-completion
   cmake
-  elasticsearch
   git
   go
   haproxy
@@ -55,8 +54,7 @@
 [[ -n "${brew_casks}" ]] || brew_casks="
   alfred
   atom
-  Caskroom/versions/1password-beta
-  Caskroom/versions/atom-beta
+  1password
   github-desktop
   gitx
   google-chrome

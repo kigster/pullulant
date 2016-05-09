@@ -32,6 +32,11 @@ function pu-line {
   pu-repeat-char "─"
 }
 
+function pu-sep {
+  pu-line
+  printf "\n"
+}
+
 # set background color to something before calling this
 function pu-bar {
   pu-repeat-char " "
@@ -99,13 +104,10 @@ function pu-git-revision {
 
 function pu-long-header {
   pu-box-top
-  pu-box-header "${bldred}Pullulant ${txtrst} (or gently: 'pu')   "
+  pu-box-header "${bldred}Pullulant ${txtrst} (or just ${bldred}pu${txtrst})                       ${bldylw}(Version $(cat VERSION)) ${txtylw}Git Rev: $(pu-git-revision) "
   pu-box-separator
-  pu-box-header "${txtgrn}OS-X Development Environment Installer ${bldylw}(Version $(cat VERSION)) ${txtpur}Git Rev: $(pu-git-revision)"
-  pu-box-header "${txtgrn}Inspired by the SproutWrap project from Pivotal Labs"
-  pu-box-separator
-  pu-box-header "${bldpur}(c) 2015-2016 Konstantin Gredeskoul, ${txtpur}«http://kig.re» «github.com/kigster»"
-  pu-box-header "MIT License. ${txtred}This software is provided with no warranty implied or explicit."
+  pu-box-header "${bldgrn}OS-X Installer for Web Devs, MIT License  | ${txtgrn}(c) 2015-2016 Konstantin Gredeskoul"
+  pu-box-header "${bldgrn}https://github.com/kigster/pullulant      |                       http://kig.re"
   pu-box-bottom
 
   pu-installers-helpers
@@ -157,12 +159,11 @@ function pu-list-current-runners {
   linebreak="\n"
   local run_list=$(pu-indent-list "$runners"    65 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "${bldwht}${undylw}                                                                                    \n\n"
     printf "${txtrst}Current Run List:\n"
-    printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
+    printf "${bldgrn}%-68s ${txtrst}\n" "$run_list"
   fi
-  printf "${bakgrn}"
-  pu-bar
+  pu-line
+  printf "\n"
 }
 
 function pu-list-features {
@@ -171,7 +172,6 @@ function pu-list-features {
   linebreak="\n"
   local run_list=$(pu-indent-list "$(pu-features)"    65 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "${bldwht}${undylw}                                                                                    \n\n"
     printf "${txtrst}Current Feature List:\n"
     printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
   fi
@@ -188,7 +188,7 @@ function pu-welcome-screen-short {
 function pu-print-section-header {
   [[ -n "${opts_suppress_headers}" ]] && return
   pu-box-top
-  pu-box-header "${bldwht}${bakblu} $*"
+  pu-box-header "${bldwht}${bakblu}  $*  "
   pu-box-bottom
 }
 

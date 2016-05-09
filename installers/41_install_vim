@@ -11,5 +11,6 @@
 #_______________________________________________________________________________
 #
 function install_vim {
+  run "sudo chown -R ${USER} ${HOME}/.vim"
   run "rsync ${opts_rsync_backup} -v --perms -a ./files/vim/ ${HOME} # show-stdout "
 }

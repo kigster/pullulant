@@ -180,7 +180,7 @@ function main {
   printf "\n"
   [[ ${runners_completed} -gt 0 ]]  && printf "${bldwht}%5d${bldgrn} runners succeeded\n" $runners_completed
   [[ ${runners_ignored} -gt 0 ]]    && printf "${bldwht}%5d${bldylw} runners failed, but were ignored\n"  $runners_ignored
-  sep
+  pu-sep
   [[ ${commands_completed} -gt 0 ]] && printf "${bldwht}%5d${bldgrn} commands ran successfully\n" $commands_completed
   [[ ${commands_ignored} -gt 0 ]]   && printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored\n" $runners_ignored
   [[ ${commands_failed} -gt 0 ]]    && printf "${bldwht}%5d${bldred} commands failed\n"  $commands_failed

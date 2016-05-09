@@ -33,7 +33,7 @@ function check_exit {
   # print the user-visible info about the command, if any
   if [ -z "${cmd_prints}" -a -z "${cmd_quiet}" ]; then
     if [ -z "${cmd_verbose}" ]; then
-      printf "${bldpur}%-80.80s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
+      printf "${bldpur}%-75.75s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
     else
       printf "${bldpur}%s${txtrst}\n" "$cmd" | tee -a ${const_cmd_stdout}
     fi
