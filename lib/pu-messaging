@@ -40,7 +40,7 @@ function pu-bar {
 
 function pu-clean {
   local text="$*"
-  printf "$text" | sed -r 's/\x1b\[[0-9;]*m?//g'
+  printf "$text" | ruby -npe 'gsub(/\e\[[;m\d]+/, "")'
 }
 
 function pu-box-separator {
@@ -62,10 +62,20 @@ function pu-box-header {
   local text="$*"
   local width=$(pu-width)
   local uncolored_text=$(pu-clean "$text")
-  local remaining_space_len=$(($width - ${#uncolored_text} - 2))
-  printf "│ ${text}${txtrst} "
+  local remaining_space_len=$(($width - ${#uncolored_text} - 1))
+  printf "│ ${text}${txtrst}"
   pu-repeat-char " " $remaining_space_len
   printf "│\n"
+}
+
+function pu-cursor-left {
+  local cols=$1
+  printf "\033[${cols}D"
+}
+
+function pu-cursor-right {
+  local cols=$1
+  printf "\033[${cols}C"
 }
 
 function pu-underline-header {
@@ -89,7 +99,7 @@ function pu-git-revision {
 
 function pu-long-header {
   pu-box-top
-  pu-box-header "${bldgrn}Pullulant™ ${bldred}✩${txtrst} (or gently: 'pu')"
+  pu-box-header "${bldred}Pullulant ${txtrst} (or gently: 'pu')   "
   pu-box-separator
   pu-box-header "${txtgrn}OS-X Development Environment Installer ${bldylw}(Version $(cat VERSION)) ${txtpur}Git Rev: $(pu-git-revision)"
   pu-box-header "${txtgrn}Inspired by the SproutWrap project from Pivotal Labs"
@@ -104,7 +114,7 @@ function pu-long-header {
 function pu-short-header {
   printf "${txtrst}"
   pu-box-top
-  pu-box-header "${bldgrn}Pullulant™ ${bldred} ✩ ${txtrst} (or gently: 'pu')                             ${txtblk}${bakpur} Version ${bakblu} $(cat VERSION) ${bakpur}"
+  pu-box-header "${bldgrn}Pullulant ${bldred} ✩ ${txtrst} (or gently: 'pu')                             ${txtblk}${bakpur} Version ${bakblu} $(cat VERSION) ${bakpur}"
   pu-box-bottom
 }
 
@@ -145,7 +155,7 @@ function pu-installers-helpers {
 
 function pu-list-current-runners {
   linebreak="\n"
-  local run_list=$(pu-indent-list "$runners"    80 '   ')
+  local run_list=$(pu-indent-list "$runners"    65 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
     printf "${bldwht}${undylw}                                                                                    \n\n"
     printf "${txtrst}Current Run List:\n"
@@ -159,7 +169,7 @@ function pu-list-features {
   source "lib/pu-features"
 
   linebreak="\n"
-  local run_list=$(pu-indent-list "$(pu-features)"    80 '   ')
+  local run_list=$(pu-indent-list "$(pu-features)"    65 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
     printf "${bldwht}${undylw}                                                                                    \n\n"
     printf "${txtrst}Current Feature List:\n"

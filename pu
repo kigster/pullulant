@@ -122,7 +122,7 @@ function continue_next_runner() {
   run_runners "${runners_list[@]}"
 }
 
-trap USR1 continue_next_runner
+trap USR1 continue_next_runner 2>/dev/null
 
 function run_runners() {
   while (( "$#" )); do
