@@ -26,7 +26,6 @@ alias 'gaa'='git add -A'
 alias 'gap'='git add -p'
 alias 'gpp'='git pull --rebase && git push'
 alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
-
 alias dc='cd'
 alias dir='ls -lF'
 alias lr='ls -alrt'
@@ -48,6 +47,18 @@ alias j='bundle exec jekyll serve --watch -D --baseurl ""'
 alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
 
 alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\", \$1/1024/1024, \$2 }"'
+
+function gcln() {
+  repo=$1
+  who=${2:-$USER}
+  [[ "$who" == "kig" ]] && who="kigster"
+  [[ -z "$repo" ]] && {
+    printf "${bldred}Usage: gcl repo [github-username]${txtrst}\n" 
+    return
+  }
+  git clone git@github.com:$who/$repo
+}
+
 
 bbinit() {
   b=$1
