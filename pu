@@ -20,16 +20,17 @@ function setup {
 function help-command() {
   pu-welcome-screen-short
   pu-print-help
-  pu-print-detailed-usage
 }
 
 setup
 opts_features=""
 
-while getopts "ar:SBPLiIRKFCfqnvlhHxpZTt:" opt; do
+while getopts "aAr:SBPLiIRKFCfqnvlhHxpZTt:" opt; do
   case $opt in
     a)
       export runners=${installers}  ;;
+    A)
+      export opts_features=$(pu-features)   ;;
     r)
       [[ "${OPTARG}" == "sudo-enable"  ]] && export skip_sudo_disable=true
       [[ "${OPTARG}" == "sudo-disable" ]] && export sudoers_enabled=true

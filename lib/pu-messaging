@@ -162,8 +162,6 @@ function pu-list-current-runners {
     printf "${txtrst}Current Run List:\n"
     printf "${bldgrn}%-68s ${txtrst}\n" "$run_list"
   fi
-  pu-line
-  printf "\n"
 }
 
 function pu-list-features {
@@ -194,36 +192,57 @@ function pu-print-section-header {
 
 function pu-print-help {
   # ar:SBLRKFCfqnvlhHxp
-  printf "USAGE SUMMARY:\n\n"
-  printf "  $(basename $0) -a          [features] [-S] [-B] [-Z] [-iI] [fmt]\n"
-  printf "  $(basename $0) [runners]   [features] [-S] [-B]            [fmt]\n"
-  printf "  $(basename $0) -r homebrew [features] [-L|-F|-C] [-R] [-f] [-K] [fmt]\n"
-  printf "\nOr for Help:\n"
-  printf "  $(basename $0) [-l|-T|-h|-H|-x]\n"
   printf "
-$(pu-underline-header 'Where: ')
+$(pu-underline-header 'Command Summary: ')
 
-  [runners]   is one or more installers or helpers passed via '-r' flag, like
-              so: ' ... -r install_bash -r bash_it -r osx ...'
-              Print the available list by running '$(basename $0) -l'
+  ./pu        [ -a | -r 'installer helper ...' ]
+              [ -A | -t 'feature feature ...'  ]
+              [ installer options ]
+              [ output options ]
 
-  [fmt]       is combination of flags controlling the output you see on the
-              screen: [-n] [-q|-v] [-p]
+$(pu-underline-header 'Getting Help: ')
 
-  [features]  is a list of enabled features (see below).
+  -h          paginated help message in full color
+  -H          non-paginated help message in full color
+  -x          non-paginated help message in pure ASCII
+  -l          list available runners – helpers and installers
+  -T          list available features
 
-$(pu-underline-header "Full Run (All installers):")
+$(pu-underline-header "Installer and Helper Flags:")
 
-  -a          run [a]ll installers in their order (from the 'installers' dir)
-    -S        [S]proutwrap is disabled during the install
-    -B        [B]rew-upgrade is disabled
+   ${bldgrn}Installers${txtrst} are grouped instructions that deal with a common
+              theme, for example 'install_ruby' installs ruby and dependencies.
+              To run ALL installers, use the -a flag.
+
+   ${bldgrn}Helpers${txtrst}    are similar to installers, except they are not run as
+              part of the full install. They must be invoked by name directly.
+
+  -r 'installer helper  ...'
+              run specific installer(s) and/or helper(s) in the provided order
+  -l          list available installers and helpers
+  -a          full install: runs each installer from the './installers' dir
+    -S        [S]proutwrap is disabled during the full install
+    -B        [B]rew-upgrade is disabled during the full install
     -P        No backu[P] for rsync of bash and zsh files (default is to backup)
+
+$(pu-underline-header 'Feature Flags:')
+
+  ${bldpur}Features${txtrst}    are a set of brew packages, bash-it plug-ins,
+              completions and aliases, defined a particular theme. For
+              example, ruby feature enables bash aliases and completions
+              releated to all ruby development tools.  It also adds a particulat
+              set of brew formulas and casks.
+
+  -t 'feature feature ....'
+              Merge packages from a provided set of features.
+  -T          List available features
+  -A          Merge ALL available features, currently:
+              ${bldpur}$(echo $(pu-features))${txtrst}
 
 $(pu-underline-header 'Error Handing:')
 
               Default error handling is pessimistic: installer stops upon any
               error code returned from a single 'run' statement.
-
               You can control error handling at two levels:
 
   -i          [i]gnore errors and continue to the next 'run' statement.
@@ -234,34 +253,11 @@ $(pu-underline-header 'Error Handing:')
               of homebrew installer will be skipped, and the next installer in
               the run list will begin.
 
-$(pu-underline-header 'Features:')
-
-  -t feature1 -t feature2 ...
-
-              List of features to run in addition to the 'default'. Features add
-              a number of brew packages, nodejs modules, bash-it plugins and
-              aliases grouped together for a specific purpose. For example, 'ruby'
-              feature installs RubyMine IDE, and other ruby-specific tools, while
-              'python' feature installs PyCharm IDE and python-specific tools.
-
-              Take a look at the 'features' folder for more information. Note
-              that the 'default' feature always runs, and contains the definition
-              of the variables other features can extend.
-
-              Available Features: ${bldgrn}$(echo $(pu-features))${txtrst}
-
-  -T          List available fea[T]ures in the 'features' folder.
-
-$(pu-underline-header 'Partial Run')
-
-              Multiple runners can be listed in quotes or multiple -r flags:
-  -r runner   run only a specified [r]unner (helper or installer)
-              eg: $(basename $0) -r 'zsh osx' -r home
+$(pu-underline-header 'Homebrew:')
 
   -f          [F]orce – applies to some installers, ie. brew (--force) and
-              zsh (overwrites current)
-
-$(pu-underline-header 'Homebrew:')
+              zsh (overwrites current shell to ZSH). Also some rsync
+              installers may behave differently with -f.
 
               -C -F -L flags allow picking specific subset of the install.
               The flags can mix. Adding all three is the same as adding none.
@@ -285,72 +281,37 @@ $(pu-underline-header 'Output control:')
   -v          [v]erbose - show each command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.
 
-$(pu-underline-header 'Help & Info:')
-
-  -l          [l]ist available runners – helpers and installers
-  -h          paginated [h]elp message in full color
-  -H          non-paginated [H]elp message in full color
-  -x          non-paginated help message with NO color, plain ASCII
-
 $(pu-underline-header 'Examples:')
 
-    # install everything with the default (small) set of packages:
-    ${bldgrn}$(basename $0) -a${txtrst}
+  run every installer, with the fully merged set of packages and plugins
+  from all available features (probably the most common way to run './pu'):
+  ${bldgrn}$(basename $0) -aA${txtrst}
 
-    # install everything with additional packages and plugins enabled
-    # suitable for ruby,python,node development, as well as install
-    # services used in web development such as nginx, haproxy, etc, as well
-    # as install the packages and plugins for managing AWS infrastructure.
-    ${bldgrn}$(basename $0) -a -t 'ruby python nodejs web aws docker'${txtrst}
+  install everything with the default (small) set of packages:
+  ${bldgrn}$(basename $0) -a${txtrst}
 
-    # use a helper (not an installer) to wipe clean and reinstall postgresql
-    # from brew, create a new UTF8 database, and ensure it's running after.
-    ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
+  install everything with specific features and plugins enabled
+  suitable for ruby,python,node development, as well as install
+  services used in web development such as nginx, haproxy, etc,
+  ${bldgrn}$(basename $0) -a -t 'ruby python nodejs web aws docker'${txtrst}
 
-    # wipe and reinstall homebrew, with additional ruby packages included
-    ${bldgrn}$(basename $0) -r brew-wipe   -r homebrew -t ruby${txtrst}
+  use a helper (not an installer) to wipe clean and reinstall postgresql
+  from brew, create a new UTF8 database, and ensure it's running after.
+  ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
 
-    # repair and install all brew packages, with additional python packages
-    ${bldgrn}$(basename $0) -r brew-repair -r homebrew -t python${txtrst}
+  wipe and reinstall homebrew, with additional ruby packages included
+  ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -t ruby${txtrst}
 
-    # when installing brew packages, skip casks or linking, and only install
-    # formulas. Use verbose output.
-    ${bldgrn}$(basename $0) -r homebrew -F -pv${txtrst}
+  repair and install all brew packages, with additional python packages
+  ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -t python${txtrst}
 
-    # install everything, minus homebrew and sprout-wrap, including
-    # features listed. Note that brew-specific portion of features
-    # is ignored in this case.
-    ${bldgrn}$(basename $0) -aSB -t ruby -t python -t nodejs -t web -t aws${txtrst}
-"
-}
+  when installing brew packages, skip casks or linking, and only install
+  formulas. Use verbose output.
+  ${bldgrn}$(basename $0) -r homebrew -F -pv${txtrst}
 
-function pu-print-detailed-usage {
-  printf "
-$(pu-underline-header "Runner")
-
-    Most common usage is with the ${bldlw}-a ${txtrst} flag, that runs all installers.
-    Installers are bash modules located in the ${modules_dir} folder. Each
-    installer has a bash function that matches the name of the file.
-
-    The -r flag can be supplied more than once, or once but with multiple
-    arguments in quotes, eg ${bldylw}-r 'runner1 runner2'${txtrst} or ${bldylw}-r runner1
-    -r runner2${txtrst}. Presence of this flag indicates that only specified
-    runnings will run.
-
-$(pu-underline-header "Helpers")
-    Helpers are similar to installers, but they are not ordered, and are
-    not included in the default install. They are meant to be used for ad-hoc
-    installations, fixes, uninstalls, etc.
-
-    For example, to enable password-less sudo for your current account (not
-    recommended!), use 'sudo-enable' helper:
-
-    $(basename $0) -r sudo-enable
-
-$(pu-underline-header "Customizing")
-    You can add new installers and helpers by adding new files in the
-    corresponding folders with bash functions matching the file name.
-
-
+  install everything, minus homebrew and sprout-wrap, but ALL features
+  available. Since we are skipping homebrew, no feature-specific brew
+  packages will be installed.
+  ${bldgrn}$(basename $0) -aASB${txtrst}
 "
 }
