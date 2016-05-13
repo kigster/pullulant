@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-sprout_wrap_home="${HOME}/workspace/sprout-wrap"
+sprout_wrap_home="${PWD}/../sprout-wrap"
 function sproutwrap {
   if [ ! -z "${opts_skip_sprout_wrap}" ]; then
     run "echo 'Skipping sprout-wrap'"
