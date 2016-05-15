@@ -13,8 +13,9 @@
 function install_bash {
   run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
   ln -nfs ~/.bashrc ~/.bash_login
-  local rc="${HOME}/.bashrc"
-  [[ -n "$(grep PU_HOME $rc)" ]] || run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}; unalias pu 2>/dev/null' >> $rc "
+  local rc="${HOME}/.bash_${USER}"
+  touch $rc
+  [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}' >> $rc "
 }
 
 # shortcut

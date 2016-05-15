@@ -22,11 +22,6 @@ export GOPATH=$HOME/$WS/golang
 export PATH=$PATH:/usr/local/opt/go/libexec/bin:$GOPATH/bin
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export PGUSER=postgres
-
-# Pullulant
-export PU_HOME=%PU_HOME%
-export PATH=$PATH:${PU_HOME}
-unalias pu 2>/dev/null
 export EDITOR=vim
 export DEBUG=false
 function load_locals() {
