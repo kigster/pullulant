@@ -16,6 +16,13 @@ function install_bash {
   local rc="${HOME}/.bash_${USER}"
   touch $rc
   [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}' >> $rc "
+  [[ -z "$(grep pullulant ${HOME}/.gitconfig 2>/dev/null )" ]] && {
+    touch ${HOME}/.gitconfig
+    echo "
+[include]
+    path = ${HOME}/.gitconfig-pullulant
+"   >> ${HOME}/.gitconfig
+  }
 }
 
 # shortcut
