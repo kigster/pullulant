@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+_pu_flags() {
+  if [[ -z "$PU_FLAGS" ]]; then
+    pushd $PU_HOME > /dev/null
+    export PU_FLAGS=$(./pu -H | egrep '^  \-[a-zA-Z]' | sed 's/    / /g' | awk '{print $1}' | tr '\n' ' ')
+    popd >/dev/null
+  fi
+  echo -n $PU_FLAGS
+}
+
+_pu() {
+    [[ -z "$PU_HOME" ]] && return
+
+    local PU_COMP_OPTIONS cur prev
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    COMPREPLY=()
+
+    if [[ "${prev}" == "-r" ]]; then
+      PU_COMP_OPTIONS=$(pu -e 'pu-installers; pu-helpers')
+    elif [[ "${prev}" == "-t" ]]; then
+      PU_COMP_OPTIONS=$(pu -e 'pu-features')
+    else
+      PU_COMP_OPTIONS=$(_pu_flags)
+    fi
+    COMPREPLY=( $(compgen -W "${PU_COMP_OPTIONS}" -- ${cur}) )
+    return 0
+}
+
+complete -F _pu pu
