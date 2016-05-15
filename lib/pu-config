@@ -45,7 +45,7 @@ function package-config {
   readonly export backup_dir=${home_dir}/.backup/$const_timestamp
   readonly export bash_files_dir="./files/home"
   readonly export rsync_home_dir="./files/home/"
-  readonly export rsync_atom_dir="./files/atom/"
+  readonly export rsync_atom_dir="./files/atom"
   readonly export zsh_rsync_home_dir="./files/zsh/"
   readonly export custom_packages_file="${HOME}/.pullulant_packages"
   readonly export bash_it_home="${HOME}/.bash_it"

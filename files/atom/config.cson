@@ -24,7 +24,7 @@
     ]
   editor:
     autoIndentOnPaste: false
-    fontSize: 13
+    fontSize: 7
     invisibles: {}
     showIndentGuide: true
     showInvisibles: true
@@ -36,75 +36,74 @@
   "git-status": {}
   "linter-checkbashisms": {}
   minimap:
-    absoluteMode: true
-    displayMinimapOnLeft: true
+    displayCodeHighlights: false
     plugins:
-      "git-diff": true
+      "git-diff": false
       "git-diffDecorationsZIndex": 0
   "terminal-plus":
     ansiColors:
       normal:
         blue:
-          red: 0
+          alpha: 1
+          blue: 205
           green: 116
-          blue: 205
-          alpha: 1
-        cyan:
           red: 0
-          green: 164
+        cyan:
+          alpha: 1
           blue: 207
-          alpha: 1
+          green: 164
+          red: 0
         green:
-          red: 138
-          green: 198
+          alpha: 1
           blue: 81
-          alpha: 1
+          green: 198
+          red: 138
         magenta:
-          red: 147
-          green: 109
+          alpha: 1
           blue: 205
-          alpha: 1
+          green: 109
+          red: 147
         red:
-          red: 204
-          green: 128
+          alpha: 1
           blue: 112
-          alpha: 1
+          green: 128
+          red: 204
         yellow:
-          red: 255
-          green: 224
-          blue: 70
           alpha: 1
+          blue: 70
+          green: 224
+          red: 255
       zBright:
         brightBlue:
-          red: 0
+          alpha: 1
+          blue: 255
           green: 155
-          blue: 255
-          alpha: 1
-        brightCyan:
           red: 0
+        brightCyan:
+          alpha: 1
+          blue: 255
           green: 227
-          blue: 255
-          alpha: 1
+          red: 0
         brightGreen:
-          red: 149
-          green: 250
+          alpha: 1
           blue: 106
-          alpha: 1
+          green: 250
+          red: 149
         brightMagenta:
-          red: 252
-          green: 161
+          alpha: 1
           blue: 255
-          alpha: 1
+          green: 161
+          red: 252
         brightRed:
-          red: 255
+          alpha: 1
+          blue: 0
           green: 77
-          blue: 0
-          alpha: 1
-        brightYellow:
           red: 255
-          green: 226
-          blue: 0
+        brightYellow:
           alpha: 1
+          blue: 0
+          green: 226
+          red: 255
     core:
       mapTerminalsTo: "Folder"
     style:
