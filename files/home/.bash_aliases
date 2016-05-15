@@ -48,6 +48,10 @@ alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
 
 alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\", \$1/1024/1024, \$2 }"'
 
+function gr() {
+  egrep --color $* 2>/dev/null
+}
+
 function gcln() {
   repo=$1
   who=${2:-$USER}

@@ -43,6 +43,8 @@ function clr_constants {
     export txtrst='\e[0m'    # Text Reset
 
     export clr_constants_loaded=yes
+
+    export GREP_COLOR=$bldgrn
   fi
 }
 
