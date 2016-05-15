@@ -109,8 +109,6 @@ function pu-long-header {
   pu-box-header "${bldgrn}OS-X Installer for Web Devs, MIT License  | ${txtgrn}(c) 2015-2016 Konstantin Gredeskoul"
   pu-box-header "${bldgrn}https://github.com/kigster/pullulant      |                       http://kig.re"
   pu-box-bottom
-
-  pu-installers-helpers
 }
 
 function pu-short-header {
@@ -121,23 +119,23 @@ function pu-short-header {
 }
 
 function pu-print-options {
-  printf "  Enabled Options:${bldylw}\n"
+  printf "   Enabled Options:${bldylw}\n   "
   count=0
   for option in ${pu_options}; do
+    [[ "$option" == "opts_features" ]] && continue
     option_value=$(pu_option_value $option)
-    if [ -z "${option_value/ /}" ]; then
-      continue
-    else
+    if [[ -n "${option_value/ /}" ]]; then
       [[ $count -gt 0 ]] && printf ", "
-      if [ "$option_value" == "yes" ]; then
+      if [[ "$option_value" == "yes" ]]; then
         printf "${bldgrn}%s" ${option/opts_/}
       else
         printf "${bldgrn}%s=${bldylw}%s" ${option/opts_/} ${option_value}
       fi
+      count=$(($count + 1))
     fi
-    count=$(($count + 1))
   done
   printf "\n"
+  pu-line
 }
 
 function pu-installers-helpers {
@@ -190,16 +188,29 @@ function pu-print-section-header {
   pu-box-bottom
 }
 
-function pu-print-help {
-  # ar:SBLRKFCfqnvlhHxp
+function pu-short-usage {
   printf "
-$(pu-underline-header 'Command Summary: ')
+Usage:
+  pu  [ -a | -r 'installer helper ...' ]
+      [ -A | -t 'feature feature ...'  ]
+      [ -SBPLiIRKFCyfqnvlhHxpZT ]
+Eg.
+  pu -aAy   # installs everything non-interactively
+"
+}
 
-  ./pu        [ -a | -r 'installer helper ...' ]
-              [ -A | -t 'feature feature ...'  ]
-              [ installer options ]
-              [ output options ]
+function pu-short-help {
+  printf "
+Complete Help:
+  pu  [ -h | -H | -x ]
 
+"
+}
+
+function pu-print-help {
+
+  pu-short-usage
+  printf "
 $(pu-underline-header 'Getting Help: ')
 
   -h          paginated help message in full color
@@ -274,8 +285,9 @@ $(pu-underline-header 'Zsh')
 
   -Z          Change the default shell to ZSH and install 'oh-my-zsh'
 
-$(pu-underline-header 'Output control:')
+$(pu-underline-header 'Interaction and Output Control:')
 
+  -y          assume 'yes' to the interactive portion of the runner
   -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
@@ -284,34 +296,35 @@ $(pu-underline-header 'Output control:')
 $(pu-underline-header 'Examples:')
 
   run every installer, with the fully merged set of packages and plugins
-  from all available features (probably the most common way to run './pu'):
-  ${bldgrn}$(basename $0) -aA${txtrst}
+  from all available features (probably the most common way to run './pu')
+  and skip through the interactive section.
+    ${bldgrn}$(basename $0) -aAy${txtrst}
 
   install everything with the default (small) set of packages:
-  ${bldgrn}$(basename $0) -a${txtrst}
+    ${bldgrn}$(basename $0) -a${txtrst}
 
   install everything with specific features and plugins enabled
   suitable for ruby,python,node development, as well as install
   services used in web development such as nginx, haproxy, etc,
-  ${bldgrn}$(basename $0) -a -t 'ruby python nodejs web aws docker'${txtrst}
+    ${bldgrn}$(basename $0) -a -t 'ruby python nodejs web aws docker'${txtrst}
 
   use a helper (not an installer) to wipe clean and reinstall postgresql
   from brew, create a new UTF8 database, and ensure it's running after.
-  ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
+    ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
 
   wipe and reinstall homebrew, with additional ruby packages included
-  ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -t ruby${txtrst}
+    ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -t ruby${txtrst}
 
   repair and install all brew packages, with additional python packages
-  ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -t python${txtrst}
+    ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -t python${txtrst}
 
   when installing brew packages, skip casks or linking, and only install
   formulas. Use verbose output.
-  ${bldgrn}$(basename $0) -r homebrew -F -pv${txtrst}
+    ${bldgrn}$(basename $0) -r homebrew -F -pv${txtrst}
 
   install everything, minus homebrew and sprout-wrap, but ALL features
   available. Since we are skipping homebrew, no feature-specific brew
   packages will be installed.
-  ${bldgrn}$(basename $0) -aASB${txtrst}
+    ${bldgrn}$(basename $0) -aASB${txtrst}
 "
 }

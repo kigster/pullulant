@@ -25,8 +25,19 @@ function help-command() {
 setup
 opts_features=""
 
-while getopts "aAr:SBPLiIRKFCfqnvlhHxpZTt:" opt; do
+[[ -z "$*" ]] && {
+  pu-short-usage
+  pu-short-help
+  abort 0
+}
+
+while getopts "aAr:SBPLiIRKFCyfqnvlhHxpZTt:e:" opt; do
   case $opt in
+    y)
+      export opts_non_interative=yes        ;;
+    e)
+      eval "$OPTARG"
+      exit 0                                ;;
     a)
       export runners=${installers}  ;;
     A)
@@ -115,9 +126,10 @@ while getopts "aAr:SBPLiIRKFCfqnvlhHxpZTt:" opt; do
     :)
       printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
       abort 127
-    ;;
+      ;;
   esac
 done
+
 
 function continue_next_runner() {
   run_runners "${runners_list[@]}"
@@ -155,9 +167,9 @@ function run_runners() {
 }
 
 function main {
-  # Load package definitions based on the <-t template> setting.
+  pu-long-header
+  pu-print-options
   package-config
-
   # loop over installers, and if either passed as an argument or no arguments
   #" at all – run it."
 

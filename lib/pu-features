@@ -4,9 +4,8 @@ function pu-features {
 }
 
 function package-config {
-  pu-long-header
   declare -a features=(default ${opts_features})
-  printf "\n\n"
+  printf "\n"
   for feature in "${features[@]}"; do
     printf "   ${txtwht}${bldblu}Loading package definitions from feature ${txtblk}${bakylw} ◀︎ ${feature} ▶︎ ${txtrst}  \n"
     # if the feature has slashes, assume complete pathname
@@ -26,20 +25,21 @@ function package-config {
 
   source "${pu_home}/lib/pu-uniq-packages"
 
-  printf "\n${txtwht}   ${undylw}Attention:${txtrst} Please review the run parameters above.\n   If something is wrong or missing, hit Ctrl-C to abort.\n"
-  if [ -t 0 ]; then stty -echo -icanon -icrnl time 0 min 0; fi
-  keypress=''
-  echo
-  for wait in {20..1}; do
-    keypress="`cat -v`"
-    printf "\033[1000D\033[0C  You have ${bakred} ${wait} ${txtrst} seconds until start. ${bldgrn} Press ANY key to continue.${txtrst}"
-    sleep 1
-    keypress="`cat -v`"
-    if [ "x$keypress" != "x" ]; then
-      echo
-      break
-    fi
-  done
-  if [ -t 0 ]; then stty sane; fi
-  clear
+  if [[ -z "${opts_non_interative}" ]]; then
+    printf "\n${txtwht}   ${undylw}Attention:${txtrst} Please review the run parameters above.\n   If something is wrong or missing, hit Ctrl-C to abort.\n"
+    if [ -t 0 ]; then stty -echo -icanon -icrnl time 0 min 0; fi
+    keypress=''
+    for wait in {20..1}; do
+      keypress="`cat -v`"
+      printf "\033[1000D\033[0C  You have ${bakred} ${wait} ${txtrst} seconds until start. ${bldgrn} Press ANY key to continue.${txtrst}"
+      sleep 1
+      keypress="`cat -v`"
+      if [ "x$keypress" != "x" ]; then
+        echo
+        break
+      fi
+    done
+    if [ -t 0 ]; then stty sane; fi
+    clear
+  fi
 }

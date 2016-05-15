@@ -15,7 +15,7 @@ export bldred='\e[1;31m' # Red
 
 readonly dir=${dir-"pullulant"}
 readonly script=${script-"./pu"}
-readonly script_flags=${script_flags-"-a -t 'ruby python nodejs web docker'"}
+readonly script_flags=${script_flags-"-aAy"}
 readonly repo=${repo-"https://github.com/kigster/pullulant"}
 readonly ws=${ws-"${HOME}/workspace"}
 
@@ -53,8 +53,7 @@ fi
 if [ ${git_status} -eq 0 ]; then
   printf "${txtrst}You can now re-run or customize your install by using 'pu' directly:\n"
   echo "  cd ${ws}/${dir} "
-  echo "  ./pu -H             # to see the usage info "
-  echo "  ./pu -r homebrew    # to install just brew & packags, etc.."
+  echo "  ./pu -h             # to see the usage info "
 fi
 printf "${txtrst}\n"
 

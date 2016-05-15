@@ -22,17 +22,24 @@ function require_dir {
   done
 }
 
+function pu-installers() {
+  ls -1 $modules_dir | sed -E 's/[0-9]+_//g'
+}
+
+function pu-helpers() {
+  ls -1 $helpers_dir
+}
+
 function init {
   source "lib/pu.bash"
 
   require_dir "${helpers_dir}"
-  export helpers=${submodules}
-
   require_dir "${modules_dir}"
 
-  # Strip the optional leading number in the file name, used for sorting.
-  export installers=$(echo $submodules | sed -E 's/[0-9]+_//g')
+  export installers=$(pu-installers | tr '\n' ' ' | sed 's/ *$//g')
+  export helpers=$(pu-helpers | tr '\n' ' ' | sed 's/ *$//g')
   export last_command_status=0
 }
+
 
 init
