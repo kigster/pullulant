@@ -50,6 +50,7 @@ function package-config {
   readonly export custom_packages_file="${HOME}/.pullulant_packages"
   readonly export bash_it_home="${HOME}/.bash_it"
   readonly export service_list="nginx haproxy postgres redis memcached elastic solr mysql"
+  readonly export alfred_dir="${HOME}/Desktop/Pullulant/Alfred"
 
   [[ -n "$(which apm)" ]] && apm=apm
   [[ -n "$(which apm-beta)" ]] && apm="apm-beta"
@@ -80,7 +81,7 @@ function package-config {
     eval "export ${option}="
   done
 
-  opts_rsync_backup=" -b --suffix=~pullulant-backup "
+  opts_rsync_backup=" -b --suffix=~pu.bak "
   opts_features='default'
 }
 

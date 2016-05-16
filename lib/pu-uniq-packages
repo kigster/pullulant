@@ -27,3 +27,4 @@ function dedup_list() {
 [[ -n "${python_modules}" ]]        && python_modules=$(dedup_list "$python_modules")
 [[ -n "${rbenv_ruby_versions}" ]]   && rbenv_ruby_versions=($(dedup_list "${rbenv_ruby_versions[*]}"))
 [[ -n "${pyenv_python_versions}" ]] && pyenv_python_versions=($(dedup_list "${pyenv_python_versions[*]}"))
+[[ -n "${alfred_plugins}" ]]        && alfred_plugins=$(dedup_list "$alfred_plugins")
