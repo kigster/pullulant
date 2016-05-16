@@ -44,7 +44,7 @@ function clr_constants {
 
     export clr_constants_loaded=yes
 
-    export GREP_COLOR=$bldgrn
+    export GREP_COLOR=42
   fi
 }
 
