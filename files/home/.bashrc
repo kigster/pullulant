@@ -26,7 +26,7 @@ export EDITOR=vim
 export DEBUG=false
 function load_locals() {
   # load user's custom zsh file
-  local scripts=(.bash_colors .bash_functions .bash_docker .bash_services .bash_aliases .bash_${USER} )
+  local scripts=(.bash_colors .bash_functions .bash_docker .bash_services .bash_aliases .bash_pullulant .bash_${USER} )
   [[ $DEBUG == true ]] && printf $bldwht
   for script in ${scripts[@]}; do
     if [ -s "${HOME}/${script}" ]; then

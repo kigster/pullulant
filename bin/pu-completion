@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+#
+#        File: pu-completion
+#     Project: Pullulant — Completion
+#              © 2015—2016 Konstantin Gredeskoul, all rights reserved.
+#     License: MIT
+#   Home Page: https://github.com/kigster/pullulant
+#
+#_______________________________________________________________________________
 
 _pu_flags() {
   if [[ -z "$PU_FLAGS" ]]; then
@@ -20,9 +28,11 @@ _pu() {
     COMPREPLY=()
 
     if [[ "${prev}" == "-r" ]]; then
-      PU_COMP_OPTIONS=$(pu -e 'pu-installers; pu-helpers')
+      PU_COMP_INSTALLERS=${PU_COMP_INSTALLERS:-$(pu -e 'pu-installers; pu-helpers')}
+      PU_COMP_OPTIONS=$PU_COMP_INSTALLERS
     elif [[ "${prev}" == "-t" ]]; then
-      PU_COMP_OPTIONS=$(pu -e 'pu-features')
+      PU_COMP_FEATURES=${PU_COMP_FEATURES:-$(pu -e 'pu-features')}
+      PU_COMP_OPTIONS=$PU_COMP_FEATURES
     else
       PU_COMP_OPTIONS=$(_pu_flags)
     fi

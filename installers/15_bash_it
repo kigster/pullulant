@@ -38,7 +38,7 @@ function bash_it {
   [[ -d ${bash_it_home} && -n "${opts_force}" ]] && run "rm -rf ${bash_it_home}"
 
   [[ ! -d ${bash_it_home} ]] && {
-    run "git clone https://github.com/kigster/bash-it.git ${bash_it_home}"
+    run "git clone https://github.com/bash-it/bash-it.git ${bash_it_home}"
     run "rm -f ~/.bash_profile.bak"
     run "cd ${bash_it_home} && echo 'n'| ./install.sh && cd -"
   }
