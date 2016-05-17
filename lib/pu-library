@@ -98,7 +98,7 @@ function check_exit {
     }
     [[ "${opts_continue_on_runner_error}" == "yes" ]] || abort
   fi
-  
+
   return $last_command_status
 }
 
@@ -143,6 +143,22 @@ function finish {
   exit ${exit_status}
 }
 
+#———————————————————————————————————————————————————————————————————————————————
+# array=("something to search for" "a string" "test2000")
+# array-contains-element "a string" "${array[@]}"
+# ( prints "true" or "false" )
+function array-contains-element () {
+  local e
+  local r=false
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && r=true; done
+  echo -n $r
+}
+
+function uppercase-first-letter() {
+  foo=$1
+  foo="$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}"
+  echo -n $foo
+}
 function run {
   cmd=$1
   ignore_error=${2-""}

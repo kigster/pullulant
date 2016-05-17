@@ -40,7 +40,6 @@
   rbenv
   redis
   ruby-build
-  ruby-build
   the_silver_searcher
   tmux
   tree
