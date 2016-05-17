@@ -73,7 +73,7 @@ function brew_cask_install {
   package=$1
 
   [[ ${#pu_brew_casks_already_installed[@]} == 0 ]] && {
-    run "printf \"loading list of installed brew casks...\""
+    run "printf \"loading list of installed brew casks...\n\""
     pu_brew_casks_already_installed=($(brew cask list -1))
   }
 
@@ -97,7 +97,7 @@ function brew_install {
     run "brew link      ${opts_verbose} $package ${opts_force} 2>&1  #show-stdout" "true"
   else
     [[ ${#pu_brew_already_installed[@]} == 0 ]] && {
-      run "printf \"loading list of installed brew packages...\" #is-a-command"
+      run "printf \"loading list of installed brew packages...\n\" #is-a-command"
       pu_brew_already_installed=($(brew list -1))
     }
     already_installed=$(array-contains-element $(basename $package) "${pu_brew_already_installed[@]}")
