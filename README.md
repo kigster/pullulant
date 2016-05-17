@@ -158,10 +158,10 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────┐
-│ Pullulant  (or just pu)                       (Version 1.4.0) Git Rev: 9cf06c9 │
+│ Pullulant  (or just pu)                               (Version 1.4.0) Git Rev: 9cf06c9 │
 ├────────────────────────────────────────────────────────────────────────────────┤
-│ OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul│
-│ https://github.com/kigster/pullulant      |                       http://kig.re│
+│ OS-X Installer for Web Devs, MIT License  |         (c) 2015-2016 Konstantin Gredeskoul│
+│ https://github.com/kigster/pullulant      |                               http://kig.re│
 └────────────────────────────────────────────────────────────────────────────────┘
 
 Usage:
