@@ -293,7 +293,7 @@ $(pu-underline-header 'Interaction and Output Control:')
   -v          [v]erbose - show each command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.
 
-$(pu-underline-header 'Examples:')
+$(pu-underline-header 'Examples: ')
 
   run every installer, with the fully merged set of packages and plugins
   from all available features (probably the most common way to run './pu')

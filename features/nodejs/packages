@@ -11,6 +11,6 @@
 bash_it_plugins+="javascript node nvm"
 bash_it_aliases+="npm"
 bash_it_completions+="npm"
-brew_packages+=" node npm  "
+brew_packages+=" node npm phantomjs "
 brew_casks+=" webstorm "
 nodejs_modules+=" bower ember-cli "
