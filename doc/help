@@ -1,5 +1,5 @@
 
- Pullulant  (or just pu)                       (Version 1.4.0) Git Rev: 68ac5ae 
+ Pullulant  (or just pu)                       (Version 1.5.1) Git Rev: 12671b9 
 
  OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul
  https://github.com/kigster/pullulant      |                       http://kig.re
@@ -10,18 +10,20 @@ Usage:
   pu  [ -R | -r 'runner runner ...' ]
       [ -F | -f 'feature feature ...'  ]
       [ -BCFHIKLNPRSTUZhilnopqtvy]
-      [-e 'expression']
+      [ -e 'expression']
+
 Eg.
-  pu -RF  # installs all runners/features non-interactively
+  pu -l                           # list all available runners
+  pu -t                           # list all available features
+  pu -RF                          # install all runners/features
+  pu -r homebrew -f ruby          # install homebrew with ruby specific packages
 
 Getting Help:                                                                   
-
   -h          paginated help message in full color
   -H          non-paginated help message in full color
   -x          non-paginated help message in pure ASCII
-  -l          list available runners  helpers and installers
-  -T          list available features
   -d          show debugging information
+  -E          show usage examples
 
 Runners:                                                                        
   Runners are modules that do certain work, i.e. install software, or remove it.
@@ -29,40 +31,42 @@ Runners:
   logically into 'Helpers' and 'Installers' correspondingly. NOTE: each
   runner is a bash script with name-matching bash function inside.
 
-  Installers are the modules that install something new and
+  Installers  are the modules that install something new and
               are to be included in the list of a complete install. They are
               ordered. For example 'install_ruby' installs ruby and dependencies.
               To run ALL installers, use the -a flag.
 
-  Helpers    are similar to installers, except they are not run as
+  Helpers     are similar to installers, except they are not run as
               part of the full install. They must be invoked by name directly.
               Because of that, helpers tend to be more diverse in nature: some
               uninstall things, fix things, and so on.
 
-  But collectively, helpers and installers are just 'runners' and are the 'atoms'
-              of pullulant's universe.
+  But collectively, helpers and installers are just 'runners' and are the 'units'
+  of pullulant's magical universe...
 
   -R          full install: executes each runner from the './installers' dir
-  -r 'installer helper  ...'
+
+  -r 'runner runner ...'
               run specific installer(s) and/or helper(s) in the provided order
+
   -l          list available installers and helpers
     -S        [S]proutwrap is disabled during the full install
     -B        [B]rew-upgrade is disabled during the full install
     -P        No backu[P] for rsync of bash and zsh files (default is to backup)
 
-Feature Flags:                                                                  
+Features:                                                                       
 
-  Features    are a set of brew packages, bash-it plug-ins,
-              completions and aliases, defined a particular theme. For
-              example, ruby feature enables bash aliases and completions
-              releated to all ruby development tools.  It also adds a particulat
-              set of brew formulas and casks.
+  Features    are a set of brew packages, bash-it plug-ins, completions
+              and aliases, defined a particular theme. For example, ruby feature
+              enables bash aliases and completions releated to all ruby
+              development tools.  It also adds a particulat set of brew formulas
+              and casks.
 
   -f 'feature feature ....'
               Merge packages from a provided set of features.
-  -F          List available features
-  -A          Merge ALL available features, currently:
+  -F          Merge ALL available features, currently:
               aws default docker nodejs python ruby web
+  -t          List available features
 
 Error Handing:                                                                  
 
@@ -109,34 +113,55 @@ Interaction and Output Control:
 
 Examples:                                                                       
 
-  run every installer, with the fully merged set of packages and plugins
-  from all available features (probably the most common way to run './pu')
-    pu -RF
+   Run a complete installer using a union of all available features with
+    default output and error handling options:
 
-  install everything with the default (small) set of packages, but
-  with an interactive check:
-    pu -RN
+      pu -RF
 
-  install everything with specific features and plugins enabled
-  suitable for ruby,python,node development, as well as install
-  services used in web development such as nginx, haproxy, etc,
-    pu -R -f 'ruby python nodejs web aws docker'
+   Install everything with the default (small) set of packages, but
+    with an interactive check:
 
-  use a helper (not an installer) to wipe clean and reinstall postgresql
-  from brew, create a new UTF8 database, and ensure it's running after.
-    pu -r reinstall-postgres
+      pu -RN
 
-  wipe and reinstall homebrew, with additional ruby packages included
-    pu -r 'brew-wipe homebrew' -f ruby
+   Install everything with specific features and plugins enabled suitable for
+    ruby, python and node development, as well as install services used in web
+    development such as nginx, haproxy, etc:
 
-  repair and install all brew packages, with additional python packages
-    pu -r 'brew-repair homebrew' -f python
+      pu -R -f 'ruby python nodejs web aws docker'
 
-  when installing brew packages, skip casks or linking, and only install
-  formulas. Use verbose output.
-    pu -r homebrew -o -pv
+   Use a helper (not an installer) to wipe clean and reinstall postgresql
+    from brew, create a new UTF8 database, and ensure it's running after:
 
-  install everything, minus homebrew and sprout-wrap, but ALL features
-  available. Since we are skipping homebrew, no feature-specific brew
-  packages will be installed.
-    pu -RFSB
+      pu -r reinstall-postgres
+
+   Wipe and reinstall homebrew, and install ruby-specific packages:
+
+      pu -r 'brew-wipe homebrew' -f ruby
+
+   Repair homebrew, and install additional python packages:
+
+      pu -r 'brew-repair homebrew' -f python
+
+   When installing brew packages, install formUlas only (-U), use --force (-o),
+    and show verbose output (-v) without section headers (-p):
+
+      pu -r homebrew -o -U -p -v
+
+   Install everything, sprout-wrap, with all of the available features.
+
+      pu -RFS
+
+Debugging                                                                       
+
+  -e expr     evaluate expression in the context of pullulant post loading.
+              This can be useful if you are developing / debugging the code.
+
+  For example, it allows you to evaluate any function that 'pu' loads into the
+  bash space. Some examples  here we are evaluating library function
+  pu-installers() which returns an array of all installers found in the folder.
+
+              pu -e pu-installers
+
+  Next, we can print every pu- related function loaded into memory:
+
+              pu -e 'set | grep "^pu-"'

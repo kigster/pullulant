@@ -197,21 +197,21 @@ Usage:
   pu  [ -R | -r 'runner runner ...' ]
       [ -F | -f 'feature feature ...'  ]
       [ -BCFHIKLNPRSTUZhilnopqtvy]
-      [-e 'expression']
-
-  pu -l  # list all runners
-  pu -t  # list all features
-  pu -r homebrew -f ruby # install homebrew with ruby specific packages
+      [ -e 'expression']
 
 Eg.
-  pu -RF  # installs all runners/features non-interactively
+  pu -l                           # list all available runners
+  pu -t                           # list all available features
+  pu -RF                          # install all runners/features
+  pu -r homebrew -f ruby          # install homebrew with ruby specific packages
 "
 }
 
 function pu-short-help {
   printf "
-Complete Help:
-  pu  [ -h | -H | -x ]
+Help:
+  pu -H | -x                      # complete help with examples
+  pu -h
 
 "
 }
@@ -222,19 +222,18 @@ function pu-print-help {
   printf "
 $(pu-underline-header 'Getting Help: ')
 
-  -l          list available runners: helpers and installers
-  -t          list available features (package sets)
-
   -h          paginated help message in full color
   -H          non-paginated help message in full color
   -x          non-paginated help message in pure ASCII
   -d          show debugging information
+  -E          show usage examples
 
 $(pu-underline-header "Runners:")
+
   Runners are modules that do certain work, i.e. install software, or remove it.
   They are located in two folders: ./helpers and ./installers and are divided
   logically into 'Helpers' and 'Installers' correspondingly. NOTE: each
-  runner is a bash script with name-matching bash function inside.
+  runner is a bash script with a bash function matching scripts name.
 
   ${bldgrn}Installers${txtrst}  are the modules that install something new and
               are to be included in the list of a complete install. They are
@@ -261,11 +260,11 @@ $(pu-underline-header "Runners:")
 
 $(pu-underline-header 'Features:')
 
-  ${bldpur}Features${txtrst}    are a set of brew packages, bash-it plug-ins,
-              completions and aliases, defined a particular theme. For
-              example, ruby feature enables bash aliases and completions
-              releated to all ruby development tools.  It also adds a particulat
-              set of brew formulas and casks.
+  ${bldgrn}Features${txtrst}    are a set of brew packages, bash-it plug-ins, completions
+              and aliases, defined a particular theme. For example, ruby feature
+              enables bash aliases and completions releated to all ruby
+              development tools. It also adds a ruby-specific set of brew
+              formulas and casks — such as RubyMine IDE, etc.
 
   -f 'feature feature ....'
               Merge packages from a provided set of features.
@@ -315,46 +314,56 @@ $(pu-underline-header 'Interaction and Output Control:')
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
   -n          dry-ru[n] – print commands, but don't actually run them.
+"
+}
 
+function pu-help-examples {
+
+  printf "
 $(pu-underline-header 'Examples: ')
 
-  run every installer, with the fully merged set of packages and plugins
-  from all available features (probably the most common way to run './pu')
-    ${bldgrn}$(basename $0) -RF${txtrst}
+  ● Run a complete installer using a union of all available features with
+    default output and error handling options:
 
-  install everything with the default (small) set of packages, but
-  with an interactive check:
-    ${bldgrn}$(basename $0) -RN${txtrst}
+      ${bldgrn}$(basename $0) -RF${txtrst}
 
-  install everything with specific features and plugins enabled
-  suitable for ruby,python,node development, as well as install
-  services used in web development such as nginx, haproxy, etc,
-    ${bldgrn}$(basename $0) -R -f 'ruby python nodejs web aws docker'${txtrst}
+  ● Install everything with the default (small) set of packages, but
+    with an interactive check:
 
-  use a helper (not an installer) to wipe clean and reinstall postgresql
-  from brew, create a new UTF8 database, and ensure it's running after.
-    ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
+      ${bldgrn}$(basename $0) -RN${txtrst}
 
-  wipe and reinstall homebrew, with additional ruby packages included
-    ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -f ruby${txtrst}
+  ● Install everything with specific features and plugins enabled suitable for
+    ruby, python and node development, as well as install services used in web
+    development such as nginx, haproxy, etc:
 
-  repair and install all brew packages, with additional python packages
-    ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -f python${txtrst}
+      ${bldgrn}$(basename $0) -R -f 'ruby python nodejs web aws docker'${txtrst}
 
-  when installing brew packages, skip casks or linking, and only install
-  formulas. Use verbose output.
-    ${bldgrn}$(basename $0) -r homebrew -o -pv${txtrst}
+  ● Use a helper (not an installer) to wipe clean and reinstall postgresql
+    from brew, create a new UTF8 database, and ensure it's running after:
 
-  install everything, minus homebrew and sprout-wrap, but ALL features
-  available. Since we are skipping homebrew, no feature-specific brew
-  packages will be installed.
-    ${bldgrn}$(basename $0) -RFSB${txtrst}
+      ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
+
+  ● Wipe and reinstall homebrew, and install ruby-specific packages:
+
+      ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -f ruby${txtrst}
+
+  ● Repair homebrew, and install additional python packages:
+
+      ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -f python${txtrst}
+
+  ● When installing brew packages, install formUlas only (-U), use --force (-o),
+    and show verbose output (-v) without section headers (-p):
+
+      ${bldgrn}$(basename $0) -r homebrew -o -U -p -v${txtrst}
+
+  ● Install everything, sprout-wrap, with all of the available features.
+
+      ${bldgrn}$(basename $0) -RFS${txtrst}
 "
 }
 
 function pu-debug-help {
 
-  pu-short-usage
   printf "
 $(pu-underline-header 'Debugging')
 

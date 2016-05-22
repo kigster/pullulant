@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-./pu -a -t 'ruby web docker nodejs'

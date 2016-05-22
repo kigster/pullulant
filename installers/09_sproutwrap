@@ -11,9 +11,8 @@
 #_______________________________________________________________________________
 #
 
-sprout_wrap_home="${PWD}/../sprout-wrap"
 function sproutwrap {
-  export PU_HOME=$(pwd) 
+  export sprout_wrap_home="$(pwd)/../sprout-wrap"
   if [ ! -z "${opts_skip_sprout_wrap}" ]; then
     run "echo 'Skipping sprout-wrap'"
     return
@@ -36,7 +35,7 @@ function run_soloist {
   run "bundle              # show-stdout"
   run "bundle exec soloist # show-stdout"
   export last_command_status=$?
-  run "cd ${PU_HOME}"
+  run "cd ${pu_home}"
 }
 
 function prepare_sprout_wrap_folder {

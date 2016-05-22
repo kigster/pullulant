@@ -8,7 +8,7 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-bash_it_plugins+="javascript node nvm"
+bash_it_plugins+="javascript node"
 bash_it_aliases+="npm"
 bash_it_completions+="npm"
 brew_packages+=" node npm phantomjs "

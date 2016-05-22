@@ -30,7 +30,7 @@ _pu() {
     if [[ "${prev}" == "-r" ]]; then
       PU_COMP_INSTALLERS=${PU_COMP_INSTALLERS:-$(pu -e 'pu-installers; pu-helpers')}
       PU_COMP_OPTIONS=$PU_COMP_INSTALLERS
-    elif [[ "${prev}" == "-t" ]]; then
+    elif [[ "${prev}" == "-f" ]]; then
       PU_COMP_FEATURES=${PU_COMP_FEATURES:-$(pu -e 'pu-features')}
       PU_COMP_OPTIONS=$PU_COMP_FEATURES
     else

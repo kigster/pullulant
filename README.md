@@ -156,61 +156,77 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
 
 ## Driving the Installer
 
-```
-┌────────────────────────────────────────────────────────────────────────────────┐
-│ Pullulant  (or just pu)                               (Version 1.4.0) Git Rev: 9cf06c9 │
-├────────────────────────────────────────────────────────────────────────────────┤
-│ OS-X Installer for Web Devs, MIT License  |         (c) 2015-2016 Konstantin Gredeskoul│
-│ https://github.com/kigster/pullulant      |                               http://kig.re│
-└────────────────────────────────────────────────────────────────────────────────┘
+```bash
+
+ Pullulant  (or just pu)                       (Version 1.5.1) Git Rev: 12671b9 
+
+ OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul
+ https://github.com/kigster/pullulant      |                       http://kig.re
+
 
 Usage:
-  pu  [ -a | -r 'installer helper ...' ]
-      [ -A | -t 'feature feature ...'  ]
-      [ -SBPLiIRKFCyfqnvlhHxpZT ]
+  pu  [ -R | -r 'runner runner ...' ]
+      [ -F | -f 'feature feature ...'  ]
+      [ -BCFHIKLNPRSTUZhilnopqtvy]
+      [ -e 'expression']
+
 Eg.
-  pu -aAy   # installs everything non-interactively
+  pu -l                           # list all available runners
+  pu -t                           # list all available features
+  pu -RF                          # install all runners/features
+  pu -r homebrew -f ruby          # install homebrew with ruby specific packages
 
-Getting Help:
-
+Getting Help:                                                                   
   -h          paginated help message in full color
   -H          non-paginated help message in full color
   -x          non-paginated help message in pure ASCII
-  -l          list available runners – helpers and installers
-  -T          list available features
+  -d          show debugging information
+  -E          show usage examples
 
-Installer and Helper Flags:
+Runners:                                                                        
+  Runners are modules that do certain work, i.e. install software, or remove it.
+  They are located in two folders: ./helpers and ./installers and are divided
+  logically into 'Helpers' and 'Installers' correspondingly. NOTE: each
+  runner is a bash script with name-matching bash function inside.
 
-   Installers are grouped instructions that deal with a common
-              theme, for example 'install_ruby' installs ruby and dependencies.
+  Installers  are the modules that install something new and
+              are to be included in the list of a complete install. They are
+              ordered. For example 'install_ruby' installs ruby and dependencies.
               To run ALL installers, use the -a flag.
 
-   Helpers    are similar to installers, except they are not run as
+  Helpers     are similar to installers, except they are not run as
               part of the full install. They must be invoked by name directly.
+              Because of that, helpers tend to be more diverse in nature: some
+              uninstall things, fix things, and so on.
 
-  -r 'installer helper  ...'
+  But collectively, helpers and installers are just 'runners' and are the 'units'
+  of pullulant's magical universe...
+
+  -R          full install: executes each runner from the './installers' dir
+
+  -r 'runner runner ...'
               run specific installer(s) and/or helper(s) in the provided order
+
   -l          list available installers and helpers
-  -a          full install: runs each installer from the './installers' dir
     -S        [S]proutwrap is disabled during the full install
     -B        [B]rew-upgrade is disabled during the full install
     -P        No backu[P] for rsync of bash and zsh files (default is to backup)
 
-Feature Flags:
+Features:                                                                       
 
-  Features    are a set of brew packages, bash-it plug-ins,
-              completions and aliases, defined a particular theme. For
-              example, ruby feature enables bash aliases and completions
-              releated to all ruby development tools.  It also adds a particulat
-              set of brew formulas and casks.
+  Features    are a set of brew packages, bash-it plug-ins, completions
+              and aliases, defined a particular theme. For example, ruby feature
+              enables bash aliases and completions releated to all ruby
+              development tools.  It also adds a particulat set of brew formulas
+              and casks.
 
-  -t 'feature feature ....'
+  -f 'feature feature ....'
               Merge packages from a provided set of features.
-  -T          List available features
-  -A          Merge ALL available features, currently:
+  -F          Merge ALL available features, currently:
               aws default docker nodejs python ruby web
+  -t          List available features
 
-Error Handing:
+Error Handing:                                                                  
 
               Default error handling is pessimistic: installer stops upon any
               error code returned from a single 'run' statement.
@@ -224,9 +240,9 @@ Error Handing:
               of homebrew installer will be skipped, and the next installer in
               the run list will begin.
 
-Homebrew:
+Homebrew:                                                                       
 
-  -f          [F]orce – applies to some installers, ie. brew (--force) and
+  -o          f[o]rce  applies to some installers, ie. brew (--force) and
               zsh (overwrites current shell to ZSH). Also some rsync
               installers may behave differently with -f.
 
@@ -235,57 +251,79 @@ Homebrew:
 
   -L          Only [L]ink packages configured for brew linking
   -C          Only [C]asks are installed from a configured list
-  -F          Only [F]ormulas are installed from a configured list
+  -U          Only form[U]las are installed from a configured list
 
               These apply to all brew commands:
-  -R          [R]einstall each formulae during brew install
+  -y          [R]einstall each formulae during brew install
   -K          Relin[K] all brew formulas/casks during install
 
-Zsh
+Zsh                                                                             
 
   -Z          Change the default shell to ZSH and install 'oh-my-zsh'
 
-Interaction and Output Control:
+Interaction and Output Control:                                                 
 
-  -y          assume 'yes' to the interactive portion of the runner
+  -N          run some parts interactively, letting user confirm install
   -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
-  -n          dry-ru[n] – print commands, but don't actually run them.
+  -n          dry-ru[n] print commands, but don't actually run them.
 
-Examples:
+Examples:                                                                       
 
-  run every installer, with the fully merged set of packages and plugins
-  from all available features (probably the most common way to run './pu')
-  and skip through the interactive section.
-    pu -aAy
+   Run a complete installer using a union of all available features with
+    default output and error handling options:
 
-  install everything with the default (small) set of packages:
-    pu -a
+      pu -RF
 
-  install everything with specific features and plugins enabled
-  suitable for ruby,python,node development, as well as install
-  services used in web development such as nginx, haproxy, etc,
-    pu -a -t 'ruby python nodejs web aws docker'
+   Install everything with the default (small) set of packages, but
+    with an interactive check:
 
-  use a helper (not an installer) to wipe clean and reinstall postgresql
-  from brew, create a new UTF8 database, and ensure it's running after.
-    pu -r reinstall-postgres
+      pu -RN
 
-  wipe and reinstall homebrew, with additional ruby packages included
-    pu -r 'brew-wipe homebrew' -t ruby
+   Install everything with specific features and plugins enabled suitable for
+    ruby, python and node development, as well as install services used in web
+    development such as nginx, haproxy, etc:
 
-  repair and install all brew packages, with additional python packages
-    pu -r 'brew-repair homebrew' -t python
+      pu -R -f 'ruby python nodejs web aws docker'
 
-  when installing brew packages, skip casks or linking, and only install
-  formulas. Use verbose output.
-    pu -r homebrew -F -pv
+   Use a helper (not an installer) to wipe clean and reinstall postgresql
+    from brew, create a new UTF8 database, and ensure it's running after:
 
-  install everything, minus homebrew and sprout-wrap, but ALL features
-  available. Since we are skipping homebrew, no feature-specific brew
-  packages will be installed.
-    pu -aASB
+      pu -r reinstall-postgres
+
+   Wipe and reinstall homebrew, and install ruby-specific packages:
+
+      pu -r 'brew-wipe homebrew' -f ruby
+
+   Repair homebrew, and install additional python packages:
+
+      pu -r 'brew-repair homebrew' -f python
+
+   When installing brew packages, install formUlas only (-U), use --force (-o),
+    and show verbose output (-v) without section headers (-p):
+
+      pu -r homebrew -o -U -p -v
+
+   Install everything, sprout-wrap, with all of the available features.
+
+      pu -RFS
+
+Debugging                                                                       
+
+  -e expr     evaluate expression in the context of pullulant post loading.
+              This can be useful if you are developing / debugging the code.
+
+  For example, it allows you to evaluate any function that 'pu' loads into the
+  bash space. Some examples  here we are evaluating library function
+  pu-installers() which returns an array of all installers found in the folder.
+
+              pu -e pu-installers
+
+  Next, we can print every pu- related function loaded into memory:
+
+              pu -e 'set | grep "^pu-"'
+
 ```    
 
 You should inspect the configuration and packages defined in two files:

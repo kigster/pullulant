@@ -14,9 +14,10 @@
 function use_newer_bash() {
   local newer_bash=$(which /usr/local/bin/bash)
   [[ -z "${newer_bash}" ]] && return
-  [[ -n "$(grep \"${newer_bash}\" /etc/shells)" ]] && return
+  [[ -z "$(grep ${newer_bash} /etc/shells)" ]] && {
+    run "echo ${newer_bash} | sudo tee -a /etc/shells >/dev/null # show-stdout"
+  }
 
-  run "echo ${newer_bash} | sudo tee -a /etc/shells"
   local current_shell=$(finger ${USER} | grep Shell | awk 'BEGIN{FS="Shell: "}{print $2}')
   if [[ "${current_shell}" != "${newer_bash}" && -s "${newer_bash}" ]] ; then
     run "sudo chsh -s ${newer_bash} ${USER}"
@@ -28,8 +29,13 @@ function bash_it_component() {
   local action=$1
   local what=$2
   local list=${args[@]:2}
+  declare -a preinstalled=($(ls -1  $HOME/.bash_it/$what*/enabled/ 2>/dev/null | sed "s/\.${what}.*\.bash//g" | tr '\n' ' '))
+  echo "found $what(es) ${#preinstalled[@]} pre-installed"
   for item in ${list[@]}; do
-    run "bash -l -c 'bash-it $action $what $item'"
+    already_there=$(pu-array-contains-element $item "${preinstalled[@]}")
+    if [[ "${already_there}" == "false" ]]; then
+      run "bash -l -c 'bash-it $action $what $item'"
+    fi
   done
 }
 
@@ -47,15 +53,13 @@ function bash_it {
   [[ -n "${bash_it_plugins}"     ]] && bash_it_component "enable" "plugin"      $bash_it_plugins
   [[ -n "${bash_it_completions}" ]] && bash_it_component "enable" "completion"  $bash_it_completions
 
-
-  $(grep bashrc ~/.bash_profile > /dev/null)
-  if [ $? -eq 1 ]; then
+  [[ -z "$(egrep powerline-multiline $HOME/.bash_profile)" ]] && run "sed -i.bak -e 's/^export BASH_IT_THEME=.*$/export BASH_IT_THEME=\"powerline-multiline\"/g' $HOME/.bash_profile"
+  [[ -z "$(grep bashrc ~/.bash_profile)" ]] && {
     run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
     run "echo 'source ~/.bashrc' >> ~/.bash_profile"
-  fi
+  }
 
-  run "sed -i.bak -e 's/^export BASH_IT_THEME=.*$/export BASH_IT_THEME=\"powerline-multiline\"/g' ~/.bash_profile"
-  run "sed -i.bak -e 's:%PU_HOME%:${pu_home}:g' ~/.bashrc"
+  [[ -n "$(egrep '%PU_HOME%' $HOME/.bashrc)" ]] && run "sed -i.bak -e 's:%PU_HOME%:${pu_home}:g' $HOME/.bashrc"
 
   use_newer_bash
 }

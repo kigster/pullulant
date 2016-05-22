@@ -23,12 +23,7 @@ function package-config {
   readonly export const_combined_stderr=/tmp/pullulant.stderr.$$.combined
   # const_owned_folder_list to chmod
   readonly export const_owned_folder_list="
-    /usr/local/Cellar
-    /usr/local/bin
-    /usr/local/opt
-    /usr/local/lib
-    /usr/local/share
-    /usr/local/include
+    /usr/local
     /var/chef
     /opt
     /Library/Caches/Homebrew"
