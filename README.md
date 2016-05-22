@@ -12,10 +12,11 @@ Alternatively, for a finer-grained control of your installation, do the followin
 ```bash
 git clone https://github.com/kigster/pullulant
 cd pullulant
-./pu -aAy  
+./pu -FR
 ```
-`-a` will run every installer, and `-A` will include every feature, so this will
-take time. `-y` avoids the interactive part.
+
+ * `-R` will run every installer (which are executable modules that typically install a particular thing), and 
+ * `-F` will include every feature set (which is a collection of brew/bash-it/etc plugins or packages, grouped together by a common theme, i.e. "ruby" feature would include ruby-development related brew packages, casks, bash-it plugins, etc).
 
 For more information, please see the full usage below.
 
