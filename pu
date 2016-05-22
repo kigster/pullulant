@@ -128,14 +128,19 @@ while getopts "r:Rf:BCFHIKLNPRSTUZe:dhilnopqtvyx" opt; do
     H)
       help-command
       exit 0
-      ;;                            
+      ;;
     \?)
-      pu-print-help
-      printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
+      pu-short-usage
+      echo
+      printf "${bldred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
+      echo
       abort 126
       ;;
     :)
-      printf "${bakred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
+      pu-short-usage
+      echo
+      printf "${bldred}ERROR: option -$opt requires an argument ${txtrst}\n" >&2
+      echo
       abort 127
       ;;
   esac
