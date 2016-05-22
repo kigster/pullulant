@@ -40,6 +40,7 @@ function package-config {
   export LC_ALL=en_US.UTF-8
 
   readonly export home_dir=${HOME}
+  readonly export pu_cfg="${home_dir}/.pu"
   readonly export modules_dir=./installers
   readonly export helpers_dir=./helpers
   readonly export backup_dir=${home_dir}/.backup/$const_timestamp
@@ -47,7 +48,7 @@ function package-config {
   readonly export rsync_home_dir="./files/home/"
   readonly export rsync_atom_dir="./files/atom"
   readonly export zsh_rsync_home_dir="./files/zsh/"
-  readonly export custom_packages_file="${HOME}/.pullulant_packages"
+  readonly export custom_packages_file="${HOME}/.pu/packages"
   readonly export bash_it_home="${HOME}/.bash_it"
   readonly export service_list="nginx haproxy postgres redis memcached elastic solr mysql"
   readonly export alfred_dir="${HOME}/Desktop/Pullulant/Alfred"
@@ -57,7 +58,7 @@ function package-config {
 
   # these can be overridden by the flags
   readonly export pu_options="
-    opts_non_interative
+    opts_interactive
     opts_quiet
     opts_runners
     opts_verbose

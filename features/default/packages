@@ -119,3 +119,5 @@
   https://github.com/packal/repository/raw/master/com.fniephaus.homebrew/homebrew-for-alfred.alfredworkflow
   https://github.com/packal/repository/raw/master/hue-alfred-workflow/philips.hue_.controller.v2.4.alfredworkflow
 "
+
+[[ -n "${iterm_themes}" ]]     || iterm_themes="BirdsOfParadise Atom Desert 3024 "

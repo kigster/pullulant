@@ -30,6 +30,10 @@ function pu-helpers() {
   ls -1 $helpers_dir
 }
 
+function pu-all-runnables() {
+  printf "$(pu-installers) $(pu-helpers)" | tr '\n' ' '
+  echo
+}
 function init {
   source "lib/pu.bash"
 
@@ -41,5 +45,9 @@ function init {
   export last_command_status=0
 }
 
+function pu-is-valid-runner {
+  declare -a all_runners=($(pu-all-runnables))
+  echo -n $(pu-array-contains-element "$1" "${all_runners[@]}")
+}
 
 init

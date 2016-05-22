@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+
+function install_iterm_themes {
+  last_command_status=0
+  local install_home="$pu_cfg/iterm2"
+  local zipfile="$install_home/iterm2-themes.zip"
+  if [[ ! -d "$install_home" ]]; then
+    run "mkdir -p ${pu_cfg}"
+    run "mkdir -p ${install_home}"
+    run "cd $install_home && curl -LO https://github.com/mbadolato/iTerm2-Color-Schemes/zipball/master"
+    run "cd $install_home && mv master $zipfile && unzip $zipfile"
+  fi
+  for theme in $iterm_themes; do
+    install_theme $install_home $theme
+  done
+
+  return 0
+}
+
+
+function install_theme {
+  install_dir=$1
+  theme=$2
+  run "find $install_dir/mba*/schemes -name '$theme*' -exec open {} \;"
+}

@@ -15,7 +15,7 @@ export bldred='\e[1;31m' # Red
 
 readonly dir=${dir-"pullulant"}
 readonly script=${script-"./pu"}
-readonly script_flags=${script_flags-"-aAy"}
+readonly script_flags=${script_flags-"-FR"}
 readonly repo=${repo-"https://github.com/kigster/pullulant"}
 readonly ws=${ws-"${HOME}/workspace"}
 

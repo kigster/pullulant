@@ -104,10 +104,10 @@ function pu-git-revision {
 
 function pu-long-header {
   pu-box-top
-  pu-box-header "${bldred}Pullulant ${txtrst} (or just ${bldred}pu${txtrst})                       ${bldylw}(Version $(cat VERSION)) ${txtylw}Git Rev: $(pu-git-revision) "
+  pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version $(cat VERSION)) ${txtylw}Git Rev: $(pu-git-revision) "
   pu-box-separator
-  pu-box-header "${bldgrn}OS-X Installer for Web Devs, MIT License  | ${txtgrn}(c) 2015-2016 Konstantin Gredeskoul"
-  pu-box-header "${bldgrn}https://github.com/kigster/pullulant      |                       http://kig.re"
+  pu-box-header "${bldblk}OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul"
+  pu-box-header "${bldblk}https://github.com/kigster/pullulant      |                       http://kig.re"
   pu-box-bottom
 }
 
@@ -119,12 +119,13 @@ function pu-short-header {
 }
 
 function pu-print-options {
-  printf "   Enabled Options:${bldylw}\n   "
   count=0
+  header_printer=""
   for option in ${pu_options}; do
     [[ "$option" == "opts_features" ]] && continue
     option_value=$(pu_option_value $option)
     if [[ -n "${option_value/ /}" ]]; then
+      [[ -z "${header_printed}" ]] && header_printed="true" && printf "   ${txtwht}${bldblu}Enabled Options:\n      ${bldgrn}"
       [[ $count -gt 0 ]] && printf ", "
       if [[ "$option_value" == "yes" ]]; then
         printf "${bldgrn}%s" ${option/opts_/}
@@ -134,8 +135,9 @@ function pu-print-options {
       count=$(($count + 1))
     fi
   done
-  printf "\n"
-  pu-line
+  [[ -n "${header_printed}" ]] && {
+    printf "\n"
+  }
 }
 
 function pu-installers-helpers {
@@ -157,7 +159,7 @@ function pu-list-current-runners {
   linebreak="\n"
   local run_list=$(pu-indent-list "$runners"    65 '   ')
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "${txtrst}Current Run List:\n"
+    printf "${txtrst}Runner List:\n"
     printf "${bldgrn}%-68s ${txtrst}\n" "$run_list"
   fi
 }
@@ -166,9 +168,10 @@ function pu-list-features {
   source "lib/pu-features"
 
   linebreak="\n"
-  local run_list=$(pu-indent-list "$(pu-features)"    65 '   ')
+  local run_list=$(pu-indent-list "$(pu-features| tr '\n' ' ')"    65 '   ')
+  run_list="$run_list"
   if [ ! -z "$(echo $run_list | sed 's/[ \n]//g')" ]; then
-    printf "${txtrst}Current Feature List:\n"
+    printf "${txtrst}Feature List:\n"
     printf "${txtylw}%-68s ${txtrst}\n" "$run_list"
   fi
   printf "${bakgrn}"
@@ -191,11 +194,17 @@ function pu-print-section-header {
 function pu-short-usage {
   printf "
 Usage:
-  pu  [ -a | -r 'installer helper ...' ]
-      [ -A | -t 'feature feature ...'  ]
-      [ -SBPLiIRKFCyfqnvlhHxpZT ]
+  pu  [ -R | -r 'runner runner ...' ]
+      [ -F | -f 'feature feature ...'  ]
+      [ -BCFHIKLNPRSTUZhilnopqtvy]
+      [-e 'expression']
+
+  pu -l  # list all runners
+  pu -t  # list all features
+  pu -r homebrew -f ruby # install homebrew with ruby specific packages
+
 Eg.
-  pu -aAy   # installs everything non-interactively
+  pu -RF  # installs all runners/features non-interactively
 "
 }
 
@@ -213,30 +222,44 @@ function pu-print-help {
   printf "
 $(pu-underline-header 'Getting Help: ')
 
+  -l          list available runners: helpers and installers
+  -t          list available features (package sets)
+
   -h          paginated help message in full color
   -H          non-paginated help message in full color
   -x          non-paginated help message in pure ASCII
-  -l          list available runners – helpers and installers
-  -T          list available features
+  -d          show debugging information
 
-$(pu-underline-header "Installer and Helper Flags:")
+$(pu-underline-header "Runners:")
+  Runners are modules that do certain work, i.e. install software, or remove it.
+  They are located in two folders: ./helpers and ./installers and are divided
+  logically into 'Helpers' and 'Installers' correspondingly. NOTE: each
+  runner is a bash script with name-matching bash function inside.
 
-   ${bldgrn}Installers${txtrst} are grouped instructions that deal with a common
-              theme, for example 'install_ruby' installs ruby and dependencies.
+  ${bldgrn}Installers${txtrst}  are the modules that install something new and
+              are to be included in the list of a complete install. They are
+              ordered. For example 'install_ruby' installs ruby and dependencies.
               To run ALL installers, use the -a flag.
 
-   ${bldgrn}Helpers${txtrst}    are similar to installers, except they are not run as
+  ${bldgrn}Helpers${txtrst}     are similar to installers, except they are not run as
               part of the full install. They must be invoked by name directly.
+              Because of that, helpers tend to be more diverse in nature: some
+              uninstall things, fix things, and so on.
 
-  -r 'installer helper  ...'
+  But collectively, helpers and installers are just 'runners' and are the 'units'
+  of pullulant's magical universe...
+
+  -R          full install: executes each runner from the './installers' dir
+
+  -r 'runner runner ...'
               run specific installer(s) and/or helper(s) in the provided order
+
   -l          list available installers and helpers
-  -a          full install: runs each installer from the './installers' dir
     -S        [S]proutwrap is disabled during the full install
     -B        [B]rew-upgrade is disabled during the full install
     -P        No backu[P] for rsync of bash and zsh files (default is to backup)
 
-$(pu-underline-header 'Feature Flags:')
+$(pu-underline-header 'Features:')
 
   ${bldpur}Features${txtrst}    are a set of brew packages, bash-it plug-ins,
               completions and aliases, defined a particular theme. For
@@ -244,11 +267,11 @@ $(pu-underline-header 'Feature Flags:')
               releated to all ruby development tools.  It also adds a particulat
               set of brew formulas and casks.
 
-  -t 'feature feature ....'
+  -f 'feature feature ....'
               Merge packages from a provided set of features.
-  -T          List available features
-  -A          Merge ALL available features, currently:
+  -F          Merge ALL available features, currently:
               ${bldpur}$(echo $(pu-features))${txtrst}
+  -t          List available features
 
 $(pu-underline-header 'Error Handing:')
 
@@ -266,7 +289,7 @@ $(pu-underline-header 'Error Handing:')
 
 $(pu-underline-header 'Homebrew:')
 
-  -f          [F]orce – applies to some installers, ie. brew (--force) and
+  -o          f[o]rce – applies to some installers, ie. brew (--force) and
               zsh (overwrites current shell to ZSH). Also some rsync
               installers may behave differently with -f.
 
@@ -275,10 +298,10 @@ $(pu-underline-header 'Homebrew:')
 
   -L          Only [L]ink packages configured for brew linking
   -C          Only [C]asks are installed from a configured list
-  -F          Only [F]ormulas are installed from a configured list
+  -U          Only form[U]las are installed from a configured list
 
               These apply to all brew commands:
-  -R          [R]einstall each formulae during brew install
+  -y          [R]einstall each formulae during brew install
   -K          Relin[K] all brew formulas/casks during install
 
 $(pu-underline-header 'Zsh')
@@ -287,7 +310,7 @@ $(pu-underline-header 'Zsh')
 
 $(pu-underline-header 'Interaction and Output Control:')
 
-  -y          assume 'yes' to the interactive portion of the runner
+  -N          run some parts interactively, letting user confirm install
   -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
@@ -297,34 +320,56 @@ $(pu-underline-header 'Examples: ')
 
   run every installer, with the fully merged set of packages and plugins
   from all available features (probably the most common way to run './pu')
-  and skip through the interactive section.
-    ${bldgrn}$(basename $0) -aAy${txtrst}
+    ${bldgrn}$(basename $0) -RF${txtrst}
 
-  install everything with the default (small) set of packages:
-    ${bldgrn}$(basename $0) -a${txtrst}
+  install everything with the default (small) set of packages, but
+  with an interactive check:
+    ${bldgrn}$(basename $0) -RN${txtrst}
 
   install everything with specific features and plugins enabled
   suitable for ruby,python,node development, as well as install
   services used in web development such as nginx, haproxy, etc,
-    ${bldgrn}$(basename $0) -a -t 'ruby python nodejs web aws docker'${txtrst}
+    ${bldgrn}$(basename $0) -R -f 'ruby python nodejs web aws docker'${txtrst}
 
   use a helper (not an installer) to wipe clean and reinstall postgresql
   from brew, create a new UTF8 database, and ensure it's running after.
     ${bldgrn}$(basename $0) -r reinstall-postgres${txtrst}
 
   wipe and reinstall homebrew, with additional ruby packages included
-    ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -t ruby${txtrst}
+    ${bldgrn}$(basename $0) -r 'brew-wipe homebrew' -f ruby${txtrst}
 
   repair and install all brew packages, with additional python packages
-    ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -t python${txtrst}
+    ${bldgrn}$(basename $0) -r 'brew-repair homebrew' -f python${txtrst}
 
   when installing brew packages, skip casks or linking, and only install
   formulas. Use verbose output.
-    ${bldgrn}$(basename $0) -r homebrew -F -pv${txtrst}
+    ${bldgrn}$(basename $0) -r homebrew -o -pv${txtrst}
 
   install everything, minus homebrew and sprout-wrap, but ALL features
   available. Since we are skipping homebrew, no feature-specific brew
   packages will be installed.
-    ${bldgrn}$(basename $0) -aASB${txtrst}
+    ${bldgrn}$(basename $0) -RFSB${txtrst}
+"
+}
+
+function pu-debug-help {
+
+  pu-short-usage
+  printf "
+$(pu-underline-header 'Debugging')
+
+  -e expr     evaluate expression in the context of pullulant post loading.
+              This can be useful if you are developing / debugging the code.
+
+  For example, it allows you to evaluate any function that 'pu' loads into the
+  bash space. Some examples – here we are evaluating library function
+  pu-installers() which returns an array of all installers found in the folder.
+
+              ${bldgrn}$(basename $0) -e pu-installers${txtrst}
+
+  Next, we can print every pu- related function loaded into memory:
+
+              ${bldgrn}$(basename $0) -e 'set | grep \"^pu-\"'${txtrst}
+
 "
 }

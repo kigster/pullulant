@@ -31,18 +31,24 @@ opts_features=""
   abort 0
 }
 
-while getopts "aAr:SBPLiIRKFCyfqnvlhHxpZTt:e:" opt; do
+while getopts "r:Rf:BCFHIKLNPRSTUZe:dhilnopqtvyx" opt; do
   case $opt in
-    y)
-      export opts_non_interative=yes        ;;
+    N)
+      export opts_interactive=yes           ;;
     e)
       eval "$OPTARG"
       exit 0                                ;;
-    a)
+    R)
       export runners=${installers}  ;;
-    A)
+    F)
       export opts_features=$(pu-features)   ;;
     r)
+      if [[ "$(pu-is-valid-runner $OPTARG)" == "false" ]]; then
+        printf "${bldred}$OPTARG is an invalid runner or helper :( ${txtrst}\n" >&2
+        printf "Run with -l flag to see available runners/helpers, or -h for help\n" >&2
+        abort 1
+      fi
+
       [[ "${OPTARG}" == "sudo-enable"  ]] && export skip_sudo_disable=true
       [[ "${OPTARG}" == "sudo-disable" ]] && export sudoers_enabled=true
       if [ "${#runners}" -eq 0 ]; then
@@ -50,21 +56,25 @@ while getopts "aAr:SBPLiIRKFCyfqnvlhHxpZTt:e:" opt; do
       else
         runners+=" $OPTARG"
       fi                                    ;;
-
+    l)
+      pu-short-header
+      pu-installers-helpers
+      finish
+      ;;
     #========================= Features     =========================
-
-    t)
+    f)
       export opts_features+=" $OPTARG "     ;;
-    T)
+    t)
+      pu-short-header
       pu-list-features
-      finish;                               ;;
+      finish                               ;;
     #========================= Runner Stuff =========================
 
     S)
       export opts_skip_sprout_wrap=yes      ;;
     B)
       export opts_skip_brew_upgrade=yes     ;;
-    f)
+    o)
       export opts_force=" --force "         ;;
     I)
       export opts_continue_on_runner_error=yes       ;;
@@ -75,13 +85,13 @@ while getopts "aAr:SBPLiIRKFCyfqnvlhHxpZTt:e:" opt; do
 
     #========================= Home Brew ============================
 
-    F)
+    U)
       export opts_brew_formulae_only=yes    ;;
     C)
       export opts_brew_casks_only=yes       ;;
     L)
       export opts_brew_link_only=yes        ;;
-    R)
+    y)
       export opts_brew_reinstall=yes        ;;
     K)
       export opts_brew_link_force=yes       ;;
@@ -102,10 +112,15 @@ while getopts "aAr:SBPLiIRKFCyfqnvlhHxpZTt:e:" opt; do
       export opts_verbose=" -v ";           ;;
 
     #========================= Help and Info ========================
-
+    d)
+      pu-debug-help
+      exit 0
+      ;;
     x)
-      ./$0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > doc/help
-      cat doc/help; finish;                 ;;
+      $0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > $pu_home/doc/help
+      cat $pu_home/doc/help
+      echo
+      finish;                 ;;
     h)
       printf "$(help-command)" | less -R
       exit 0
@@ -113,11 +128,7 @@ while getopts "aAr:SBPLiIRKFCyfqnvlhHxpZTt:e:" opt; do
     H)
       help-command
       exit 0
-      ;;
-    l)
-      pu-short-header
-      pu-installers-helpers
-      finish;                               ;;
+      ;;                            
     \?)
       pu-print-help
       printf "${bakred}ERROR: $* is an invalid option :( ${txtrst}\n" >&2
@@ -143,10 +154,11 @@ function run_runners() {
     # my arrays start with a 1
     runners_started=$((runners_started + 1))
 
-    [[ $runners_started -eq 1 ]] && pu-short-header
+    #[[ $runners_started -eq 1 ]] && pu-short-header
 
     # I so much rather prefer dashes in the function and file names than underscores.
     # Dashes just feel like a continuation. Underscores are from another era. Jurassic.
+    printf "${txtrst}"
     pu-print-section-header ${runner}
 
     export runner_status=0

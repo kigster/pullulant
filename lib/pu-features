@@ -3,12 +3,30 @@ function pu-features {
   ls features
 }
 
+function pu-list-components {
+
+  local name=$1
+  shift
+  local color=$1
+  shift
+
+  bgcolor="bak${color}"  && bgcolor=${!bgcolor}
+  bldcolor="bld${color}" && bldcolor=${!bldcolor}
+  fgcolor="txt${color}"  && fgcolor=${!fgcolor}
+
+  declare -a components=("$*")
+  local spacer="                       "
+  printf "   ${txtwht}${fgcolor}${name}${txtrst}:\n"
+  for component in "${components[@]}"; do
+    printf "${spacer}${fgcolor}${txtblk}${bgcolor} %-30s ${fgcolor} ${txtrst}\n" ${component}
+  done
+}
+
 function package-config {
   declare -a features=(default ${opts_features})
   printf "\n"
+
   for feature in "${features[@]}"; do
-    printf "   ${txtwht}${bldblu}Loading package definitions from feature ${txtblk}${bakylw} ◀︎ ${feature} ▶︎ ${txtrst}  \n"
-    # if the feature has slashes, assume complete pathname
     local feature_with_path=$(echo $feature | grep  '/')
     if [ "${feature_with_path}" != "${feature}" ]; then
       package_file="${pu_home}/features/${feature}/packages"
@@ -23,10 +41,13 @@ function package-config {
     fi
   done
 
+  pu-list-components "Features" "grn"  "${features[@]}"
+  pu-list-components "Runners"  "blu"  "${runners[@]}"
+
   source "${pu_home}/lib/pu-uniq-packages"
 
-  if [[ -z "${opts_non_interative}" ]]; then
-    printf "\n${txtwht}   ${undylw}Attention:${txtrst} Please review the run parameters above.\n   If something is wrong or missing, hit Ctrl-C to abort.\n"
+  if [[ -n "${opts_interactive}" ]]; then
+    printf "\n${txtwht}   ${undylw}Attention:${txtrst} Please review the run parameters above.\n   If something is wrong or missing, hit Ctrl-C to abort.\n\n"
     if [ -t 0 ]; then stty -echo -icanon -icrnl time 0 min 0; fi
     keypress=''
     for wait in {20..1}; do

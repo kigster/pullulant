@@ -78,7 +78,7 @@ function check_exit {
     fi
   else # error – print a little icon
     [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
-    [[ -s "${const_cmd_stderr}" ]] && printf "\n${txtred}$(cat ${const_cmd_stderr})${txtrst}\n"
+    [[ -s "${const_cmd_stderr}" ]] && printf "%s" "\n${txtred}$(cat ${const_cmd_stderr})${txtrst}\n"
 
     [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
       cat ${const_cmd_stderr} >> ${const_combined_stderr}
@@ -170,4 +170,15 @@ function run {
     check_exit "$cmd" $ignore_error
   fi
   return $last_command_status
+}
+
+#———————————————————————————————————————————————————————————————————————————————
+# array=("something to search for" "a string" "test2000")
+# pu-array-contains-element "a string" "${array[@]}"
+# ( prints "true" or "false" )
+pu-array-contains-element () {
+  local e
+  local r=false
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && r=true; done
+  echo -n $r
 }
