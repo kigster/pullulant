@@ -356,7 +356,7 @@ $(pu-underline-header 'Examples: ')
 
       ${bldgrn}$(basename $0) -r homebrew -o -U -p -v${txtrst}
 
-  ● Install everything, sprout-wrap, with all of the available features.
+  ● Install everything, minus sprout-wrap, with all of the available features.
 
       ${bldgrn}$(basename $0) -RFS${txtrst}
 "
