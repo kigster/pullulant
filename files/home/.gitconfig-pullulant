@@ -1,4 +1,7 @@
 [alias]
+        sma = submodule add
+        sms = submodule summary
+        sm = submodule
 	st = status
 	di = diff
 	co = checkout
