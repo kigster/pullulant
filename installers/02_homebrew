@@ -37,7 +37,7 @@ function homebrew {
   fi
 
   # this is a prerequisite
-  brew_cask_install 'java'
+  run "brew cask install java --verbose #show-stdout"
 
   [[ -z "${brew_partial_install}" || -n "${opts_brew_formulae_only}" ]] && {
     for package in $brew_packages; do
