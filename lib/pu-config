@@ -26,7 +26,9 @@ function package-config {
     /usr/local
     /var/chef
     /opt
-    /Library/Caches/Homebrew"
+    /Library/Caches/Homebrew
+    /Library/Ruby
+    "
   readonly export postgresql_dir="/usr/local/var/postgres"
 
   # Path that includes rbenv and pyenv

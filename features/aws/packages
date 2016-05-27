@@ -15,7 +15,6 @@ bash_it_completions+="aws"
 brew_packages+="
   ack
   ansiweather
-  aws-as
   aws-cloudsearch
   aws-elasticache
   aws-elasticbeanstalk
