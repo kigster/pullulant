@@ -13,6 +13,7 @@ bash_it_aliases+="aws docker heroku"
 bash_it_completions+="aws"
 # List of Brew Formulas to install and link
 brew_packages+="
+  java
   ack
   ansiweather
   aws-cloudsearch
