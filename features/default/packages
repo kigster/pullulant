@@ -65,6 +65,7 @@
   teamviewer
   textmate
   dash
+  flux
 "
 
 [[ -n "${brew_relink_packages}" ]] || brew_relink_packages="
