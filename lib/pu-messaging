@@ -51,26 +51,26 @@ function pu-clean {
 function pu-box-separator {
   printf "├"
   pu-line
-  printf "┤\n"
+  printf "┤${txtrst}\n"
 }
 function pu-box-top {
   printf "┌"
   pu-line
-  printf "┐\n"
+  printf "┐${txtrst}\n"
 }
 function pu-box-bottom {
   printf "└"
   pu-line
-  printf "┘\n"
+  printf "┘${txtrst}\n"
 }
 function pu-box-header {
   local text="$*"
+  local clean_text=$(pu-clean "$text")
   local width=$(pu-width)
-  local uncolored_text=$(pu-clean "$text")
-  local remaining_space_len=$(($width - ${#uncolored_text} - 1))
-  printf "│ ${text}${txtrst}"
-  pu-repeat-char " " $remaining_space_len
-  printf "│\n"
+  local remaining_space_len=$(($width - ${#clean_text} - 1))
+  printf "│ ${text}"
+  [[ $remaining_space_len -gt 0 ]] && pu-repeat-char " " $remaining_space_len
+  printf "│${txtrst}\n"
 }
 
 function pu-cursor-left {
@@ -104,10 +104,10 @@ function pu-git-revision {
 
 function pu-long-header {
   pu-box-top
-  pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version $(cat VERSION)) ${txtylw}Git Rev: $(pu-git-revision) "
+  pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version $(cat VERSION)) ${txtylw}Git Rev: $(pu-git-revision)${txtrst} "
   pu-box-separator
-  pu-box-header "${bldblk}OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul"
-  pu-box-header "${bldblk}https://github.com/kigster/pullulant      |                       http://kig.re"
+  pu-box-header "${bldblu}OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul${txtrst}"
+  pu-box-header "${bldblu}https://github.com/kigster/pullulant      |                       http://kig.re${txtrst}"
   pu-box-bottom
 }
 
@@ -185,10 +185,16 @@ function pu-welcome-screen-short {
 
 
 function pu-print-section-header {
+  local header_color=$1
+  shift
   [[ -n "${opts_suppress_headers}" ]] && return
+  printf "\n${header_color}"
   pu-box-top
-  pu-box-header "${bldwht}${bakblu}  $*  "
+  printf "${header_color}"
+  pu-box-header "$*"
+  printf "${header_color}"
   pu-box-bottom
+  printf "${txtrst}\n"
 }
 
 function pu-short-usage {
@@ -196,7 +202,7 @@ function pu-short-usage {
 Usage:
   pu  [ -R | -r 'runner runner ...' ]
       [ -F | -f 'feature feature ...'  ]
-      [ -BCFHIKLNPRSTUZhilnopqtvy]
+      [ -BCFHIKLNPRSTUZhiklmnopqtvy]
       [ -e 'expression']
 
 Eg.
@@ -254,9 +260,16 @@ $(pu-underline-header "Runners:")
               run specific installer(s) and/or helper(s) in the provided order
 
   -l          list available installers and helpers
-    -S        [S]proutwrap is disabled during the full install
-    -B        [B]rew-upgrade is disabled during the full install
-    -P        No backu[P] for rsync of bash and zsh files (default is to backup)
+
+$(pu-underline-header 'Runner-specific Flags:')
+
+  -S          [S]proutwrap is disabled during the full install
+  -B          [B]rew-upgrade is disabled during the full install
+  -P          No backu[P] for rsync of bash and zsh files (default is to backup)
+  -k          When installing ruby's NOKOGIRI library, do NOT set
+              NOKOGIRI_USE_SYSTEM_LIBRARIES to 1 when -k is set
+  -m          When installing iTerm themes, prefer the small selection of
+              listed color schemes, instead of installing the entire set.
 
 $(pu-underline-header 'Features:')
 

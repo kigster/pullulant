@@ -28,7 +28,6 @@ nodejs_modules+="
   node-aws-beanstalk
   node-aws-cli
   node-aws-cloudfront-sg
-  node-aws-helpers
   node-aws-kinesis-stream
   node-aws-lambda
   node-aws-lambda-deploy

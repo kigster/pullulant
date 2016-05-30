@@ -13,12 +13,14 @@
 
 function install_atom {
   last_command_status=0
-  run "rsync -a -u ${rsync_atom_dir}/ ${HOME}/.atom"
-  if [ -z "$apm" ]; then
-    run "printf \"${bldylw} It looks like you don't have *apm* installed – it comes with Atom.\n\""
-    run "printf \"${bldwht} Please make sure you have the latest Atom installed, then re-run\n"
-  else
-    run "$apm install  --packages-file ${HOME}/.atom/packages.txt # show-stdout"
-  fi
+  [[ -d "${HOME}/.atom" ]] || {
+    run "rsync -a -u ${rsync_atom_dir}/ ${HOME}/.atom"
+    if [ -z "$apm" ]; then
+      run "printf \"${bldylw} It looks like you don't have *apm* installed – it comes with Atom.\n\""
+      run "printf \"${bldwht} Please make sure you have the latest Atom installed, then re-run\n"
+    else
+      run "$apm install  --packages-file ${HOME}/.atom/packages.txt # show-stdout"
+    fi
+  }
   return $last_command_status
 }

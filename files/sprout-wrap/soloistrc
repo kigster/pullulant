@@ -17,54 +17,17 @@ recipes:
 - sprout-git::git_scripts
 
 node_attributes:
-  versions:
-    bash_it: 'master'
   sprout:
     git:
+      projects:
+        - url: https://github.com/kigster/warp-dir.git
+          post_clone_commands:
+            - gem install bundler --no-ri --no-rdoc
+            - bundle
+            - bundle exec rake development:bundler:install
+            - touch ~/.bash_wd
+            - warp-dir install --dotfile ~/.bash_wd
       prefix: ''
       domain: reinvent.one
-      global_config:
-        hub.protocol: git
-        credential.helper: "'cache --timeout 32400'"
-        autosetup.rebase: true
-        branch.autosetuprebase: remote
-        branch.autosetupmerge: true
-        branch.mergeoptions: "'--no-commit --no-ff'"
-        color.branch: auto
-        color.diff: auto
-        color.interactive: auto
-        color.status: auto
-        color.ui: true
-        push.default: current
-        pull.default: current
-        alias.burn: "'reset --hard HEAD^'"
-        alias.ci: commit
-        alias.co: checkout
-        alias.fixup: "'commit --amend -C HEAD'"
-        alias.g: "'log --pretty=format:\"%h %an - %s\" --graph'"
-        alias.lc: "'log ORIG_HEAD.. --stat --no-merges'"
-        alias.lg: "'log --oneline'"
-        alias.nuke: "'reset --hard HEAD'"
-        alias.ol: "'log --format=\"%C(yellow)%h%Creset %C(cyan)%aN%Creset\t%s\"'"
-        alias.st: status
-        alias.w: whatchanged
-        alias.uncommit: "'reset --soft HEAD^'"
-        core.excludesfile: "$HOME/.gitignore_global"
-        core.pager: "'less -FXRS -x2'"
-      authors:
-        - initials: kig
-          name: Konstantin Gredeskoul
-          username: kig
-      projects:
-        - name: pullulant
-          url: git@github.com:kigster/pullulant.git
     settings:
       clock_format: EEE MMM d  h:mm:ss a
-    dock_preferences:
-      orientation: 'bottom'
-      auto_hide: false
-      clear_apps: true
-      tile_size: 25
-      magnification: false
-    bash_it:
-      theme: powerline-multiline

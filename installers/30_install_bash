@@ -20,7 +20,7 @@ function install_bash {
   [[ -z "$(grep 'pu-completion' $rc)" ]] && run "cat ${pu_home}/bin/pu-completion >> $rc # show-stdout"
   [[ -z "$(grep pullulant ${HOME}/.gitconfig 2>/dev/null )" ]] && {
     touch ${HOME}/.gitconfig
-    echo "ˇ
+    echo "
 [include]
     path = ${HOME}/.gitconfig-pullulant
 "   >> ${HOME}/.gitconfig

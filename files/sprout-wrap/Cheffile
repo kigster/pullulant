@@ -2,27 +2,17 @@
 
 site 'https://supermarket.getchef.com/api/v1'
 
+cookbook 'sprout-git',
+  :github => 'pivotal-sprout/sprout-git'
+
 cookbook 'sprout-homebrew',
-  :github => 'RealScout/sprout-homebrew',
-  :ref => 'remove-cask-install'
+  :github => 'pivotal-sprout/sprout-homebrew.git'
 
 cookbook 'homebrew',
   :github => 'chef-cookbooks/homebrew'
 
 cookbook 'sprout-pyenv',
   :github => 'kigster/sprout-pyenv'
-
-cookbook 'sprout-rbenv',
-  :github => 'pivotal-sprout/sprout-rbenv'
-
-cookbook 'sprout-ruby',
-  :github => 'pivotal-sprout/sprout-ruby'
-
-cookbook 'sprout-mysql',
-  :github => 'pivotal-sprout/sprout-mysql'
-
-cookbook 'sprout-git',
-  :github => 'pivotal-sprout/sprout-git'
 
 cookbook 'sprout-base',
   :github => 'pivotal-sprout/sprout-base'
@@ -39,14 +29,5 @@ cookbook 'osx',
 cookbook 'sprout-terminal',
   :github => 'pivotal-sprout/sprout-terminal'
 
-cookbook 'sprout-postgresql',
-  :github => 'pivotal-sprout/sprout-postgresql'
-
 cookbook 'sprout-ssh',
   :github => 'pivotal-sprout/sprout-ssh'
-
-cookbook 'sprout-jetbrains-editors',
-  :github => 'pivotal-sprout/sprout-jetbrains-editors'
-
-cookbook 'sprout-bash-it',
-    :git => 'https://github.com/hjhart/sprout-bash-it.git'

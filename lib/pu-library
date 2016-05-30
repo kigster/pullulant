@@ -33,7 +33,7 @@ function check_exit {
   # print the user-visible info about the command, if any
   if [ -z "${cmd_prints}" -a -z "${cmd_quiet}" ]; then
     if [ -z "${cmd_verbose}" ]; then
-      printf "${bldpur}%-75.75s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
+      printf "${bldpur}%-77.77s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
     else
       printf "${bldpur}%s${txtrst}\n" "$cmd" | tee -a ${const_cmd_stdout}
     fi
@@ -78,25 +78,25 @@ function check_exit {
     fi
   else # error – print a little icon
     [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
-    [[ -s "${const_cmd_stderr}" ]] && printf "%s" "\n${txtred}$(cat ${const_cmd_stderr})${txtrst}\n"
-
-    [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
-      cat ${const_cmd_stderr} >> ${const_combined_stderr}
-      last_command_status=0
-      return 0
+    [[ -s "${const_cmd_stderr}" ]] && {
+      echo
+      pu-underline-header "Command Output:"
+      echo
+      printf "${bldwht}${bakred}$(cat ${const_cmd_stderr})\n${txtrst}\n"
     }
 
     printf "\n"
     printf "${txtrst}  Command: ${bldred}${cmd}\n"
     printf "${txtrst}Exit code: ${bldred}$last_command_status\n"
-    printf "${txtrst}   Result: ${bldred}${runner}\n\n"
+    printf "${txtrst}   Result: ${bldred}${runner}${txtrst}\n\n"
 
-    [[ "${opts_continue_on_runner_error}" == "yes" ]] && {
-      printf "${bldred}ERROR: ${bldwht}runner ${runner} must abort!!"
-      runners_aborted=$(($runners_aborted + 1))
-      kill -USR1 $$
+    [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
+      cat ${const_cmd_stderr} >> ${const_combined_stderr}
+      printf "            Action: ${bldgrn}IGNORE & CONTINUE...${txtrst}\n"
+      last_command_status=0
+      return 0
     }
-    [[ "${opts_continue_on_runner_error}" == "yes" ]] || abort
+
   fi
 
   return $last_command_status
@@ -104,7 +104,7 @@ function check_exit {
 
 function on_start {
   run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
-  [[ "$sudoers_enabled" ]] && pu-print-section-header "sudo-enable" && sudo-enable
+  [[ "$sudoers_enabled" ]] && pu-print-section-header "${bldwht}${bakgrn}" "Re-Enabling SUDO...." && sudo-enable
 }
 
 function success {

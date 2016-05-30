@@ -31,8 +31,14 @@ opts_features=""
   abort 0
 }
 
-while getopts "r:Rf:BCEFHIKLNPRSTUZe:dhilnopqtvyx" opt; do
+while getopts "r:Rf:BCEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
   case $opt in
+    k)
+      export opts_nokogiri_donot_use_system_libraries=yes
+      ;;
+    m)
+      export opts_install_only_selected_themes=yes
+      ;;
     N)
       export opts_interactive=yes           ;;
     e)
@@ -170,16 +176,16 @@ function run_runners() {
     # I so much rather prefer dashes in the function and file names than underscores.
     # Dashes just feel like a continuation. Underscores are from another era. Jurassic.
     printf "${txtrst}"
-    pu-print-section-header ${runner}
+    pu-print-section-header "${bldwht}${bakblu}" ${runner}
 
     export runner_status=0
     eval ${runner}
     runner_status=${runner_status:-1}
 
     if [ ${runner_status} -ne 0 ]; then
-      printf "${bldred}error: runner ${bldred}${runner}${bldwht} exited with status: ${bakred} ${runner_status} ${txtrst}\n"
-      [[ ${opts_continue_on_runner_error} ]] || abort $runner_status
-      printf "${bldgrn}       ignoring error due to the flag set.${txtrst}\n"
+      pu-underline-header "${bldred}${runner}${bldwht} screwed things up, and exited with a status code [${bakred}${runner_status}${txtrst}]\n"
+      [[ "${opts_continue_on_runner_error}" == "yes" ]] || abort $runner_status
+      printf "${bldgrn}Since -I flag was set, ignoring this runner error, and onto the next one.${txtrst}\n"
       runners_ignored=$((runners_ignored + 1))
     else
       runners_completed=$(($runners_completed + 1))
@@ -214,18 +220,22 @@ function main {
   continue_next_runner
 
   printf "\n"
-  [[ ${runners_completed} -gt 0 ]]  && printf "${bldwht}%5d${bldgrn} runners succeeded\n" $runners_completed
-  [[ ${runners_ignored} -gt 0 ]]    && printf "${bldwht}%5d${bldylw} runners failed, but were ignored\n"  $runners_ignored
-  pu-sep
-  [[ ${commands_completed} -gt 0 ]] && printf "${bldwht}%5d${bldgrn} commands ran successfully\n" $commands_completed
-  [[ ${commands_ignored} -gt 0 ]]   && printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored\n" $runners_ignored
-  [[ ${commands_failed} -gt 0 ]]    && printf "${bldwht}%5d${bldred} commands failed\n"  $commands_failed
+  pu-box-top
+
+  [[ ${runners_completed} -gt 0 ]]  && pu-box-header $(printf "${bldwht}%5d${bldgrn} runners succeeded${txtrst}\n" $runners_completed)
+  [[ ${runners_ignored} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldylw} runners failed, but were ignored${txtrst}\n"  $runners_ignored)
+  pu-box-separator
+  [[ ${commands_completed} -gt 0 ]] && pu-box-header $(printf "${bldwht}%5d${bldgrn} commands ran successfully${txtrst}\n" $commands_completed)
+  [[ ${commands_ignored} -gt 0 ]]   && pu-box-header $(printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored${txtrst}\n" $runners_ignored)
+  [[ ${commands_failed} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldred} commands failed${txtrst}\n"  $commands_failed)
+  pu-box-bottom
   echo
   [[ $runner_status -eq 0 && $runners_completed -gt 0 ]] && finish
   [[ $runners_started -eq 0 ]] && {
     printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
     finish
   }
+  printf "${txtrst}"
   [[ $runner_status -ne 0 && -z "${opts_continue_on_runner_error}" ]] && abort $last_command_status
   finish
 }
@@ -233,6 +243,8 @@ function main {
 #______________________________________________________________________________
 #
 export args=$*
+
+printf ${txtrst}
 
 main args
 

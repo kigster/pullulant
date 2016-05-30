@@ -32,7 +32,11 @@ function run_soloist {
   eval "$(rbenv init -)"
   [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
   printf "Current ruby version is ${bldwht}${bakpur}%s${txtrst}\n" "$(cat .ruby-version)"
-  run "bundle              # show-stdout"
+  if [[ "${opts_nokogiri_donot_use_system_libraries}" == "yes" ]]; then
+    run "bundle              # show-stdout"
+  else
+    run "export NOKOGIRI_USE_SYSTEM_LIBRARIES=1 && bundle install # show-stdout"
+  fi
   run "bundle exec soloist # show-stdout"
   export last_command_status=$?
   run "cd ${pu_home}"

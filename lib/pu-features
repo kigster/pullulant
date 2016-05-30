@@ -18,7 +18,7 @@ function pu-list-components {
   local spacer="                       "
   printf "   ${txtwht}${fgcolor}${name}${txtrst}:\n"
   for component in "${components[@]}"; do
-    printf "${spacer}${fgcolor}${txtblk}${bgcolor} %-30s ${fgcolor} ${txtrst}\n" ${component}
+    printf "${spacer}${fgcolor} ● ${txtblk}${bgcolor} %-30s ${fgcolor} ● ${txtrst}\n" ${component}
   done
 }
 
@@ -42,7 +42,7 @@ function package-config {
   done
 
   pu-list-components "Features" "grn"  "${features[@]}"
-  pu-list-components "Runners"  "blu"  "${runners[@]}"
+  pu-list-components "Runners"  "ylw"  "${runners[@]}"
 
   source "${pu_home}/lib/pu-uniq-packages"
 

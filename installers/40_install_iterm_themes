@@ -19,12 +19,24 @@ function install_iterm_themes {
     run "mkdir -p ${pu_cfg}"
     run "mkdir -p ${install_home}"
     run "cd $install_home && curl -LO https://github.com/mbadolato/iTerm2-Color-Schemes/zipball/master"
-    run "cd $install_home && mv master $zipfile && unzip $zipfile"
+    if [[ "$(ls -al $install_home/master | awk '{print $5}')" == "$(ls -al $zipfile | awk '{print $5}')" ]]; then
+      rm -f "${install_home}/master"
+    else
+      run "cd $install_home && mv master $zipfile && unzip $zipfile"
+    fi
   fi
-  for theme in $iterm_themes; do
-    install_theme $install_home $theme
-  done
 
+  if [[ $opts_install_only_selected_themes == "yes" ]]; then
+    for theme in $iterm_themes; do
+      install_theme $install_home $theme
+    done
+  else
+    run "find $install_home -name '*.itermcolors' -exec open {} \;"
+  fi
+
+  # if there is no bash process associated with an iTerm, we can nuke iTerm.
+  is_iterm=$(for pid in $(ps -ef | grep bash | awk '{print $3}' | sort | uniq ); do ps -p $pid; done | grep iTerm)
+  [[ -z "${is_iterm}" ]] && kill -9 $(ps -ef | grep [i]Term | awk '{print $2}')
   return 0
 }
 

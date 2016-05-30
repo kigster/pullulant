@@ -22,18 +22,19 @@ export rubyinstall_ran=
 function install_ruby {
   [[ -n "${rubyinstall_ran}" ]] && return
   run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
+  local default_ruby=${rbenv_ruby_versions[0]}
   for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
     last_command_status=$(rbenv versions | grep ${rbenv_ruby_version})
     if [ $? -ne 0 ]; then
       run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
       run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
       run "eval $(rbenv init -) && rbenv rehash"
-      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
+      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler --no-ri --no-rdoc"
       export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     fi
-    run "rbenv global #{rbenv_ruby_version} # show-stdout "
     install_ruby_modules
   done
-  run "rbenv global ${rbenv_ruby_versions[0]}"
+
+  run "rbenv global ${default_ruby}"
   export rubyinstall_ran=yes
 }

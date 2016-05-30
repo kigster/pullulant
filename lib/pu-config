@@ -17,7 +17,7 @@ function package-config {
   export var_zsh_theme=${var_zsh_theme-"reinvent-one"}
   export var_brew_cask_appdir=${var_brew_cask_appdir-"/Applications"}
   readonly export const_timestamp=`date "+%Y%m%d%H%M%S"`
-  readonly export const_sprout_wrap_repo="git@github.com:pivotal-sprout/sprout-wrap.git"
+  readonly export const_sprout_wrap_repo="https://github.com/pivotal-sprout/sprout-wrap"
   readonly export const_cmd_stdout=/tmp/pullulant.stdout.$$.$const_timestamp
   readonly export const_cmd_stderr=/tmp/pullulant.stderr.$$.$const_timestamp
   readonly export const_combined_stderr=/tmp/pullulant.stderr.$$.combined
@@ -55,6 +55,8 @@ function package-config {
 
   # these can be overridden by the flags
   readonly export pu_options="
+    opts_nokogiri_donot_use_system_libraries
+    opts_install_only_selected_themes
     opts_interactive
     opts_quiet
     opts_runners
