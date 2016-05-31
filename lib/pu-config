@@ -53,6 +53,7 @@ function package-config {
   [[ -n "$(which apm)" ]] && apm=apm
   [[ -n "$(which apm-beta)" ]] && apm="apm-beta"
 
+
   # these can be overridden by the flags
   readonly export pu_options="
     opts_nokogiri_donot_use_system_libraries
@@ -62,6 +63,7 @@ function package-config {
     opts_runners
     opts_verbose
     opts_dryrun
+    opts_debug
     opts_force
     opts_continue_on_runner_error
     opts_continue_on_statement_error

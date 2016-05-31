@@ -73,6 +73,20 @@ function pu-box-header {
   printf "│${txtrst}\n"
 }
 
+
+function pu-print-section-header {
+  local header_color=$1
+  shift
+  [[ -n "${opts_suppress_headers}" ]] && return
+  printf "\n${header_color}"
+  pu-box-top
+  printf "${header_color}"
+  pu-box-header "$*"
+  printf "${header_color}"
+  pu-box-bottom
+  printf "${txtrst}\n"
+}
+
 function pu-cursor-left {
   local cols=$1
   printf "\033[${cols}D"
@@ -118,27 +132,6 @@ function pu-short-header {
   pu-box-bottom
 }
 
-function pu-print-options {
-  count=0
-  header_printer=""
-  for option in ${pu_options}; do
-    [[ "$option" == "opts_features" ]] && continue
-    option_value=$(pu_option_value $option)
-    if [[ -n "${option_value/ /}" ]]; then
-      [[ -z "${header_printed}" ]] && header_printed="true" && printf "   ${txtwht}${bldblu}Enabled Options:\n      ${bldgrn}"
-      [[ $count -gt 0 ]] && printf ", "
-      if [[ "$option_value" == "yes" ]]; then
-        printf "${bldgrn}%s" ${option/opts_/}
-      else
-        printf "${bldgrn}%s=${bldylw}%s" ${option/opts_/} ${option_value}
-      fi
-      count=$(($count + 1))
-    fi
-  done
-  [[ -n "${header_printed}" ]] && {
-    printf "\n"
-  }
-}
 
 function pu-installers-helpers {
   local installer_list=$(pu-indent-list "$installers" 65 "   ")
@@ -183,20 +176,6 @@ function pu-welcome-screen-short {
   printf "\n${txtrst}"
 }
 
-
-function pu-print-section-header {
-  local header_color=$1
-  shift
-  [[ -n "${opts_suppress_headers}" ]] && return
-  printf "\n${header_color}"
-  pu-box-top
-  printf "${header_color}"
-  pu-box-header "$*"
-  printf "${header_color}"
-  pu-box-bottom
-  printf "${txtrst}\n"
-}
-
 function pu-short-usage {
   printf "
 Usage:
@@ -231,7 +210,8 @@ $(pu-underline-header 'Getting Help: ')
   -h          paginated help message in full color
   -H          non-paginated help message in full color
   -x          non-paginated help message in pure ASCII
-  -d          show debugging information
+  -D          show advanced usage with expressions
+  -d          show remaining runners after each runner 
   -E          show usage examples
 
 $(pu-underline-header "Runners:")

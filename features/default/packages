@@ -12,6 +12,7 @@
 [[ -n "${bash_it_aliases}" ]]     || bash_it_aliases="atom git homebrew homebrew-cask npm osx vim"
 [[ -n "${bash_it_completions}" ]] || bash_it_completions="brew git hub ssh"
 
+
 # List of Brew Formulas to install and l`ink
 [[ -n "${brew_packages}" ]] || brew_packages="
   ack
@@ -49,6 +50,8 @@
   zlib
   zsh
 "
+
+[[ -n "${brew_packages_to_link_after_install}" ]] || brew_packages_to_link_after_install=""
 
 [[ -n "${brew_casks}" ]] || brew_casks="
   alfred

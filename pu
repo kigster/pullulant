@@ -31,7 +31,7 @@ opts_features=""
   abort 0
 }
 
-while getopts "r:Rf:BCEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
+while getopts "r:Rf:BCDEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
   case $opt in
     k)
       export opts_nokogiri_donot_use_system_libraries=yes
@@ -122,9 +122,12 @@ while getopts "r:Rf:BCEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
       pu-help-examples
       exit 0
       ;;
-    d)
+    D)
       pu-debug-help
       exit 0
+      ;;
+    d)
+      opts_debug=yes
       ;;
     x)
       $0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > $pu_home/doc/help
@@ -163,7 +166,7 @@ function continue_next_runner() {
   run_runners "${runners_list[@]}"
 }
 
-trap USR1 continue_next_runner 2>/dev/null
+trap USR2 continue_next_runner 2>/dev/null
 
 function run_runners() {
   while (( "$#" )); do
@@ -183,15 +186,23 @@ function run_runners() {
     runner_status=${runner_status:-1}
 
     if [ ${runner_status} -ne 0 ]; then
-      pu-underline-header "${bldred}${runner}${bldwht} screwed things up, and exited with a status code [${bakred}${runner_status}${txtrst}]\n"
+      pu-underline-header "Runner ${bldred}${runner}${bldwht} messed up with an exit code [${bakred}${runner_status}${txtrst}]"
+      echo
       [[ "${opts_continue_on_runner_error}" == "yes" ]] || abort $runner_status
-      printf "${bldgrn}Since -I flag was set, ignoring this runner error, and onto the next one.${txtrst}\n"
+      printf "${bldgrn}Horray, since -I flag was set, we are ignoring this runner error.${txtrst}\n"
       runners_ignored=$((runners_ignored + 1))
     else
       runners_completed=$(($runners_completed + 1))
     fi
     shift
-    declare -a runners_list=$@
+    declare -a runners_list=($@)
+
+    if [[ -n "${opts_debug}" ]]; then
+      echo
+      if [[ "${#runners_list[@]}" -gt 0 ]]; then
+        pu-list-components "Runners Left" "pur" "${runners_list[@]}"
+      fi
+    fi
   done
 }
 

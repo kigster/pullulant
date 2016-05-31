@@ -97,6 +97,8 @@ function check_exit {
       return 0
     }
 
+    # Let's skip to the next runner
+    kill -USR2 $$
   fi
 
   return $last_command_status

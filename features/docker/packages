@@ -2,6 +2,7 @@
 bash_it_aliases+=" docker docker-compose "
 bash_it_plugins+=" docker docker-machine "
 bash_it_completions+=" docker "
-brew_packages+=" go docker docker-compose docker-swarm docker-cloud"
+brew_packages+=" go docker docker-machine docker-compose docker-swarm docker-cloud"
+brew_packages_to_link_after_install+="docker docker-machine"
 brew_casks+=" dockertoolbox "
 rbenv_ruby_versions+=("2.3.0")
