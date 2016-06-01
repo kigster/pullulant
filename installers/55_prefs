@@ -13,11 +13,13 @@
 function prefs {
   cleanup_prefs
   run "cp -prf ./files/library-preferences/*  ${HOME}/Library/Preferences"
+  last_command_status=$?
+  return $last_command_status
 }
 
 function cleanup_prefs {
   run "mkdir -p $backup_dir"
-  run "mv '${HOME}/Library/Saved Application State/com.googlecode.iterm2.savedState' ${backup_dir}"
-  run "mv '${HOME}/Library/Caches/com.googlecode.iterm2' ${backup_dir}"
-  run "mv '${HOME}/Preferences/com.googlecode.iterm2.plist' ${backup_dir}"
+  run "rm -f '${HOME}/Library/Saved Application State/com.googlecode.iterm2.savedState'"
+  run "rm -f '${HOME}/Library/Caches/com.googlecode.iterm2'"
+  run "rm -f '${HOME}/Preferences/com.googlecode.iterm2.plist'"
 }

@@ -288,7 +288,7 @@ function continue_next_runner() {
   run_runners "${runners_list[@]}"
 }
 
-pu-trap-signals pu-interrupt INT TERM
+pu-trap-signals pu-interrupt INT 
 pu-trap-signals continue_next_runner USR1
 
 
