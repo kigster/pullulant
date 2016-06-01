@@ -161,13 +161,6 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
   esac
 done
 
-
-function continue_next_runner() {
-  run_runners "${runners_list[@]}"
-}
-
-trap USR2 continue_next_runner 2>/dev/null
-
 function run_runners() {
   while (( "$#" )); do
     runner=$1
@@ -188,14 +181,17 @@ function run_runners() {
     if [ ${runner_status} -ne 0 ]; then
       pu-underline-header "Runner ${bldred}${runner}${bldwht} messed up with an exit code [${bakred}${runner_status}${txtrst}]"
       echo
-      [[ "${opts_continue_on_runner_error}" == "yes" ]] || abort $runner_status
-      printf "${bldgrn}Horray, since -I flag was set, we are ignoring this runner error.${txtrst}\n"
+
+      [[ "${opts_continue_on_runner_error}" == "yes" ]] || gracefull_exit_with_summary
+
+      pu-print-section-header "${txtblk}${bakylw}" "WARNING: continuing to the next runner, despite error, due to the -I flag."
       runners_ignored=$((runners_ignored + 1))
     else
       runners_completed=$(($runners_completed + 1))
     fi
     shift
     declare -a runners_list=($@)
+    export runners_left=${#runners_list}
 
     if [[ -n "${opts_debug}" ]]; then
       echo
@@ -214,6 +210,32 @@ function pu-pluralize() {
   pluralized=${word}
   [[ $count -gt 1 ]] && pluralized="${word}s"
   printf "$pluralized"
+}
+
+function gracefull_exit_with_summary() {
+
+    printf "\n${txtrst}"
+
+    pu-box-top
+    pu-box-header " ${bldwht}SUMMARY/STATISTICS OF THIS RUN:${txtrst}"
+    pu-box-separator
+    pu-box-header $(printf "${bldwht}%4d${bldgrn} $(pu-pluralize 'runner' $runners_completed) succeeded${txtrst}"               $runners_completed)
+    pu-box-header $(printf "${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}"  $runners_ignored)
+    pu-box-header $(printf "${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_left) left, but were not started${txtrst}"   $runners_left)
+    pu-box-separator
+    pu-box-header $(printf "${bldwht}%4d${bldgrn} $(pu-pluralize 'command' $commands_completed) ran successfully${txtrst}"      $commands_completed)
+    pu-box-header $(printf "${bldwht}%4d${bldylw} $(pu-pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}" $runners_ignored)
+    pu-box-header $(printf "${bldwht}%4d${bldred} $(pu-pluralize 'command' $commands_failed) failed${txtrst}"                   $commands_failed)
+    pu-box-bottom
+    echo
+    [[ $runner_status -eq 0 && $runners_completed -gt 0 ]] && finish
+    [[ $runners_started -eq 0 ]] && {
+      printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
+      finish
+    }
+    printf "${txtrst}"
+    [[ $runner_status -ne 0 && -z "${opts_continue_on_runner_error}" ]] && abort $last_command_status
+    finish
 }
 
 function main {
@@ -237,33 +259,38 @@ function main {
   export commands_ignored=0
 
   declare -a runners_list=($runners)
+  export runners_total=${#runners_list[@]}
+  export runners_left=$runners_total
 
   continue_next_runner
-
-  printf "\n${txtrst}"
-  pu-box-top
-
-  [[ ${runners_completed} -gt 0 ]]  && pu-box-header $(printf "${bldwht}%5d${bldgrn} $(pu-pluralize 'runner' $runners_completed) succeeded${txtrst}\n" $runners_completed)
-  [[ ${runners_ignored} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldylw} $(pu-pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}\n"  $runners_ignored)
-  pu-box-separator
-  [[ ${commands_completed} -gt 0 ]] && pu-box-header $(printf "${bldwht}%5d${bldgrn} $(pu-pluralize 'command' $commands_completed) ran successfully${txtrst}\n" $commands_completed)
-  [[ ${commands_ignored} -gt 0 ]]   && pu-box-header $(printf "${bldwht}%5d${bldylw} $(pu-pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}\n" $runners_ignored)
-  [[ ${commands_failed} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldred} $(pu-pluralize 'command' $commands_failed) failed${txtrst}\n"  $commands_failed)
-  pu-box-bottom
-  echo
-  [[ $runner_status -eq 0 && $runners_completed -gt 0 ]] && finish
-  [[ $runners_started -eq 0 ]] && {
-    printf "${bldylw}\nNo runners were specified.${txtrst}\nPlease run $0 -h for help.\n"
-    finish
-  }
-  printf "${txtrst}"
-  [[ $runner_status -ne 0 && -z "${opts_continue_on_runner_error}" ]] && abort $last_command_status
-  finish
+  gracefull_exit_with_summary
 }
 
 #______________________________________________________________________________
 #
 export args=$*
+
+pu-trap-signals() {
+  func="$1" ; shift
+  for sig ; do
+    trap "$func $sig" "$sig"
+  done
+}
+
+function pu-interrupt() {
+  printf "\n\n${txtrst}   ➜    Interrupting, since you pressed ${bakred}  Ctrl-C  ${txtrst}... Oh well :) \n"
+  runner_status=130
+  last_command_status=130
+  gracefull_exit_with_summary
+}
+
+function continue_next_runner() {
+  run_runners "${runners_list[@]}"
+}
+
+pu-trap-signals pu-interrupt INT TERM
+pu-trap-signals continue_next_runner USR1
+
 
 printf ${txtrst}
 

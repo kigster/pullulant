@@ -36,6 +36,9 @@ function package-config {
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
+  readonly export pu_signal_next_runner=$(kill -l SIGUSR1)
+  readonly export pu_signal_interrupt=$(kill -l SIGTERM)
+
   readonly export home_dir=${HOME}
   readonly export pu_cfg="${home_dir}/.pu"
   readonly export backup_dir=${pu_cfg}/backups/$const_timestamp

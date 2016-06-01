@@ -78,6 +78,7 @@ function check_exit {
     fi
   else # error – print a little icon
     [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
+
     [[ -s "${const_cmd_stderr}" ]] && {
       echo
       pu-underline-header "Command Output:"
@@ -86,9 +87,9 @@ function check_exit {
     }
 
     printf "\n"
-    printf "${txtrst}  Command: ${bldred}${cmd}\n"
+    printf "${txtrst}   Runner: ${bldgrn}${runner}${txtrst}\n\n"
+    printf "${txtrst}  Command: ${bldblu}${cmd}\n"
     printf "${txtrst}Exit code: ${bldred}$last_command_status\n"
-    printf "${txtrst}   Result: ${bldred}${runner}${txtrst}\n\n"
 
     [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
       cat ${const_cmd_stderr} >> ${const_combined_stderr}
@@ -97,8 +98,8 @@ function check_exit {
       return 0
     }
 
-    # Let's skip to the next runner
-    kill -USR2 $$
+    # Let's skip to the next runner using signals
+    kill -USR1 $$
   fi
 
   return $last_command_status
