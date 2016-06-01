@@ -38,9 +38,10 @@ function package-config {
 
   readonly export home_dir=${HOME}
   readonly export pu_cfg="${home_dir}/.pu"
+  readonly export backup_dir=${pu_cfg}/backups/$const_timestamp
+
   readonly export modules_dir=./installers
   readonly export helpers_dir=./helpers
-  readonly export backup_dir=${home_dir}/.backup/$const_timestamp
   readonly export bash_files_dir="./files/home"
   readonly export rsync_home_dir="./files/home/"
   readonly export rsync_atom_dir="./files/atom"

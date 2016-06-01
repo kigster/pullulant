@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-# Put this file in your home directory, and it will override what packages
-# pullulant installs.
-
-export brew_packages="rbenv ruby-build"
-export brew_casks="rubymine teamviewer"
-export brew_relink_packages=" openssl "
-export rbenv_ruby_versions=("2.1.2")

@@ -206,6 +206,16 @@ function run_runners() {
   done
 }
 
+function pu-pluralize() {
+  word=$1
+  count=$2
+  [[ -z "${count}" || -z "${word}" ]] && return
+
+  pluralized=${word}
+  [[ $count -gt 1 ]] && pluralized="${word}s"
+  printf "$pluralized"
+}
+
 function main {
   pu-long-header
   pu-print-options
@@ -230,15 +240,15 @@ function main {
 
   continue_next_runner
 
-  printf "\n"
+  printf "\n${txtrst}"
   pu-box-top
 
-  [[ ${runners_completed} -gt 0 ]]  && pu-box-header $(printf "${bldwht}%5d${bldgrn} runners succeeded${txtrst}\n" $runners_completed)
-  [[ ${runners_ignored} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldylw} runners failed, but were ignored${txtrst}\n"  $runners_ignored)
+  [[ ${runners_completed} -gt 0 ]]  && pu-box-header $(printf "${bldwht}%5d${bldgrn} $(pu-pluralize 'runner' $runners_completed) succeeded${txtrst}\n" $runners_completed)
+  [[ ${runners_ignored} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldylw} $(pu-pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}\n"  $runners_ignored)
   pu-box-separator
-  [[ ${commands_completed} -gt 0 ]] && pu-box-header $(printf "${bldwht}%5d${bldgrn} commands ran successfully${txtrst}\n" $commands_completed)
-  [[ ${commands_ignored} -gt 0 ]]   && pu-box-header $(printf "${bldwht}%5d${bldylw} commands had non-zero exit status, but were ignored${txtrst}\n" $runners_ignored)
-  [[ ${commands_failed} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldred} commands failed${txtrst}\n"  $commands_failed)
+  [[ ${commands_completed} -gt 0 ]] && pu-box-header $(printf "${bldwht}%5d${bldgrn} $(pu-pluralize 'command' $commands_completed) ran successfully${txtrst}\n" $commands_completed)
+  [[ ${commands_ignored} -gt 0 ]]   && pu-box-header $(printf "${bldwht}%5d${bldylw} $(pu-pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}\n" $runners_ignored)
+  [[ ${commands_failed} -gt 0 ]]    && pu-box-header $(printf "${bldwht}%5d${bldred} $(pu-pluralize 'command' $commands_failed) failed${txtrst}\n"  $commands_failed)
   pu-box-bottom
   echo
   [[ $runner_status -eq 0 && $runners_completed -gt 0 ]] && finish

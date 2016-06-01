@@ -13,7 +13,9 @@
 
 function install_atom {
   last_command_status=0
-  [[ -d "${HOME}/.atom" ]] || {
+  if [[ -d "${HOME}/.atom" ]]; then
+    [[ -n "$apm" ]] && run "$apm update"
+  else
     run "rsync -a -u ${rsync_atom_dir}/ ${HOME}/.atom"
     if [ -z "$apm" ]; then
       run "printf \"${bldylw} It looks like you don't have *apm* installed – it comes with Atom.\n\""
@@ -21,6 +23,6 @@ function install_atom {
     else
       run "$apm install  --packages-file ${HOME}/.atom/packages.txt # show-stdout"
     fi
-  }
+  fi
   return $last_command_status
 }

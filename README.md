@@ -15,7 +15,7 @@ cd pullulant
 ./pu -FR
 ```
 
- * `-R` will run every installer (which are executable modules that typically install a particular thing), and 
+ * `-R` will run every installer (which are executable modules that typically install a particular thing), and
  * `-F` will include every feature set (which is a collection of brew/bash-it/etc plugins or packages, grouped together by a common theme, i.e. "ruby" feature would include ruby-development related brew packages, casks, bash-it plugins, etc).
 
 For more information, please see the full usage below.
@@ -159,7 +159,7 @@ versions of `python` a breeze. Similarly, `npm` and `bower` are both installed b
 
 ```bash
 
- Pullulant  (or just pu)                       (Version 1.5.1) Git Rev: 12671b9 
+ Pullulant  (or just pu)                       (Version 1.5.1) Git Rev: 12671b9
 
  OS-X Installer for Web Devs, MIT License  | (c) 2015-2016 Konstantin Gredeskoul
  https://github.com/kigster/pullulant      |                       http://kig.re
@@ -335,10 +335,6 @@ You should inspect the configuration and packages defined in two files:
 Variables with names starting with `var_` can be overridden before running the
 script. So can all the variables set in the `pu-packages` file, such as
 which brew formulas or casks to install.
-
-You can also copy the file `sample-config/.pullulant_packages` to your home folder,
-and modify it there to suit your needs. This file is loaded before any packages
-are defined, and overrides the packages the script itself defines.
 
 ## Acknowledgements
 
