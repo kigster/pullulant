@@ -89,6 +89,8 @@ function package-config {
 
   opts_rsync_backup=" -b --suffix=~pu.bak "
   opts_features='default'
+
+  export pu_skip_runners=""
 }
 
 function pu_option_value {

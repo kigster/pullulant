@@ -83,13 +83,16 @@ function check_exit {
       echo
       pu-underline-header "Command Output:"
       echo
-      printf "${bldwht}${bakred}$(cat ${const_cmd_stderr})\n${txtrst}\n"
+      printf "${bldwht}${bakred}\n\n$(cat ${const_cmd_stderr})\n${txtrst}\n"
     }
 
-    printf "\n"
-    printf "${txtrst}   Runner: ${bldgrn}${runner}${txtrst}\n\n"
-    printf "${txtrst}  Command: ${bldblu}${cmd}\n"
-    printf "${txtrst}Exit code: ${bldred}$last_command_status\n"
+    printf "\n${txtrst}"
+    pu-box-top
+    pu-box-header "${txtrst}" "         Runner: ${bldgrn}${runner}${txtrst}"
+    pu-box-header "${txtrst}" "Failing Command: ${bldblu}${cmd}"
+    pu-box-header "${txtrst}" "      Exit Code:${txtred} $last_command_status${txtrst}"
+    pu-box-header "${txtrst}" " Current Folder: ${bldylw}$(pwd)${txtrst}"
+    pu-box-bottom
 
     [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
       cat ${const_cmd_stderr} >> ${const_combined_stderr}
@@ -98,8 +101,12 @@ function check_exit {
       return 0
     }
 
-    # Let's skip to the next runner using signals
-    kill -USR1 $$
+    [[ "${opts_continue_on_runner_error}" == "yes" ]] && {
+      # Let's skip to the next runner using signals
+      kill -USR1 $$
+    }
+
+    gracefull_exit_with_summary
   fi
 
   return $last_command_status

@@ -31,7 +31,7 @@ opts_features=""
   abort 0
 }
 
-while getopts "r:Rf:BCDEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
+while getopts "r:Rf:BCDEFHIKLNPRSTUZe:mkdhilnops:qtvyx" opt; do
   case $opt in
     k)
       export opts_nokogiri_donot_use_system_libraries=yes
@@ -62,6 +62,15 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZe:mkdhilnopqtvyx" opt; do
       else
         runners+=" $OPTARG"
       fi                                    ;;
+    s)
+      if [[ "$(pu-is-valid-runner $OPTARG)" == "false" ]]; then
+        printf "${bldred}$OPTARG is an invalid runner or helper :( ${txtrst}\n" >&2
+        printf "Run with -l flag to see available runners/helpers, or -h for help\n" >&2
+        abort 1
+      fi
+
+      pu_skip_runners+=" $OPTARG"
+      ;;
     l)
       pu-short-header
       pu-installers-helpers
@@ -171,24 +180,33 @@ function run_runners() {
 
     # I so much rather prefer dashes in the function and file names than underscores.
     # Dashes just feel like a continuation. Underscores are from another era. Jurassic.
-    printf "${txtrst}"
-    pu-print-section-header "${bldwht}${bakblu}" ${runner}
 
     export runner_status=0
-    eval ${runner}
-    runner_status=${runner_status:-1}
 
-    if [ ${runner_status} -ne 0 ]; then
-      pu-underline-header "Runner ${bldred}${runner}${bldwht} messed up with an exit code [${bakred}${runner_status}${txtrst}]"
-      echo
+    if [[ $(pu-array-contains-element "${runner}" "${runners_skipped_list[@]}") == "false" ]]; then
+      printf "${txtrst}"
 
-      [[ "${opts_continue_on_runner_error}" == "yes" ]] || gracefull_exit_with_summary
+      pu-print-section-header "${bldwht}${bakblu}" ${runner}
 
-      pu-print-section-header "${txtblk}${bakylw}" "WARNING: continuing to the next runner, despite error, due to the -I flag."
-      runners_ignored=$((runners_ignored + 1))
+      eval ${runner}
+      runner_status=${runner_status:-1}
+
+      if [ ${runner_status} -ne 0 ]; then
+        pu-underline-header "Runner ${bldred}${runner}${bldwht} messed up with an exit code [${bakred}${runner_status}${txtrst}]"
+        echo
+
+        [[ "${opts_continue_on_runner_error}" == "yes" ]] || gracefull_exit_with_summary
+
+        pu-print-section-header "${txtblk}${bakylw}" "WARNING: continuing to the next runner, despite error, due to the -I flag."
+        runners_ignored=$((runners_ignored + 1))
+      else
+        runners_completed=$(($runners_completed + 1))
+      fi
     else
-      runners_completed=$(($runners_completed + 1))
+      pu-print-section-header "${bldwht}${bakblu}" "${runner} [ SKIPPED ]"
+      runners_skipped=$(($runners_skipped + 1))
     fi
+
     shift
     declare -a runners_list=($@)
     export runners_left=${#runners_list}
@@ -217,15 +235,16 @@ function gracefull_exit_with_summary() {
     printf "\n${txtrst}"
 
     pu-box-top
-    pu-box-header " ${bldwht}SUMMARY/STATISTICS OF THIS RUN:${txtrst}"
+    pu-box-header " ${bldwht}SUMMARY:${txtrst}"
     pu-box-separator
-    pu-box-header $(printf "${bldwht}%4d${bldgrn} $(pu-pluralize 'runner' $runners_completed) succeeded${txtrst}"               $runners_completed)
-    pu-box-header $(printf "${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}"  $runners_ignored)
-    pu-box-header $(printf "${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_left) left, but were not started${txtrst}"   $runners_left)
+    pu-box-header $(printf " ${bldwht}%4d${bldgrn} $(pu-pluralize 'runner' $runners_completed) succeeded${txtrst}"               $runners_completed)
+    pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}"  $runners_ignored)
+    pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_skipped) skipped${txtrst}"  $runners_skipped)
+    pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_left) left, but were not started${txtrst}"   $runners_left)
     pu-box-separator
-    pu-box-header $(printf "${bldwht}%4d${bldgrn} $(pu-pluralize 'command' $commands_completed) ran successfully${txtrst}"      $commands_completed)
-    pu-box-header $(printf "${bldwht}%4d${bldylw} $(pu-pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}" $runners_ignored)
-    pu-box-header $(printf "${bldwht}%4d${bldred} $(pu-pluralize 'command' $commands_failed) failed${txtrst}"                   $commands_failed)
+    pu-box-header $(printf " ${bldwht}%4d${bldgrn} $(pu-pluralize 'command' $commands_completed) ran successfully${txtrst}"      $commands_completed)
+    pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}" $runners_ignored)
+    pu-box-header $(printf " ${bldwht}%4d${bldred} $(pu-pluralize 'command' $commands_failed) failed${txtrst}"                   $commands_failed)
     pu-box-bottom
     echo
     [[ $runner_status -eq 0 && $runners_completed -gt 0 ]] && finish
@@ -250,6 +269,7 @@ function main {
   [[ -z "${runners}" ]] || on_start
 
   export runners_started=0
+  export runners_skipped=0
   export runners_ignored=0
   export runners_completed=0
   export runners_aborted=0
@@ -259,6 +279,7 @@ function main {
   export commands_ignored=0
 
   declare -a runners_list=($runners)
+  declare -a runners_skipped_list=(${pu_skip_runners})
   export runners_total=${#runners_list[@]}
   export runners_left=$runners_total
 
@@ -288,8 +309,13 @@ function continue_next_runner() {
   run_runners "${runners_list[@]}"
 }
 
-pu-trap-signals pu-interrupt INT 
-pu-trap-signals continue_next_runner USR1
+function abort_current_runner_and_continue() {
+  runners_list=("${runners_list[@]:1}")
+  continue_next_runner
+}
+
+pu-trap-signals pu-interrupt INT
+pu-trap-signals abort_current_runner_and_continue USR1
 
 
 printf ${txtrst}

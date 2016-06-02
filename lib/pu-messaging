@@ -179,8 +179,8 @@ function pu-welcome-screen-short {
 function pu-short-usage {
   printf "
 Usage:
-  pu  [ -R | -r 'runner runner ...' ]
-      [ -F | -f 'feature feature ...'  ]
+  pu  [ -R | -r 'runner runner ...' ] [ -s 'runner runner ... ']
+      [ -F | -f 'feature feature ...' ]
       [ -BCFHIKLNPRSTUZhiklmnopqtvy]
       [ -e 'expression']
 
@@ -211,7 +211,7 @@ $(pu-underline-header 'Getting Help: ')
   -H          non-paginated help message in full color
   -x          non-paginated help message in pure ASCII
   -D          show advanced usage with expressions
-  -d          show remaining runners after each runner 
+  -d          show remaining runners after each runner
   -E          show usage examples
 
 $(pu-underline-header "Runners:")
@@ -238,6 +238,9 @@ $(pu-underline-header "Runners:")
 
   -r 'runner runner ...'
               run specific installer(s) and/or helper(s) in the provided order
+
+  -s 'runner runner ...'
+              skip a specific installer otherwise included with either -R or -r
 
   -l          list available installers and helpers
 

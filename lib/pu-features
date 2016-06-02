@@ -45,6 +45,7 @@ function package-config {
 
   pu-list-components "Features" "grn"  "${features[@]}"
   pu-list-components "Runners"  "ylw"  "${runners[@]}"
+  [[ ${#runners_skipped[@]} -gt 0 ]] && pu-list-components "Skipped"  "red"  "${runners_skipped[@]}"
 
   source "${pu_home}/lib/pu-uniq-packages"
 
