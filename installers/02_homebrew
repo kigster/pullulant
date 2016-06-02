@@ -29,9 +29,9 @@ function brew_cask_install {
   already_installed=$(array-contains-element $package "${pu_brew_casks_already_installed[@]}")
   probable_destination="${var_brew_cask_appdir}/$(uppercase-first-letter ${package}).app"
   if [[ "$already_installed" == "true" ]] ; then
-    run "printf \"${bldblk}found previously installed cask ${bldgrn}$package${txtrst}...\n\""
+    run "printf \"${bldblu}found previously installed cask ${bldgrn}$package${txtrst}...\n\""
   elif [[ -d "${probable_destination}" ]]; then
-    run "printf \"${bldblk}found existing destination ${bldblu}${probable_destination}${txtrst}...\n\""
+    run "printf \"${bldblu}found existing destination ${bldblu}${probable_destination}${txtrst}...\n\""
   else
     run "brew cask install ${opts_force} --appdir=${var_brew_cask_appdir} ${package}"
   fi
@@ -51,7 +51,7 @@ function brew_install_handler() {
     if [[ -n "$(grep link $tmp)" ]]; then
       brew_relink $package
     else
-      last_command_status=$status        
+      last_command_status=$status
     fi
   fi
   run "rm -f $tmp #hide-command "
@@ -79,7 +79,7 @@ function brew_install {
       brew_install_handler $package
       pu_brew_already_installed=(${pu_brew_already_installed[@]} ${package})
     else
-      run "printf \"${bldblk}found previously installed ${bldgrn}$package${txtrst}\n\""
+      run "printf \"${bldblu}found previously installed ${bldgrn}$package${txtrst}\n\""
     fi
 
     if [[ -z "${opts_brew_link_force}" ]]; then
