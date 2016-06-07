@@ -294,7 +294,13 @@ export args=$*
 pu-trap-signals() {
   func="$1" ; shift
   for sig ; do
-    trap "$func $sig" "$sig"
+    current_trap=$(trap | grep -i "sig$sig" | awk '{print $3}')
+    if [[ -z "${current_trap}" ]]; then
+      trap "$func $sig" "$sig"
+    else
+      declare -a command=($(trap | grep -i "sig$sig"| tr '\n' ' '))
+      printf "Signal ${txtred}$sig${txtrst} appears to be already trapped by: [${command[*]}]\n"
+    fi
   done
 }
 
