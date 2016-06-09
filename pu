@@ -31,8 +31,11 @@ opts_features=""
   abort 0
 }
 
-while getopts "r:Rf:BCDEFHIKLNPRSTUZe:mkdhilnops:qtvyx" opt; do
+while getopts "r:Rf:BCDEFHIKLNPRSTUZe:b:dhilkmnops:qtvyx" opt; do
   case $opt in
+    b)
+      export install_ruby_versions=($OPTARG)
+      ;;
     k)
       export opts_nokogiri_donot_use_system_libraries=yes
       ;;

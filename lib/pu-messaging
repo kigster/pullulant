@@ -70,6 +70,8 @@ function pu-box-header {
   local remaining_space_len=$(($width - ${#clean_text} - 1))
   printf "│ ${text}"
   [[ $remaining_space_len -gt 0 ]] && pu-repeat-char " " $remaining_space_len
+  pu-cursor-left 100 
+  pu-cursor-right $(($width + 1))
   printf "│${txtrst}\n"
 }
 
@@ -246,6 +248,8 @@ $(pu-underline-header "Runners:")
 
 $(pu-underline-header 'Runner-specific Flags:')
 
+  -b ruby-version 
+              Override ruby version to install specified in packages
   -S          [S]proutwrap is disabled during the full install
   -B          [B]rew-upgrade is disabled during the full install
   -P          No backu[P] for rsync of bash and zsh files (default is to backup)
@@ -330,9 +334,9 @@ $(pu-underline-header 'Examples: ')
 
   ● Install everything with specific features and plugins enabled suitable for
     ruby, python and node development, as well as install services used in web
-    development such as nginx, haproxy, etc:
-
-      ${bldgrn}$(basename $0) -R -f 'ruby python nodejs web aws docker'${txtrst}
+    development such as nginx, haproxy. Also, override ruby version with 2.3.0.
+    
+      ${bldgrn}$(basename $0) -R -f 'ruby python nodejs web aws docker' -b 2.3.0 ${txtrst}
 
   ● Use a helper (not an installer) to wipe clean and reinstall postgresql
     from brew, create a new UTF8 database, and ensure it's running after:
