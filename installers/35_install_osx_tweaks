@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function osx {
+function install_osx_tweaks() {
   # stop forced authentication for os-x updates
   # run "sudo defaults delete /Library/Preferences/com.apple.SoftwareUpdate CatalogURL"
   run "sudo ln -nfs /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport"

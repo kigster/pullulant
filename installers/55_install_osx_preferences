@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function prefs {
+function install_osx_prefs() {
   cleanup_prefs
   run "cp -prf ./files/library-preferences/*  ${HOME}/Library/Preferences"
   run "cp  ./files/library-preferences/com.googlecode.iterm2.plist  ${HOME}/Documents"

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+function install_monofonts() {
+  if [ ! -d "powerline-fonts" ]; then
+    run "git clone https://github.com/powerline/fonts.git powerline-fonts"
+  fi
+  run "cd powerline-fonts && ./install.sh # show-stdout"
+  run "cd .."
+}

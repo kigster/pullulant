@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function sproutwrap {
+function install_sproutwrap() {
   export sprout_wrap_home="$(pwd)/../sprout-wrap"
   if [ ! -z "${opts_skip_sprout_wrap}" ]; then
     run "echo 'Skipping sprout-wrap'"

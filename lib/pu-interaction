@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# © 2016 Konstantin Gredeskoul
+# Project Pullulant™
+# https://github.com/kigster/pullulant/
+#
+# Distributed under MIT License
+#_______________________________________________________________________________
+
+#
+#———————————————————————————————————————————————————————————————————————————————
+# array=("something to search for" "a string" "test2000")
+# array-contains-element "a string" "${array[@]}"
+# ( prints "true" or "false" )
+function array-contains-element () {
+  local e
+  local r=false
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && r=true; done
+  echo -n $r
+}
+
+#
+# usage: pu-ask-user prompt timeout default_answer list_of_answers"
+#    eg: pu-ask-user 'Continue [Y/n]?' 10 'Y' 'y n'"
+#
+# read the answer from the variable $pu_ask_user_answer
+function pu-ask-user() {
+  local prompt=$1;          shift
+  local timeout=${1-30};    shift
+  local default_answer=$1;  shift
+
+  declare -a answers_allowed=($@)
+  unset pu_ask_user_answer
+
+  if [[ -z "$prompt" || -z "$timeout" || -z "$default_answer" || ${#answers_allowed[@]} -eq 0 ]]; then
+    return 127
+  fi
+
+  if [ -t 0 ]; then stty -echo -icanon -icrnl time 0 min 0; fi
+
+  printf "$prompt ❯ "
+
+  keypress=''
+  seconds_left=$(( $timeout * 10 ))
+  while [[ $seconds_left -gt 0 ]]; do
+    keypress="`cat -v`"
+    sleep "0.1"
+    keypress="`cat -v`"
+    if [ "x$keypress" != "x" ]; then
+      if [ $(array-contains-element "$keypress" "${answers_allowed[@]}") == "true" ]; then
+        break
+      fi
+    fi
+    seconds_left=$(($seconds_left - 1))
+  done
+
+  if [ -t 0 ]; then stty sane; fi
+
+  [[ $seconds_left -eq 0 || -z "${keypress}" ]] && keypress=$default_answer
+  export pu_ask_user_answer=$keypress
+  printf $keypress
+}

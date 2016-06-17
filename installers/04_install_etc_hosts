@@ -10,6 +10,15 @@
 # MIT License
 #_______________________________________________________________________________
 #
+
+function install_etc_hosts() {
+  for hostname in $local_hosts; do
+    add_hostname $hostname
+  done
+  export last_command_status=0
+  return $last_command_status
+}
+
 function add_hostname {
   sudo-enable
   hostname="$1"
@@ -19,12 +28,4 @@ function add_hostname {
   else
     run "echo already have $hostname in /etc/hosts"
   fi
-}
-
-function etc_hosts {
-  for hostname in $local_hosts; do
-    add_hostname $hostname
-  done
-  export last_command_status=0
-  return $last_command_status
 }

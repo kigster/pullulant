@@ -294,25 +294,25 @@ function main {
 #
 export args=$*
 
-pu-trap-signals() {
-  func="$1" ; shift
-  for sig ; do
-    current_trap=$(trap | grep -i "sig$sig" | awk '{print $3}')
-    if [[ -z "${current_trap}" ]]; then
-      trap "$func $sig" "$sig"
-    else
-      declare -a command=($(trap | grep -i "sig$sig"| tr '\n' ' '))
-      printf "Signal ${txtred}$sig${txtrst} appears to be already trapped by: [${command[*]}]\n"
-    fi
-  done
-}
 
 function pu-interrupt() {
-  printf "\n\n${txtrst}   ➜    Interrupting, since you pressed ${bakred}  Ctrl-C  ${txtrst}... Oh well :) \n"
-  runner_status=130
-  last_command_status=130
-  gracefull_exit_with_summary
+  printf "\n\n"
+  printf "${txtrst}   ➜    Interrupting, since you pressed ${bakred}  Ctrl-C  ${txtrst}\n\n"
+  pu-ask-user "${txtrst}   ➜    Should I skip this runner and continue,\n   ➜         or abort completely ([S]kip/[A]bort)?${bldwht}" 10 'A' 'A a S s'
+  local answer=$pu_ask_user_answer
+  if echo "$answer" | grep -iq "^s" ; then
+    printf "${bldgrn}   ➜    OK, let's continue....${txtrst}\n\n"
+    pu-trap-reset INT
+    pu-trap-signals pu-interrupt INT
+    abort_current_runner_and_continue
+  else
+    printf "${bldgrn}   ➜    Aborting.${txtrst}\n\n"
+    runner_status=130
+    last_command_status=130
+    gracefull_exit_with_summary
+  fi
 }
+
 
 function continue_next_runner() {
   run_runners "${runners_list[@]}"
@@ -325,7 +325,6 @@ function abort_current_runner_and_continue() {
 
 pu-trap-signals pu-interrupt INT
 [[ "${opts_continue_on_runner_error}" == "yes" ]] && pu-trap-signals abort_current_runner_and_continue USR1
-
 
 printf ${txtrst}
 

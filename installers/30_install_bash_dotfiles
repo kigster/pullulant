@@ -11,7 +11,7 @@
 # File: pu-completion
 #_______________________________________________________________________________
 #
-function install_bash {
+function install_bash_dotfiles() {
   run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
   ln -nfs ~/.bashrc ~/.bash_login
   local rc="${HOME}/.bash_pullulant"
