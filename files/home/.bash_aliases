@@ -33,9 +33,6 @@ alias l='ls -alF'
 alias ds='du -k  | grep -v "\/.*\/"'
 alias diskspace="du -k | grep -v './.*\/'"
 alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"
-alias be="bundle exec"
-alias ber="bundle exec rake"
-
 alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
 alias ppjson="jq '.'"
 alias b64paste='pbpaste | base64 --decode'
@@ -47,6 +44,10 @@ alias j='bundle exec jekyll serve --watch -D --baseurl ""'
 alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
 
 alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\", \$1/1024/1024, \$2 }"'
+
+alias be="bundle exec"
+alias rake="rbenv exec bundle exec rake"
+alias cap="rbenv exec bundle exec cap"
 
 function gr() {
   egrep --color $* 2>/dev/null
