@@ -93,7 +93,7 @@ else
 fi
 
 # load user's custom zsh file
-scripts=(.bash_colors .bash_docker .bash_services .bash_aliases .bash_${USER} .zsh_${USER} )
+scripts=(.bash_pu_colors .bash_docker .bash_services .bash_aliases .bash_${USER} .zsh_${USER} )
 
 for script in ${scripts[@]}; do
   if [ -s "${HOME}/${script}" ]; then

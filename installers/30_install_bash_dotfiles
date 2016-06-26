@@ -12,8 +12,9 @@
 #_______________________________________________________________________________
 #
 function install_bash_dotfiles() {
+  [[ -f ~/.bashrc ]] || touch ~/.bashrc
   run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
-  ln -nfs ~/.bashrc ~/.bash_login
+  [[ -f ~/.bashrc ]] || ln -nfs ~/.bashrc ~/.bash_login
   local rc="${HOME}/.bash_pullulant"
   touch $rc
   [[ -z "$(grep PU_HOME $rc)" ]]         && run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}' >> $rc # show-stdout"
@@ -25,6 +26,13 @@ function install_bash_dotfiles() {
     path = ${HOME}/.gitconfig-pullulant
 "   >> ${HOME}/.gitconfig
   }
+  [[ -z "$(grep bash_pullulant ${HOME}/.bashrc 2>/dev/null )" ]] && {
+    echo "
+    # automatically appended by pullulant's installer
+    source ~/.bash_pullulant
+"   >> ${HOME}/.bashrc
+  }
+
 }
 
 # shortcut

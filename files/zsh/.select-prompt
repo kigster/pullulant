@@ -17,7 +17,7 @@
 # MIT License
 #_______________________________________________________________________________
 
-[[ -s ${HOME}/.bash_colors ]] && source ${HOME}/.bash_colors
+[[ -s ${HOME}/.bash_pu_colors ]] && source ${HOME}/.bash_pu_colors
 theme-to-path() {
   [[ -n "${1}" ]] && echo -n "${HOME}/.oh-my-zsh/themes/${1}.zsh-theme"
 }
