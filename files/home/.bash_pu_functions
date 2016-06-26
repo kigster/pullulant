@@ -4,7 +4,7 @@ function jpg2bmp {
   if [ ! -z "$1" ]; then
     dir="$1/"
   fi
-  for file in `ls -1 *.JPG *.jpg`; do 
+  for file in `ls -1 *.JPG *.jpg`; do
     echo converting $file...
     name=$(openssl rand -hex 4 | tr 'a-z' 'A-Z')
     convert $file ${dir}${name}.BMP
@@ -12,7 +12,7 @@ function jpg2bmp {
 }
 
 function hashbmp {
-  for file in `ls -1 *.bmp *.BMP`; do 
+  for file in `ls -1 *.bmp *.BMP`; do
     echo converting $file...
     name="$( md5 -q $file | cut -c 1-8).bmp"
     mv $file $name
@@ -34,7 +34,7 @@ function console {
 function mkd() {
   [[ -n "${mkd_editors}" ]] || declare -a mkd_editors=("byword" "mate" "atom" "vim")
   for editor in "${mkd_editors[@]}"; do
-    if [[ -n "$(which $editor)" ]]; then 
+    if [[ -n "$(type $editor | grep function)" || -n "$(which $editor)" ]]; then
       $editor $*
       break
     fi
@@ -46,6 +46,6 @@ function byword() {
   if [[ -d ${byword_app} ]]; then
     open $byword_app $*
   else
-    vi $*
+    [[ "$(which mate)" && $(mate "$*") ]] || vim "$*"
   fi
 }
