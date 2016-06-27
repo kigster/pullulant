@@ -35,6 +35,7 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZe:b:dhilkmnops:qtvyx" opt; do
   case $opt in
     b)
       export install_ruby_versions=($OPTARG)
+      source 'features/ruby/packages'
       ;;
     k)
       export opts_nokogiri_donot_use_system_libraries=yes

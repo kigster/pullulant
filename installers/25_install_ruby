@@ -29,6 +29,7 @@ function install_ruby {
       run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
       run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
       run "eval $(rbenv init -) && rbenv rehash"
+      run "hash -r"
       [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler --no-ri --no-rdoc"
       export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     fi
