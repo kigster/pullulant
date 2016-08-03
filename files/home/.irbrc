@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'rubygems'
 require 'irb/completion'
 
@@ -9,21 +11,12 @@ if ( ENV['RAILS_ENV'] || defined? Rails ) && File.exist?( railsrc_path )
   end
 end
 
-TRIES = 2
 begin
-  tries ||= TRIES
-  require 'colored2'
-  printf "That worked! ".bold.green + "See?".bold.yellow + "\n" if tries != TRIES
-rescue Exception
+  require 'colored2' 
+rescue LoadError
+end
 
-  if tries == TRIES
-    printf "Installing gem 'colored2' to provide you with pretty colors, 1 sec...\n"
-    %x(gem install colored2)
-    Gem.clear_paths
-    tries -= 1
-    retry
-  end
-
+unless defined?(Colored2)
   class String
     def noop
       self
@@ -33,6 +26,40 @@ rescue Exception
     end
   end
 end
+
+class GemLoader
+  TRIES = 2
+
+  attr_accessor :gem_name
+  def initialize(gem_name)
+    self.gem_name = gem_name
+  end
+  def load &block
+    begin
+      tries ||= TRIES
+      printf 'Loading '.bold.blue 
+      printf '%12.12s...'.bold.yellow, gem_name
+      require gem_name
+      printf "OK\n".bold.green
+    rescue Exception
+      if tries == TRIES
+        printf "MISSING\n".bold.red
+        printf 'Installing '.bold
+        printf '%9.9s...'.bold.yellow, gem_name
+        %x(gem install #{gem_name})
+        printf "HIFIVE!\n".bold.green
+        Gem.clear_paths
+        tries -= 1
+        retry        
+      end
+    end
+  end
+end
+
+%w(colored2 irbtools).each { |gem_name| GemLoader.new(gem_name).load } 
+
+puts '—' * (ENV['COLUMNS'] || 80)
+
 
 class Object
   def interesting_methods
@@ -72,9 +99,9 @@ IRB.conf[:DEBUG_LEVEL]      = 0
 
 
 IRB.conf[:PROMPT][:PULLULANT] = {
-  :PROMPT_I => "%N" + "(%m):%03n:%i> ".black.bold,
-  :PROMPT_S => "%N" + "(%m):%03n:%i%l ".dark,
-  :PROMPT_C => "%N" + "(%m):%03n:%i* ".dark,
+  :PROMPT_I => "%N" + "(%m):%03n:%i> ".blue.bold,
+  :PROMPT_S => "%N" + "(%m):%03n:%i%l ".blue.dark,
+  :PROMPT_C => "%N" + "(%m):%03n:%i* ".blue.dark,
   :RETURN => " ⤷ %s\n" # used to printf
 }
 
