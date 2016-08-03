@@ -21,7 +21,6 @@
 [[ -n "${brew_packages_to_link_after_install}" ]] || brew_packages_to_link_after_install=""
 
 [[ -n "${brew_casks}" ]] || brew_casks="
-  dash
 "
 
 [[ -n "${brew_relink_packages}" ]] || brew_relink_packages="

@@ -8,8 +8,8 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-bash_it_plugins+="aws docker"
-bash_it_aliases+="aws docker heroku"
+bash_it_plugins+="aws"
+bash_it_aliases+="aws heroku"
 bash_it_completions+="aws"
 # List of Brew Formulas to install and link
 brew_packages+="
@@ -22,7 +22,7 @@ brew_packages+="
   awscli
   awsebcli
 "
-brew_casks+="kitematic dockertoolbox"
+brew_casks+="kitematic"
 nodejs_modules+="
   node-aws
   node-aws-beanstalk
