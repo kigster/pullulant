@@ -17,6 +17,13 @@
 :set autoread
 :set background=dark
 
+set smartindent
+set autoindent
+map <C-S-L> * mzgg=G`z
+if has ("autocmd")
+   filetype indent on
+endif
+
 set t_Co=256
 colorscheme evolution
 
