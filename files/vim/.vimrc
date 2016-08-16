@@ -19,9 +19,10 @@
 
 set smartindent
 set autoindent
-map <C-S-L> * mzgg=G`z
+map <C-S-L> * exe mzgg=G`z
+map ,l * exe mzgg=G`z
 if has ("autocmd")
-   filetype indent on
+  filetype indent on
 endif
 
 set t_Co=256
