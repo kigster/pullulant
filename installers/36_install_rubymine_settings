@@ -13,5 +13,15 @@
 
 function install_rubymine_settings() {
   run "sudo chown -R ${USER} /Applications/RubyMine*"
-  run "rsync ${opts_verbose} ${opts_rsync_backup} -rltgoDv --no-perms files/applications/** /Applications # show-stdout"
+
+  update_application "/Applications/RubyMine.app"
+  update_application "/Applications/RubyMine EAP.app"
 }
+
+function update_application() {
+  app=$*
+
+  if [[ -d "$*" ]]; then 
+    run "rsync ${opts_verbose} ${opts_rsync_backup} -rltgoDv --no-perms './files${app}/' '${app}/' # show-stdout"
+  fi
+ }
