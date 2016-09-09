@@ -49,3 +49,6 @@ function byword() {
     [[ "$(which mate)" && $(mate "$*") ]] || vim "$*"
   fi
 }
+
+
+

@@ -86,7 +86,8 @@
 # This is the ruby/python version that will be installed using rbenv
 # the first one in the list will be set as the default. At least one
 # is required to keep going with SproutWrap.
-[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.3.0")
+[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.3.1")
+[[ -n "${rbenv_ruby_default}" ]]    || rbenv_ruby_default="2.3.1"
 [[ -n "${pyenv_python_versions}" ]] || pyenv_python_versions=()
 
 # These define optional modules for node, python and ruby. Note that

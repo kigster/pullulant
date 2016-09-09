@@ -14,9 +14,21 @@ bash_it_completions+=" rake capistrano bundler gem "
 brew_packages+=" rbenv ruby-build "
 brew_casks+=" rubymine webstorm "
 rbenv_ruby_versions+=("2.3.1" "2.2.5")
+rbenv_ruby_default="2.3.1"
 
 [[ -n "${install_ruby_versions}" ]] && {
   unset rbenv_ruby_versions
   pu-print-section-header "${bakred}" "${bldylw}${bakred}Warning: ${bldwht}${bakred}Overriding ruby version with ${bldgrn}${install_ruby_versions}"
   rbenv_ruby_versions=("${install_ruby_versions}")
 }
+
+ruby_modules="${ruby_modules}
+  require_dir
+  gem-browse
+  pry
+  irbtools
+  colored2
+  activesupport
+  rspec
+  yard
+"

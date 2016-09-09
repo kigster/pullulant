@@ -12,30 +12,42 @@
 
 function install_ruby_modules {
   [[ -n "${ruby_modules}" ]] && {
+    declare -a pre_installed=($(current_gems))
     for gem in ${ruby_modules}; do
-      run "gem install --no-ri --no-rdoc $gem"
+      if [[ $(array-contains-element $gem "${pre_installed[@]}") != "true" ]]; then
+        run "gem install --no-ri --no-rdoc $gem"
+      else
+        run "printf \"%-20s${txtrst} %s\" ${gem} \"is already installed\""
+        run echo
+      fi
     done
   }
+}
+
+function current_gems(){
+  gem list | cut -d' ' -f1
 }
 
 export rubyinstall_ran=
 function install_ruby {
   [[ -n "${rubyinstall_ran}" ]] && return
   run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
-  local default_ruby=${rbenv_ruby_versions[0]}
+  local default_ruby=${rbenv_ruby_default:-${rbenv_ruby_versions[-1]}}
   for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
     last_command_status=$(rbenv versions | grep ${rbenv_ruby_version})
     if [ $? -ne 0 ]; then
       run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
-      run "rbenv install ${opts_verbose} ${rbenv_ruby_version}"
+      run "rbenv install -s ${opts_verbose} ${rbenv_ruby_version}"
       run "eval $(rbenv init -) && rbenv rehash"
       run "hash -r"
       [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler --no-ri --no-rdoc"
       export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     fi
+    run "rbenv global ${rbenv_ruby_version}"
     install_ruby_modules
   done
 
   run "rbenv global ${default_ruby}"
+
   export rubyinstall_ran=yes
 }
