@@ -54,21 +54,15 @@
 [[ -n "${brew_packages_to_link_after_install}" ]] || brew_packages_to_link_after_install=""
 
 [[ -n "${brew_casks}" ]] || brew_casks="
-  alfred
   atom
-  1password
   github-desktop
   gitx
-  google-drive
-  google-hangouts
   istat-menus
   iterm2
   shiftit
-  slack
   teamviewer
   textmate
   dash
-  flux
 "
 
 [[ -n "${brew_relink_packages}" ]] || brew_relink_packages="
