@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function install_iterm_themes {
+function iterm-colorschemes {
   last_command_status=0
   local install_home="$pu_cfg/iterm2"
   local zipfile="$install_home/iterm2-themes.zip"
