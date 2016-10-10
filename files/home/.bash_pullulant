@@ -23,7 +23,7 @@ export PATH=$PATH:/usr/local/opt/go/libexec/bin:$GOPATH/bin
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export PGUSER=postgres
 export EDITOR=vim
-export DEBUG=false
+export DEBUG=
 function load_locals() {
   # load user's custom zsh file
   local scripts=(.bash_pu_colors .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
