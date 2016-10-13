@@ -16,8 +16,7 @@ function postgres-start {
     return
   }
 
-  run "ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents"
-  run "launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+  run "brew services start postgresql"
   last_command_status=0
   return $last_command_status
 }
