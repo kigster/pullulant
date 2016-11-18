@@ -12,6 +12,9 @@
 
 umask 027
 
+alias bss='brew services start'
+alias bst='brew services stop'
+alias bsr='brew services restart'
 alias 'gst'='git status'
 alias 'gpr'='git pull --rebase'
 alias 'gprs'='git stash && git pull --rebase && git stash pop'
