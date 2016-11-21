@@ -15,16 +15,14 @@ function iterm-colorschemes {
   last_command_status=0
   local install_home="$pu_cfg/iterm2"
   local zipfile="$install_home/iterm2-themes.zip"
+
   if [[ ! -d "$install_home" ]]; then
     run "mkdir -p ${pu_cfg}"
     run "mkdir -p ${install_home}"
-    run "cd $install_home && curl -LO https://github.com/mbadolato/iTerm2-Color-Schemes/zipball/master"
-    if [[ "$(ls -al $install_home/master | awk '{print $5}')" == "$(ls -al $zipfile | awk '{print $5}')" ]]; then
-      rm -f "${install_home}/master"
-    else
-      run "cd $install_home && mv master $zipfile && unzip $zipfile"
-    fi
   fi
+
+  run "cd $install_home && curl -LO https://github.com/mbadolato/iTerm2-Color-Schemes/zipball/master"
+  run "cd $install_home && mv master $zipfile && unzip $zipfile"
 
   if [[ $opts_install_only_selected_themes == "yes" ]]; then
     for theme in $iterm_themes; do
@@ -35,8 +33,9 @@ function iterm-colorschemes {
   fi
 
   # if there is no bash process associated with an iTerm, we can nuke iTerm.
-  is_iterm=$(for pid in $(ps -ef | grep bash | awk '{print $3}' | sort | uniq ); do ps -p $pid; done | grep iTerm)
-  [[ -z "${is_iterm}" ]] && kill -9 $(ps -ef | grep [i]Term | awk '{print $2}')
+  (sleep 5 && open /Applications/iTerm.app) &
+  sudo kill -9 $(ps -ef | grep [i]Term | awk '{print $2}')
+
   return 0
 }
 

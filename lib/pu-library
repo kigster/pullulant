@@ -10,6 +10,15 @@
 # MIT License
 #_______________________________________________________________________________
 # encoding: UTF-8
+function remote_fsize() {
+  local url=$1
+  printf $(($(curl -sI $url | grep -i 'Content-Length' | awk '{print $2}') + 0))
+}
+
+function fsize() {
+  local file=$1
+  printf $(($(wc -c < $file) + 0))
+}
 
 function check_exit {
   local cmd=$1
