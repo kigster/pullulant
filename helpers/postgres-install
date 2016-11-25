@@ -13,7 +13,7 @@
 function postgres-master-pid {
   # took me forever to track down that the name of the function was in arguments,
   # so ps -ef | grep postgres was matching this process even with the [p] trick!
-  pidlist=$(bash -c "ps -ef | egrep '[p]ostgres' | grep -v $0")
+  pidlist=$(bash -c "ps -ef | egrep '[p]ostgres ' | grep -v $0")
   pid=$(echo $pidlist | cut -d ' ' -f 5 | uniq)
   echo -n $pid
 }
