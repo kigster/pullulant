@@ -13,7 +13,7 @@
 
 function install_atom() {
   last_command_status=0
-  if [[ -d "${HOME}/.atom" ]]; then
+  if [[ -d "${HOME}/.atom" && -z "${opts_force}" ]]; then
     [[ -n "$apm" ]] && run "$apm update"
   else
     run "rsync -a -u ${rsync_atom_dir}/ ${HOME}/.atom"

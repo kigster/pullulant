@@ -18,13 +18,10 @@
   core:
     excludeVcsIgnoredPaths: false
     openEmptyEditorOnStart: false
-    themes: [
-      "atom-dark-ui"
-      "an-old-hope-syntax"
-    ]
+    telemetryConsent: "limited"
   editor:
     autoIndentOnPaste: false
-    fontSize: 7
+    fontSize: 16
     invisibles: {}
     showIndentGuide: true
     showInvisibles: true
@@ -43,67 +40,19 @@
   "terminal-plus":
     ansiColors:
       normal:
-        blue:
-          alpha: 1
-          blue: 205
-          green: 116
-          red: 0
-        cyan:
-          alpha: 1
-          blue: 207
-          green: 164
-          red: 0
-        green:
-          alpha: 1
-          blue: 81
-          green: 198
-          red: 138
-        magenta:
-          alpha: 1
-          blue: 205
-          green: 109
-          red: 147
-        red:
-          alpha: 1
-          blue: 112
-          green: 128
-          red: 204
-        yellow:
-          alpha: 1
-          blue: 70
-          green: 224
-          red: 255
+        blue: "#0074cd"
+        cyan: "#00a4cf"
+        green: "#8ac651"
+        magenta: "#936dcd"
+        red: "#cc8070"
+        yellow: "#ffe046"
       zBright:
-        brightBlue:
-          alpha: 1
-          blue: 255
-          green: 155
-          red: 0
-        brightCyan:
-          alpha: 1
-          blue: 255
-          green: 227
-          red: 0
-        brightGreen:
-          alpha: 1
-          blue: 106
-          green: 250
-          red: 149
-        brightMagenta:
-          alpha: 1
-          blue: 255
-          green: 161
-          red: 252
-        brightRed:
-          alpha: 1
-          blue: 0
-          green: 77
-          red: 255
-        brightYellow:
-          alpha: 1
-          blue: 0
-          green: 226
-          red: 255
+        brightBlue: "#009bff"
+        brightCyan: "#00e3ff"
+        brightGreen: "#95fa6a"
+        brightMagenta: "#fca1ff"
+        brightRed: "#ff4d00"
+        brightYellow: "#ffe200"
     core:
       mapTerminalsTo: "Folder"
     style:

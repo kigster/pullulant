@@ -15,6 +15,9 @@ umask 027
 alias bss='brew services start'
 alias bst='brew services stop'
 alias bsr='brew services restart'
+alias 'gpnew'='git push -u origin master'
+alias 'gcb'='git branch --no-color | grep -F "*" | cut -f 2 -d " "'  # git current branch
+alias 'gcmr'='git reset; git add README.md; git commit -m "Updated README"; git push '
 alias 'gst'='git status'
 alias 'gpr'='git pull --rebase'
 alias 'gprs'='git stash && git pull --rebase && git stash pop'
@@ -28,6 +31,13 @@ alias 'ga'='git add'
 alias 'gaa'='git add -A'
 alias 'gap'='git add -p'
 alias 'gpp'='git pull --rebase && git push'
+
+function gbsu() {
+  local this_branch=$(gcb)
+  this_branch=${this_branch:-master}
+  git branch --set-upstream-to=origin/${this_branch} ${this_branch}
+}
+
 alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
 alias dc='cd'
 alias dir='ls -lF'
@@ -61,7 +71,7 @@ function gcln() {
   who=${2:-$USER}
   [[ "$who" == "kig" ]] && who="kigster"
   [[ -z "$repo" ]] && {
-    printf "${bldred}Usage: gcl repo [github-username]${txtrst}\n" 
+    printf "${bldred}Usage: gcl repo [github-username]${txtrst}\n"
     return
   }
   git clone git@github.com:$who/$repo
