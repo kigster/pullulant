@@ -9,7 +9,11 @@
 #_______________________________________________________________________________
 
 function alfred-install() {
-  [[ -z "$(brew cask list -1 | grep alfred)" ]] && run "brew cask install alfred"
+  [[ -d /Applications/Alfred\ 3.app ]] || { 
+    [[ -z "$(brew cask list -1 | grep alfred)" ]] && {
+      run "brew cask install alfred"
+    }
+  }
   run "mkdir -p $alfred_dir"
   run "pushd $alfred_dir"
   for plugin in $alfred_plugins; do
