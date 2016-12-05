@@ -15,5 +15,6 @@ function install_monofonts() {
     run "git clone https://github.com/powerline/fonts.git powerline-fonts"
   fi
   run "cd powerline-fonts && ./install.sh # show-stdout"
+  run "cd files/mono-fonts && ./install.sh # show-stdout"
   run "cd .."
 }
