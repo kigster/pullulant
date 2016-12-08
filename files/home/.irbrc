@@ -1,7 +1,15 @@
 # encoding: utf-8
 
+@irbtools = %w(yes true 1 enable enabled).include?(ENV['IRBTOOLS'])
+
 require 'rubygems'
-require 'irb/completion'
+
+GEMS_TO_LOAD = %w(colored2)
+
+if @irbtools
+  require 'irb/completion' 
+  GEMS_TO_LOAD << 'irbtools'
+end
 
 railsrc_path = File.expand_path('~/.irbrc_rails')
 if ( ENV['RAILS_ENV'] || defined? Rails ) && File.exist?( railsrc_path )
@@ -56,10 +64,9 @@ class GemLoader
   end
 end
 
-%w(colored2 irbtools).each { |gem_name| GemLoader.new(gem_name).load } 
+GEMS_TO_LOAD.each { |gem_name| GemLoader.new(gem_name).load } 
 
 puts '—' * (ENV['COLUMNS'] || 80)
-
 
 class Object
   def interesting_methods

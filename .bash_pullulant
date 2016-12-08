@@ -25,14 +25,14 @@ export PGUSER=postgres
 export EDITOR=vim
 export BASH_DEBUG=true
 
-declare -a LOCAL_SCRIPTS=(.bash_pullulant_setup .bash_pu_colors .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
-
 function load_locals() {
-  # load user's custom zsh file
-  [[ -n $BASH_DEBUG ]] && printf $bldwht
+  source "${HOME}/.bash_pu_colors"
+  declare -a scripts=(.bash_pullulant_setup .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
+  [[ -n $BASH_DEBUG ]] && printf "$bldwht"
   for script in ${scripts[@]}; do
     if [ -s "${HOME}/${script}" ]; then
-      [[ -n $BASH_DEBUG ]] && printf "${bakblu}Loading in ${bakgrn}%-20s${txtrst}\n" $script
+      [[ -n $BASH_DEBUG ]] && printf "${txtwht}Sourcing in ${bldblu}%-20s${txtrst}\n" $script
+
       source "${HOME}/${script}"
     else
       [[ -n $BASH_DEBUG ]] && printf "${txtrst}${bldred}${script}${txtrst} was not found${txtrst}\n"
