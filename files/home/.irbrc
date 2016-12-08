@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 @irbtools = %w(yes true 1 enable enabled).include?(ENV['IRBTOOLS'])
+@irbtools = !%w(no false 0 disable disabled).include?(ENV['IRBTOOLS'])
 
 require 'rubygems'
 
@@ -10,7 +11,7 @@ if @irbtools
   require 'irb/completion' 
   GEMS_TO_LOAD << 'irbtools'
 end
-
+puts "Loading gems #{GEMS_TO_LOAD}... "
 railsrc_path = File.expand_path('~/.irbrc_rails')
 if ( ENV['RAILS_ENV'] || defined? Rails ) && File.exist?( railsrc_path )
   begin
