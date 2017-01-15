@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+function gprtree { 
+  local level=${1:-1}
+  local cdir="$(pwd)"
+
+  for folder in $(projects); do
+    local dir="$folder"
+    printf "${bldblu}$dir..\n${txtrst}"
+    cd "$dir"; res=$?
+    if [[ $res == 0 ]]; then 
+      if [[ -d './.git' ]]; then 
+        #echo git stash 2>&1 #| cat > /dev/null
+        #echo git pull --rebase #2>/dev/null
+        printf "${txtylw}${txtrst}\n"
+      else
+        gprtree $((${level} + 1))
+      fi
+      cd $cdir >/dev/null
+    fi
+  done
+}
+
+function projects {
+  OIFS="$IFS"
+  IFS=$'\n'
+  declare -a project_dirs=($(find . \( -type d \! -name '.*' \! -path '*/.*' -d 1 \) -print))
+  IFS=$OIFS
+  echo -n ${project_dirs[@]}
+}

@@ -1,33 +1,4 @@
 #!/usr/bin/env bash
-function gprtree { 
-  OIFS="$IFS"
-  IFS=$'\n'
-  local level=${1:-1}
-  echo "entering level ${level}"
-  local cdir="$(pwd)"
-
-  for folder in $(find . \( -type d \! -name '.*' \! -path '*/.*' -d 1 \) -print); do 
-    local dir="$folder"
-
-    for i in {1..${level}}; do 
-      printf "——"
-    done
-
-    printf " ➡︎  processing ${bldblu}$dir..\n${txtrst}"
-    cd "$dir"; res=$?
-    if [[ $res == 0 ]]; then 
-      if [[ -d './.git' ]]; then 
-        echo git stash 2>&1 #| cat > /dev/null
-        echo git pull --rebase #2>/dev/null
-      else
-        gprtree $((${level} + 1))
-      fi
-      cd $cdir >/dev/null
-    fi
-  done
-  IFS=$OIFS
-}
-
 function jpg2bmp {
   dir=
   if [ ! -z "$1" ]; then

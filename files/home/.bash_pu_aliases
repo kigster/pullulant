@@ -62,7 +62,7 @@ alias be="bundle exec"
 alias rake="rbenv exec bundle exec rake"
 alias cap="rbenv exec bundle exec cap"
 
-function gr() {
+function grr() {
   egrep --color $* 2>/dev/null
 }
 
