@@ -23,21 +23,20 @@ export PATH=$PATH:/usr/local/opt/go/libexec/bin:$GOPATH/bin
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export PGUSER=postgres
 export EDITOR=vim
-export BASH_DEBUG=true
 
-declare -a LOCAL_SCRIPTS=(.bash_pullulant_setup .bash_pu_colors .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
+declare -a scripts=(.bash_pu_colors .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
 
 function load_locals() {
-  # load user's custom zsh file
-  [[ -n $BASH_DEBUG ]] && printf $bldwht
+  printf "${bakblu}Loading in: "
   for script in ${scripts[@]}; do
+    printf "${bldgrn}${script}${txtrst} "
     if [ -s "${HOME}/${script}" ]; then
-      [[ -n $BASH_DEBUG ]] && printf "${bakblu}Loading in ${bakgrn}%-20s${txtrst}\n" $script
       source "${HOME}/${script}"
     else
-      [[ -n $BASH_DEBUG ]] && printf "${txtrst}${bldred}${script}${txtrst} was not found${txtrst}\n"
+      printf "\n${txtrst}${bldred}${script}${txtrst} was not found, ignoring.${txtrst}\n"
     fi
   done
+  printf "\n"
 }
 
 load_locals
