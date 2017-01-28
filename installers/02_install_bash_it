@@ -25,15 +25,25 @@ function install_bash_it() {
   [[ -n "${bash_it_plugins}"     ]] && bash_it_component "enable" "plugin"      $bash_it_plugins
   [[ -n "${bash_it_completions}" ]] && bash_it_component "enable" "completion"  $bash_it_completions
 
-  [[ -z "$(egrep powerline-multiline $HOME/.bash_profile)" ]] && run "sed -i.bak -e 's/^export BASH_IT_THEME=.*$/export BASH_IT_THEME=\"powerline-multiline\"/g' $HOME/.bash_profile"
+  install_bash_it_prompt
+  update_bashrc
+  use_newer_bash
+}
+
+function update_bashrc() {
   [[ -z "$(grep bashrc ~/.bash_profile)" ]] && {
     run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
     run "echo 'source ~/.bashrc' >> ~/.bash_profile"
   }
-
   [[ -n "$(egrep '%PU_HOME%' $HOME/.bashrc)" ]] && run "sed -i.bak -e 's:%PU_HOME%:${pu_home}:g' $HOME/.bashrc"
+}
 
-  use_newer_bash
+function install_bash_it_prompt() {
+  [[ -z "$(egrep 'export BASH_IT_THEME="?powerline' $HOME/.bash_profile)" && \
+     -z "$(egrep 'bash_it_prompt_theme' $HOME/.bash_profile)" ]] && \
+
+     sed -i.bak -E \
+     's/^export BASH_IT_THEME="?.*$/[[ -s \$HOME\/.bash_it_prompt_theme ]] \&\& export BASH_IT_THEME=\$(cat \$HOME\/.bash_it_prompt_theme)\nexport BASH_IT_THEME=\${BASH_IT_THEME:-\"powerline-multiline\"}/g' $HOME/.bash_profile
 }
 
 function use_newer_bash() {

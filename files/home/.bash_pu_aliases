@@ -15,6 +15,9 @@ umask 027
 alias bss='brew services start'
 alias bst='brew services stop'
 alias bsr='brew services restart'
+
+alias winhup='sudo killall -HUP WindowServer'
+
 alias 'gpnew'='git push -u origin master'
 alias 'gcb'='git branch --no-color | grep -F "*" | cut -f 2 -d " "'  # git current branch
 alias 'gcmr'='git reset; git add README.md; git commit -m "Updated README"; git push '
