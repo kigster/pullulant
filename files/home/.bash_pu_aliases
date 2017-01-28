@@ -32,6 +32,28 @@ alias 'gaa'='git add -A'
 alias 'gap'='git add -p'
 alias 'gpp'='git pull --rebase && git push'
 
+
+declare -a RUBY_DEFAULT_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print)
+
+function ruby::init() {
+  gem::install ${RUBY_DEFAULT_GEMS[@]}
+  wd install --dotfile ~/.bash_${USER} > /dev/null
+}
+
+function gem::install() { 
+  local gems=($@)
+  printf "${bldblk}installing "
+  for gem in ${gems[@]}; do 
+    if [[ -z "$(gem which $gem 2>/dev/null)" ]]; then
+      printf "${txtylw}${gem}${txtrst} "
+      gem install -q --force --no-document $gem 1>&2 2>/dev/null
+      [[ $? -eq 0 ]] && printf "✅ , "
+    else
+      printf "${txtgrn}${gem}${txtrst}, "
+    fi
+  done
+}
+
 function gbsu() {
   local this_branch=$(gcb)
   this_branch=${this_branch:-master}
