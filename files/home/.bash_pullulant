@@ -29,16 +29,11 @@ export RI='-f ansi'
 declare -a scripts=(.bash_pu_colors .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
 
 function load_locals() {
-  printf "${bakblu}Loading in: "
   for script in ${scripts[@]}; do
-    printf "${bldgrn}${script}${txtrst} "
     if [ -s "${HOME}/${script}" ]; then
       source "${HOME}/${script}"
-    else
-      printf "\n${txtrst}${bldred}${script}${txtrst} was not found, ignoring.${txtrst}\n"
     fi
   done
-  printf "\n"
 }
 
 load_locals
