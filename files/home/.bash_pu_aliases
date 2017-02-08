@@ -133,6 +133,13 @@ function rbenv_init() {
   fi
 }
 
+function grp() {
+  find . -type f -exec grep --color "$1" {} \; -print | \
+    sed -E "s/^([^\.].*)/printf \"\${bldylw}\1\${txtrst}\\\n\"/g;
+            s/^(\.\/.*)$/printf \"\${bldblu}\1\${txtrst}\\\n\"/g" | \
+  /usr/bin/env sh
+}
+
 weather() {
   zipcode=$1
   ansiweather -l $zipcode -u imperial -a1
