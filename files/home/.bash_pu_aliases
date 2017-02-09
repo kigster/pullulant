@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# (c) 2016 Konstantin Gredeskoul
-# https://github.com/kigster
-#
-# For project Pullulant
+# (c) 2016-2017 Konstantin Gredeskoul
 # https://github.com/kigster/pullulant/
 #
 # MIT License
@@ -18,51 +15,6 @@ alias bsr='brew services restart'
 
 alias winhup='sudo killall -HUP WindowServer'
 
-alias 'gpnew'='git push -u origin master'
-alias 'gcb'='git branch --no-color | grep -F "*" | cut -f 2 -d " "'  # git current branch
-alias 'gcmr'='git reset; git add README.md; git commit -m "Updated README"; git push '
-alias 'gst'='git status'
-alias 'gpr'='git pull --rebase'
-alias 'gprs'='git stash && git pull --rebase && git stash pop'
-alias 'gs'='git status'
-alias 'gc'='git co'
-alias 'gd'='git diff'
-alias 'gm'='git commit -m'
-alias 'gl'='git log'
-alias 'gpp'='git pull && git push'
-alias 'ga'='git add'
-alias 'gaa'='git add -A'
-alias 'gap'='git add -p'
-alias 'gpp'='git pull --rebase && git push'
-
-
-declare -a RUBY_DEFAULT_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print)
-
-function ruby::init() {
-  gem::install ${RUBY_DEFAULT_GEMS[@]}
-  wd install --dotfile ~/.bash_${USER} > /dev/null
-}
-
-function gem::install() { 
-  local gems=($@)
-  printf "${bldblk}installing "
-  for gem in ${gems[@]}; do 
-    if [[ -z "$(gem which $gem 2>/dev/null)" ]]; then
-      printf "${txtylw}${gem}${txtrst} "
-      gem install -q --force --no-document $gem 1>&2 2>/dev/null
-      [[ $? -eq 0 ]] && printf "✅ , "
-    else
-      printf "${txtgrn}${gem}${txtrst}, "
-    fi
-  done
-}
-
-function gbsu() {
-  local this_branch=$(gcb)
-  this_branch=${this_branch:-master}
-  git branch --set-upstream-to=origin/${this_branch} ${this_branch}
-}
-
 alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
 alias dc='cd'
 alias dir='ls -lF'
@@ -70,7 +22,6 @@ alias lr='ls -alrt'
 alias l='ls -alF'
 alias ds='du -k  | grep -v "\/.*\/"'
 alias diskspace="du -k | grep -v './.*\/'"
-alias solo="pushd ~/workspace/sprout-wrap && git pull && be soloist && popd"
 alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
 alias ppjson="jq '.'"
 alias b64paste='pbpaste | base64 --decode'
@@ -86,61 +37,3 @@ alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\",
 alias be="bundle exec"
 alias rake="rbenv exec bundle exec rake"
 alias cap="rbenv exec bundle exec cap"
-
-function grr() {
-  egrep --color $* 2>/dev/null
-}
-
-function gcln() {
-  repo=$1
-  who=${2:-$USER}
-  [[ "$who" == "kig" ]] && who="kigster"
-  [[ -z "$repo" ]] && {
-    printf "${bldred}Usage: gcl repo [github-username]${txtrst}\n"
-    return
-  }
-  git clone git@github.com:$who/$repo
-}
-
-
-bbinit() {
-  b=$1
-  have_it=$(which ${b})
-  if [ -n "${have_it}" ]; then
-    eval "$(${b} init -)"
-  fi
-}
-
-# use it like this:
-# initialize pyenv
-# py
-# shortcut to pyenv:
-# py versions
-
-function pyenv_init() {
-  if [ -n "$*" ]; then
-    pyenv $*
-  else
-    bbinit "pyenv"
-  fi
-}
-
-function rbenv_init() {
-  if [ -n "$*" ]; then
-    rbenv $*
-  else
-    bbinit "rbenv"
-  fi
-}
-
-function grp() {
-  find . -type f -exec grep --color "$1" {} \; -print | \
-    sed -E "s/^([^\.].*)/printf \"\${bldylw}\1\${txtrst}\\\n\"/g;
-            s/^(\.\/.*)$/printf \"\${bldblu}\1\${txtrst}\\\n\"/g" | \
-  /usr/bin/env sh
-}
-
-weather() {
-  zipcode=$1
-  ansiweather -l $zipcode -u imperial -a1
-}

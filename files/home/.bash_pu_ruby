@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016-2017 Konstantin Gredeskoul
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+
+alias bss='brew services start'
+alias bst='brew services stop'
+alias bsr='brew services restart'
+
+function ruby::init() {
+  ruby::gems
+  wd install --dotfile ~/.bash_${USER} > /dev/null
+  sym --bash-completion ~/.bash_${USER} > /dev/null
+  printf "${bldred}You should now reboot, dude.${txtrst}\n"
+}
+
+
+function ruby::gems() {
+  declare -a RUBY_DEFAULT_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print)
+  local gems=($@)
+  local existing=$(gem list)
+  [[ ${#gems} -eq 0 ]] && gems=(${RUBY_DEFAULT_GEMS[@]})
+  printf "${blkcya}installing gems: ${txtrst}"
+  for gem in ${gems[@]}; do
+    if [[ "${existing}" =~ "${gem}" ]]; then
+      printf "${txtgrn}${gem} ✔ ${txtrst} "
+    else
+      printf "${txtblu}${gem}${txtrst} "
+      gem install -q --force --no-document $gem 2>&1 | cat >/dev/null
+      [[ $? -eq 0 ]] && printf "✅  "
+    fi
+  done
+}
+
+alias be="bundle exec"
+alias rake="rbenv exec bundle exec rake"
+alias cap="rbenv exec bundle exec cap"
+
+function pyenv::init() {
+  if [ -n "$*" ]; then
+    pyenv $*
+  else
+    bbinit "pyenv"
+  fi
+}
+
+function rbenv::init() {
+  if [ -n "$*" ]; then
+    rbenv $*
+  else
+    bbinit "rbenv"
+  fi
+}
+

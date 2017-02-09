@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# (c) 2016 Konstantin Gredeskoul
+# (c) 2016-2017  Konstantin Gredeskoul
 # https://github.com/kigster
 #
 # For project Pullulant
@@ -26,16 +26,11 @@ export EDITOR=vim
 export PAGER='less -R'
 export RI='-f ansi'
 
-declare -a scripts=(.bash_pu_colors .bash_pu_functions .bash_pu_docker .bash_pu_services .bash_pu_aliases .bash_${USER} )
-
-function load_locals() {
-  for script in ${scripts[@]}; do
-    if [ -s "${HOME}/${script}" ]; then
-      source "${HOME}/${script}"
-    fi
+function user::locals() {
+  declare -a scripts=($(ls -1 ~/.bash_pu_*[^bak]))
+  for script in ${scripts[@]} ~/.bash_${USER}; do
+    [[ -s "${script}" ]] && source "${script}"
   done
 }
 
-load_locals
-
-
+user::locals

@@ -8,7 +8,7 @@
 #     ppp 12            # set prompt theme to #12 in the list
 #     ppp reinvent-one  # set prompt theme to "reinvent-one"
 #
-# (c) 2016 Konstantin Gredeskoul
+# (c) 2016-2017  Konstantin Gredeskoul
 # https://github.com/kigster
 #
 # For project Pullulant
