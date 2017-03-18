@@ -26,6 +26,10 @@ alias dkd="docker run -d -P"
 # Run interactive container, e.g., $dki base /bin/bash
 alias dki="docker run -i -t -P"
 
+dkli() {
+  docker run -it $(di | head -2 | grep -v REP | awk '{print $3}') /bin/bash
+}
+
 # Execute interactive container, e.g., $dex base /bin/bash
 alias dex="docker exec -i -t"
 

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+diffbash() {
+  cd files/home
+  for file in $(ls -1 .bash*); do    
+    printf "${bldblu}$file${txtrst}\n"    
+    diff $file ~/$file; 
+  done
+  cd -
+}

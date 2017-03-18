@@ -1,4 +1,61 @@
 #!/usr/bin/env bash
+pu::convert() {
+  local from_ext=$1
+  shift
+  local to_ext=$1
+  shift
+  if [[ "$*" =~ "--" ]]; then
+    printf "${bldred}Whoops!${txtrst} Did you specify arguments to convert via --option? \n"
+    printf "All arguments to convert ${bldblu}must have a single dash!.${txtrst}\n"
+    return
+  fi
+
+  if [[ -z "${from_ext}" || -z ""${to_ext}"" ]]; then
+    printf "usage: ${bldgrn}pu::img::convert from-extension to-extension [options-to-convert]${txtrst}\n"
+    printf "       Works only in the current directory, and is non-recursive, case-sensitive.\n\n"
+    printf "   eg: ${bldblu}img::convert png jpg --quality 100${txtrst}\n"
+    return
+  fi
+
+  for f in $(find . -type f -name "*.${from_ext}" -depth 1 -print); do
+    local to_file=$(printf "${f}" | sed -E "s/(.*)\.${from_ext}/\1.${to_ext}/g")
+    [[ -z ${to_file} ]] && {
+      echo "to_file is nil, can not convert from $f"
+      return
+    }
+    [[ -z ${f} ]] && {
+      echo "file is nil, can not convert"
+      return
+    }
+    if [[ -s ${to_file} ]]; then
+      printf "${bldylw}Found existing file ${to_file}, aborting.\n"
+      return
+    fi
+    convert $* $f $to_file
+    result=$?
+    if [[ $result != 0 ]]; then
+      printf "${bldred}convert exited with status $result, aborting...${txtrst}\n"
+      return
+    fi
+
+    fsize=$(pu::fsize $f)
+    tsize=$(pu::fsize $to_file)
+    ratio=$(ruby -e "printf '%7.2f', 100.0 * ${tsize} / ${fsize}")
+    if [[ $fsize -gt $tsize ]]; then
+      action=" decrease"
+    elif [[ $fsize -lt $tsize ]]; then
+      action=" increase"
+    else
+      action="no change"
+    fi
+    printf "${bldylw} [size $ratio%% ${action}] converted ${bldblu}$f ${bldgrn}$to_file ${bldpur}$*  ${txtrst}\n"
+  done
+}
+
+pu::fsize() {
+  ls -al $1  | cut -d ' ' -f 8
+}
+
 function jpg2bmp {
   dir=
   if [ ! -z "$1" ]; then
@@ -63,4 +120,3 @@ function watch() {
     clear
   done
 }
-
