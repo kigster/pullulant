@@ -1,4 +1,22 @@
 #!/usr/bin/env bash
+
+addup() {
+  columns=$@
+
+  [[ -n ${DEBUG} ]] && printf "columns argument: ${columns}\n"
+
+  for col in ${columns[@]}; do
+    [[ $col =~ ^[0-9]+$ ]] || {
+      printf "usage: ${bldgrn}some command | ${bldblu}addup ${bldylw}<column number> [, <column number>, ... ]${txtrst}\n"
+      printf "   eg: ps -orss,vsz,args | grep ruby | addup 1 2\n"
+      exit
+    }
+  done
+
+  awk -v columns="${columns[*]}" -f ~/.pu_addup.awk <&0
+}
+
+
 pu::convert() {
   local from_ext=$1
   shift
