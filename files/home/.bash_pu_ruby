@@ -20,11 +20,24 @@ function ruby::init() {
 
 
 function ruby::gems() {
-  declare -a RUBY_DEFAULT_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print)
+  if [[ -n "$RUBY_GEMS" ]]; then 
+    echo "got some ruby-gems: ${RUBY_GEMS}"
+    # check if RUBY_GEMS was declared as an array
+    if [[ -z $(declare -p RUBY_GEMS 2>/dev/null | grep -E '^declare \-a') ]]; then
+      # can not do direct assignment
+      local _gems=$RUBY_GEMS
+      declare -a RUBY_GEMS=($_gems)
+    fi
+  else
+    declare -a RUBY_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print activesupport pivotal_git_scripts)
+  fi
   local gems=($@)
   local existing=$(gem list)
-  [[ ${#gems} -eq 0 ]] && gems=(${RUBY_DEFAULT_GEMS[@]})
-  printf "${blkcya}installing gems: ${txtrst}"
+
+  [[ ${#gems} -eq 0 ]] && gems=(${RUBY_GEMS[@]})
+
+  printf "${blkcya}installing gems:\n\t${txtrst}"
+  local gems_installed=0
   for gem in ${gems[@]}; do
     if [[ "${existing}" =~ "${gem}" ]]; then
       printf "${txtgrn}${gem} ✔ ${txtrst} "
@@ -33,7 +46,10 @@ function ruby::gems() {
       gem install -q --force --no-document $gem 2>&1 | cat >/dev/null
       [[ $? -eq 0 ]] && printf "✅  "
     fi
+    gems_installed=$(($gems_installed + 1))
+    [[ $(($gems_installed % 5)) == 0 ]] && printf "\n\t"
   done
+  echo
 }
 
 alias be="bundle exec"
