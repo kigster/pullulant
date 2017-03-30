@@ -1,19 +1,102 @@
 #!/usr/bin/env bash
 
+mem() {
+  pattern=$1
+  shift
+  ps -e -orss,vsz,args $*| egrep "RSS|${pattern}" | addup --units Mb -n 1024 1 2
+}
+
 addup() {
-  columns=$@
+  local addup_debug=0
+  while :; do
+    case $1 in
+      -h|-\?|--help)
+          shift
+          local addup__help=1
+          ;;
+      -d|--debug)
+          shift
+          addup__debug=1
+          ;;
+      -u|--units)
+          shift
+          if [[ -n "$1" ]]; then
+              local addup__units=$1
+              shift
+          else
+              printf 'ERROR: "--units" requires a non-empty option argument.\n' >&2
+              return 1
+          fi
+          ;;
 
-  [[ -n ${DEBUG} ]] && printf "columns argument: ${columns}\n"
+      -n|--denominator)
+          shift
+          if [ -n "$1" ]; then
+              local addup__denominator=$1
+              shift
+          else
+              printf 'ERROR: "--denominator" requires a non-empty option argument.\n' >&2
+              exit 1
+          fi
+          ;;
 
-  for col in ${columns[@]}; do
+      -m|--multiplier)
+          shift
+          if [ -n "$1" ]; then
+              local addup__multiplier=$1
+              shift
+          else
+              printf 'ERROR: "--multiplier" requires a non-empty option argument.\n' >&2
+              exit 1
+          fi
+          ;;
+      --)              # End of all options.
+          shift
+          break
+          ;;
+      -?*)
+          printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+          exit 127
+          shift
+          ;;
+      *)  # Default case: If no more options then break out of the loop.
+          break
+          shift
+    esac
+  done
+
+  [[ -n $addup_help ]] && {
+    printf "${bldylw}usage:   ${bldgrn}addup [ options ] col1 col2 ....${txtrst}\n"
+    printf "${bldylw}options:${txtrst} \n"
+    printf "    -h/--help                   print help\n"
+    printf "    -d/--debug                  print debugging info in awk\n"
+    printf "    -u/--units             str  set units to display next to the numbers\n"
+    printf "    -m/--multiplier          M  specifies multiplier coefficient for each column's sum\n"
+    printf "    -n/--denominator         N  specifies denominator for each addup__cols's sum\n"
+    echo
+    printf "${bldylw}example:${txtrst} \n"
+    printf "    ps -orss,vsz,args | addup --units Gb -n \$((1024*1024)) 1 2\n\n"
+    return
+  }
+
+  local addup__cols=$@
+
+  [[ -n ${DEBUG} ]] && printf "addup__cols argument: ${addup__cols[*]}\n"
+
+  for col in ${addup__cols[@]}; do
     [[ $col =~ ^[0-9]+$ ]] || {
       printf "usage: ${bldgrn}some command | ${bldblu}addup ${bldylw}<column number> [, <column number>, ... ]${txtrst}\n"
-      printf "   eg: ps -orss,vsz,args | grep ruby | addup 1 2\n"
+      printf "   eg: ps -orss,vsz,args | grep ruby | addup -u Mb -m 1024 1 2\n"
       exit
     }
   done
 
-  awk -v columns="${columns[*]}" -f ~/.pu_addup.awk <&0
+  awk -v columns="${addup__cols[*]}" \
+      -v denominator="${addup__denominator}" \
+      -v multiplier="${addup__multiplier}" \
+      -v units="${addup__units}" \
+      -v debug="${addup__debug}" \
+      -f ~/.pu_addup.awk <&0
 }
 
 
