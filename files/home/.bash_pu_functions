@@ -1,11 +1,58 @@
 #!/usr/bin/env bash
 
+
+##-----------------------------------------------------------------------------
+##    function: mem [egrep pattern] [ -U user[,..] | -g group[,..]
+##                                                 | -p pid[,...] ]
+##          eg: mem Chrome
+##                      5116 Mb   RSS
+##                    165788 Mb   VSZ
+##              # addup all ruby processes for user saves
+##          eg: mem ruby -U saves
+##
+## description:
+##              mem helper uses system 'ps' command to add up the memory (in Mb)
+##              for either all processes (the default) or the processes that
+##              match an optional pattern (first argument), among either all
+##              processes (default), or narrowed down by one or more flags
+##              that sysmte 'ps' command understands, such as '-U user'.
+##              Note: any number of arguments for 'ps' are allowed.
+##
 mem() {
-  pattern=$1
-  shift
-  ps -e -orss,vsz,args $*| egrep "RSS|${pattern}" | addup --units Mb -n 1024 1 2
+  local pattern=
+  if [[ ${1:0:1} != '-' ]]; then
+    pattern=$1
+    shift
+  fi
+  local scope='-e'
+  [[ -n ${1} && ${1:0:1} == '-' ]] && {
+    scope=$*
+  }
+  local filter=
+  if [[ -n ${pattern} ]] ; then
+    ps -orss,vsz,args ${scope} | egrep "RSS|${pattern}" | grep -v grep | addup --units Mb -n 1024 1 2
+  else
+    ps -orss,vsz,args ${scope} | grep -v grep | addup --units Mb -n 1024 1 2
+  fi
 }
 
+#..................................................................................
+#
+#    function: <command> | addup [--units 'name' ] [-n | -d value] column_number, ...
+#          eg: ps -e -orss,vsz,args $* | addup --units Mb -n 1024 1 2
+#         see: mem
+#        note: try 'addup --help
+#
+# description:
+#              Lower level command that is meant to be used by higher abstractions.
+#              Adds up values in columns, optionally displaying the headers.
+#
+#              This function will sum up any specified columns from the multi-column
+#              STDIN, and can divide or multiply the result by an optional coefficient.
+#              Specify units with -u, eg. "Mb" or "Gb", etc.
+#
+#     depends: requires the supporting AWK script "~/.addup.awk" to be installed.
+#
 addup() {
   local addup_debug=0
   while :; do
@@ -153,11 +200,11 @@ pu::convert() {
   done
 }
 
-pu::fsize() {
-  ls -al $1  | cut -d ' ' -f 8
+file.size() {
+  ls -al $* | awk '{print $5}'
 }
 
-function jpg2bmp {
+jpg.bmp() {
   dir=
   if [ ! -z "$1" ]; then
     dir="$1/"
@@ -189,7 +236,7 @@ function console {
 
 # Choose the best editor to open a MarkDown file (or any other text file)
 # Override array $mkd_editors[@] if your priority list is different
-function mkd() {
+md.edit() {
   [[ -n "${mkd_editors}" ]] || declare -a mkd_editors=("byword" "mate" "atom" "vim")
   for editor in "${mkd_editors[@]}"; do
     if [[ -n "$(type $editor | grep function)" || -n "$(which $editor)" ]]; then
@@ -199,7 +246,7 @@ function mkd() {
   done
 }
 
-function byword() {
+byword() {
   [[ -n "${byword_app}" ]] || byword_app="/Applications/Byword.app"
   if [[ -d ${byword_app} ]]; then
     open $byword_app $*
@@ -208,7 +255,8 @@ function byword() {
   fi
 }
 
-function watch() {
+# similar to 'watch'
+observe() {
   local refresh=1
   [[ "$1" =~ [0-9] ]] && refresh=$1 && shift
   cmd=$@

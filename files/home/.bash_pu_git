@@ -30,15 +30,30 @@ function git::upstream() {
   git branch --set-upstream-to=origin/${this_branch} ${this_branch}
 }
 
-alias gcl='git::clone'
-
-function git::clone() {
-  repo=$1
-  who=${2:-$USER}
-  [[ "$who" == "kig" ]] && who="kigster"
+##..................................................................................
+##
+##    function: git.clone repo-name [ user | $USER ]
+## description: git glone from current user's github repo. Also aliased to 'gcl'
+##          eg: git.clone ruby-web # assumign $USER == "wanelo"
+##
+function git.clone() {
+  local repo=$1
+  local who=${2:-${USER}}
+  local folder=${3}
   [[ -z "$repo" ]] && {
-    printf "${bldred}Usage: gcl repo [github-username]${txtrst}\n"
+    printf "${bldwht}Usage: gcl repo [github-username] [folder]${txtrst}\n"
+    printf "${bldwht}   OR: gcl username/repo${txtrst}\n\n"
+    printf "${bldgrn}   eg: gcl project ${txtrst}\n"
+    printf "${bldgrn}   eg: gcl project kigster${txtrst}\n"
+    printf "${bldgrn}   eg: gcl kigster/project ${txtrst}\n"
     return
   }
-  git clone git@github.com:$who/$repo
+
+  [[ ${repo} =~ '/' ]] && full_repo="git@github.com:${repo}"
+  [[ ${repo} =~ '/' ]] || full_repo="git@github.com:${who}/${repo}"
+
+  git clone ${full_repo} ${folder}
+  [[ $? != 0 ]] && printf "${bldred}can't clone ${bldgrn}${full_repo}${txtrst}\n" >&2
 }
+
+alias gcl='git.clone'

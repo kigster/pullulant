@@ -11,16 +11,28 @@ alias bss='brew services start'
 alias bst='brew services stop'
 alias bsr='brew services restart'
 
-function ruby::init() {
-  ruby::gems
+##..................................................................................
+##
+##    function: ruby.rbenv
+## description: Initialize rbenv
+##
+function ruby.rbenv() {
+  if [ -n "$*" ]; then
+    rbenv $*
+  else
+    eval "$(rbenv init - )"
+  fi
+}
+
+function ruby.init() {
+  ruby.gems
   wd install --dotfile ~/.bash_${USER} > /dev/null
   sym --bash-completion ~/.bash_${USER} > /dev/null
   printf "${bldred}You should now reboot, dude.${txtrst}\n"
 }
 
-
-function ruby::gems() {
-  if [[ -n "$RUBY_GEMS" ]]; then 
+function ruby.gems() {
+  if [[ -n "$RUBY_GEMS" ]]; then
     echo "got some ruby-gems: ${RUBY_GEMS}"
     # check if RUBY_GEMS was declared as an array
     if [[ -z $(declare -p RUBY_GEMS 2>/dev/null | grep -E '^declare \-a') ]]; then
@@ -53,22 +65,5 @@ function ruby::gems() {
 }
 
 alias be="bundle exec"
-alias rake="rbenv exec bundle exec rake"
-alias cap="rbenv exec bundle exec cap"
-
-function pyenv::init() {
-  if [ -n "$*" ]; then
-    pyenv $*
-  else
-    bbinit "pyenv"
-  fi
-}
-
-function rbenv::init() {
-  if [ -n "$*" ]; then
-    rbenv $*
-  else
-    bbinit "rbenv"
-  fi
-}
-
+alias brake="rbenv exec bundle exec rake"
+alias bcap="rbenv exec bundle exec cap"
