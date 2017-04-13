@@ -269,3 +269,13 @@ observe() {
     clear
   done
 }
+
+
+##-----------------------------------------------------------------------------
+##    function: pg.data [psql connection params, default is us -U postgres]
+##     returns: data directory of the running server
+##
+pg.data() {
+  local creds=${*:-"-U postgres"}
+  psql -XA ${creds} -c 'show data_directory' | egrep -v 'data_directory|row'
+}
