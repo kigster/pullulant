@@ -26,11 +26,11 @@ export EDITOR=vim
 export PAGER='less -R'
 export RI='-f ansi'
 
-function user::locals() {
+function user.locals() {
   declare -a scripts=($(ls -1 ~/.bash_pu_*[^bak]))
   for script in ${scripts[@]} ~/.bash_${USER}; do
     [[ -s "${script}" ]] && source "${script}"
   done
 }
 
-user::locals
+user.locals
