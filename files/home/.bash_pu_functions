@@ -264,8 +264,7 @@ observe() {
     printf "${bakblk}${bldblu}$(date) | ${bldwht}command: ${bldgrn}${cmd[@]}"
     printf "\033[K"
     printf "${txtrst}\n\n"
-    time ${cmd[@]}
-    sleep $refresh
+    time ${cmd[@]} sleep $refresh
     clear
   done
 }
@@ -276,6 +275,39 @@ observe() {
 ##     returns: data directory of the running server
 ##
 pg.data() {
-  local creds=${*:-"-U postgres"}
-  psql -XA ${creds} -c 'show data_directory' | egrep -v 'data_directory|row'
+  local psql_flags=${*:-"-U postgres"}
+  psql -XA ${psql_flags} -c 'show data_directory' | egrep -v 'data_directory|row'
 }
+
+pg.s() {
+  name=${1}
+  shift
+  local psql_flags=${*:-"-U postgres"}
+  [[ -z ${name} ]] && {
+    printf "${bldred}error: please provide the name of the query\n"
+    printf "${bldgrn}usage: pg.q <select-query-name> [psql flags]\n"
+    printf "${bldgrn}       where query name is from ~/.psqlrc\n"
+    printf "${bldgrn}   eg: ${bldblu}pg.q locks -U appuser${txtrst}\n"
+    return
+  }
+  psql -X ${psql_flags} -P pager -c "$(pg.rc.query ${name} | head -1)"
+}
+
+pg.rc.query() {
+  grep $* ~/.psqlrc | sed "s/''/'/g" | awk -F select  '/select/ { print FS, substr($2, 1, length($2)-1) }'
+}
+
+pg.ss.install() {
+  local conf="$(pg.data)/postgresql.conf"
+  if [[ -s ${conf} ]]; then
+    if [[ -z $(egrep '^shared_preload_libraries' ${conf} | grep pg_stat_statements) ]]; then
+      printf "${bldylw}Appending settings to ${txtpur}${conf}...\n"
+      printf "\nshared_preload_libraries = 'pg_stat_statements'\n" | sudo cat >> ${conf}
+      if [[ -n $(brew services list | grep postgresql | grep started) ]] ; then 
+        printf "${bldylw}Restarting PostgreSQL...${txtrst}\n"
+        brew services restart postgresql
+      fi
+    fi
+  fi
+}
+

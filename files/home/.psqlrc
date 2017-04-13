@@ -1,3 +1,5 @@
+-- vim: set filetype=sql:
+--
 -- don't output commands as we run them
 \set QUIET 1
 -- set how to output numbers (this turns on thousdand separators)
@@ -27,20 +29,28 @@
 \echo 'What is up!'
 \echo 'Type :version to see the PostgreSQL version.'
 \echo 'Type :extensions to see the available extensions.'
-\echo 'Type :active to see all currently executing queries on PostgreSQL 9.6'
-\echo 'Type :active95 see the above but on PG 9.5 and below'
+\echo 'Type :running to see all currently executing queries (9.6)'
 \echo 'Type :locks to see all currently locked queries (9.6 only).'
 \echo 'Type :top5 to see top 5 time consuming queries as reported by pg_stat_statements.'
-\echo 'Type :top5all to see top 5 time consuming queries as reported by pg_stat_statements.'
-\echo 'Type :pgss create an extension for pg_stat_statements (assuming its available in)'
+\echo 'Type :top5full to see full SQL query of the top 5s'
+\echo 'Type :pgss to create an extension for pg_stat_statements (assuming its available in)'
 \echo 'Type \\q to exit. '
 \set version 'SELECT version();'
+
 \set extensions 'select * from pg_available_extensions;'
-\set active95 'select pid,client_addr,client_port,waiting,state,substring(query for 100) as query from pg_stat_activity where state != ''idle'';'
+
 \set active 'select pid,client_addr,client_port,wait_event_type,wait_event,state,substring(query for 120) as query from pg_stat_activity where state != ''idle'';'
+\set active96 'select pid,client_addr,client_port,wait_event_type,wait_event,state,substring(query for 120) as query from pg_stat_activity where state != ''idle'';'
+\set active95 'select pid,client_addr,client_port,waiting,state,substring(query for 100) as query from pg_stat_activity where state != ''idle'';'
+
+\set running ':active96'
+
 \set locks 'select pid,client_addr,client_port,wait_event_type,wait_event,state,substring(query for 120) as query from pg_stat_activity where wait_event is not null or wait_event_type is not null;'
+
 \set top5 'select substring(query for 100) as query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
-\set top5all 'select query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
+
+\set top5full 'select query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
+
 \set pgss 'create extension pg_stat_statements;'
 SET search_path TO public,extensions
 \timing
