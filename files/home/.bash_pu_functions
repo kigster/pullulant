@@ -268,3 +268,13 @@ observe() {
     clear
   done
 }
+
+
+today() {
+  date '+%Y-%m-%d'
+}
+
+now() {
+  date '+%Y-%m-%d.%H:%M:%S'
+}
+
