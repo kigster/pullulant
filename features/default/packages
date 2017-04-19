@@ -16,14 +16,13 @@
 # List of Brew Formulas to install and l`ink
 [[ -n "${brew_packages}" ]] || brew_packages="
   ack
-  ansiweather
   bash
   bash-completion
   cmake
   git
   go
   haproxy
-  homebrew/dupes/rsync
+  rsync
   hub
   imagemagick
   jq
@@ -41,14 +40,13 @@
   rbenv
   redis
   ruby-build
-  the_silver_searcher
   tmux
+  tmux-mem-cpu-load
   tree
   vim
   watch
   wget
   zlib
-  zsh
 "
 
 [[ -n "${brew_packages_to_link_after_install}" ]] || brew_packages_to_link_after_install=""
