@@ -278,3 +278,23 @@ now() {
   date '+%Y-%m-%d.%H:%M:%S'
 }
 
+# Replace a string in a provided file, eg:
+# replf ~/.bashrc "s/\/Users\/kig/\/Users\/dev/s"
+replf() {
+  local file=$1
+  local regex=$2
+  sed -i -e "${regex}" $file
+}
+
+# Replace a text string in all files in the directory
+# defaults to ".":
+# eg. repld "s/\/Users\/kig/\/Users\/dev/s"
+#
+# but can be changed with the second argument.
+# eg. repld "s/\/Users\/kig/\/Users\/dev/s" ~/
+repld(){
+  local regex=${1}
+  local dir=${2:-"."}
+  echo find ${dir} -type f -exec sed -i -e "'${regex}'" {} \; -print 
+  find ${dir} -type f -exec sed -i -e "${regex}" {} \; -print 
+}
