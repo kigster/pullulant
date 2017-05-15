@@ -23,6 +23,8 @@ alias 'ga'='git add'
 alias 'gaa'='git add -A'
 alias 'gap'='git add -p'
 alias 'gpp'='git pull --rebase && git push'
+alias 'gclean'='git clean -d -f -x'
+alias 'gcl'='git.clone'
 
 function git::upstream() {
   local this_branch=$(gcb)
@@ -56,4 +58,28 @@ function git.clone() {
   [[ $? != 0 ]] && printf "${bldred}can't clone ${bldgrn}${full_repo}${txtrst}\n" >&2
 }
 
-alias gcl='git.clone'
+
+function __reset_terminal() {
+  reset
+  echo "Resetting terminal..."
+}
+
+function git.clean() {
+  local lib=${PU_HOME}/lib/pu-interaction
+  if [[ -d ${PU_HOME} && -f ${lib} ]] ; then
+    source ${lib}
+    printf "${bldgrn}Doing a dry-run first:${txtrst}\n"
+    git clean -d -f -x -n
+    trap __reset_terminal SIGINT
+    pu-ask-user 'You sure? [y/N]?' 10 'n' 'y n'
+    if [[ "${pu_ask_user_answer}" =~ "y" ]] ; then
+      printf "${bldgrn}\nOK, removing files... !${bldylw}\n"
+      printf "${txtblu}"
+      git clean -d -f -x
+    else
+      printf "\n${bldred}No worries, I am not sure either..${txtrst}\n"
+    fi  
+    printf "${txtrst}"
+  fi
+}
+
