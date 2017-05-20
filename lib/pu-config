@@ -91,6 +91,8 @@ function package-config {
   opts_features='default'
 
   export pu_skip_runners=""
+
+  export skip_sudo_disable=false
 }
 
 function pu_option_value {

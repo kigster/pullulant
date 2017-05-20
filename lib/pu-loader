@@ -18,7 +18,15 @@ function require_dir {
   subfolder=$1
   submodules=$(echo $(ls -1 ${subfolder}))
   for submodule in ${submodules}; do
-    source "${subfolder}/${submodule}"
+    local file="${subfolder}/${submodule}"
+    source ${file}
+    if [[ $(grep -c 'sudo' ${file}) -gt 0 ]]; then
+      if [[ ${subfolder} =~ 'install' ]]; then
+        installer_sudo_map[${submodule:3}]=yes
+      else
+        installer_sudo_map[${submodule}]=yes
+      fi
+    fi
   done
 }
 

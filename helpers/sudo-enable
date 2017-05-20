@@ -8,12 +8,13 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 sudoers_dir="/private/etc/sudoers.d"
-export sudoers_enabled=
+unset sudoers_enabled
 
 sudo-enable() {
   run "[[ -d ${sudoers_dir} ]] || sudo mkdir -p ${sudoers_dir}"
   [[ -s ${sudoers_dir}/${USER} ]] || {
-    echo "${USER} ALL=(ALL) NOPASSWD: ALL" | sudo tee -a ${sudoers_dir}/${USER}
+    pu-print-section-header "${txtblk}${bakylw}" "ENABLING sudo without a password... "
+    run "echo ${USER} 'ALL=(ALL) NOPASSWD: ALL' | sudo tee -a ${sudoers_dir}/${USER}"
     export sudoers_enabled=true
   }
 }

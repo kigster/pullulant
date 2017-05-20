@@ -10,6 +10,28 @@
 # MIT License
 #_______________________________________________________________________________
 # encoding: UTF-8
+
+function on_start {
+  local sudo=false
+  for mod in "${!runner_sudo_map[@]}"; do
+    local needs_sudo=${runner_sudo_map[${mod}]}
+    if [[ ${needs_sudo} == 'yes' ]]; then
+      [[ $sudo == false ]] || sudo=$(($sudo + 1))
+      [[ $sudo == false ]] && sudo=1
+      break
+    fi
+  done
+
+  [[ ${sudo} == false ]] && return
+
+  if [[ ${sudo} -gt 0 ]]; then
+    printf "\n\n${txtrst}At least ${bldylw}${sudo}${txtrst} runners require sudo access.\nPlease enter your password when requested.\n"
+    [[ ${sudo} -gt 0 ]] && sudo-enable
+    export sudoers_enabled=true
+    run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
+  fi
+}
+
 function remote_fsize() {
   local url=$1
   printf $(($(curl -sI $url | grep -i 'Content-Length' | awk '{print $2}') + 0))
@@ -121,16 +143,9 @@ function check_exit {
   return $last_command_status
 }
 
-function on_start {
-  run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
-  [[ "$sudoers_enabled" ]] && pu-print-section-header "${bldwht}${bakgrn}" "Re-Enabling SUDO...." && sudo-enable
-}
-
 function success {
   printf "${txtblk}"
-  sep "\n\n"
   printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
-  sep
   printf "\n${txtrst}"
 }
 
@@ -142,22 +157,24 @@ function abort {
 }
 function failure {
   printf "${txtblk}"
-  sep "\n\n"
   printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
-  sep
   printf "\n${txtrst}"
 }
 
 function on_exit {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  rm -rf ${const_cmd_stderr} # hide-command"
-  rm -rf ${const_cmd_stdout} # hide-command"
+  run "sudo rm -rf ${const_cmd_stderr} # hide-command"
+  run "sudo rm -rf ${const_cmd_stdout} # hide-command"
+  if [[ ${sudoers_enabled} == true ]]; then
+     sudo-disable
+  fi
   return 1
 }
 
 function finish {
   exit_last_command_status=${1-0}
-  on_exit && success
+  on_exit
+  success
+  printf "${txtrst}"
   cd ${original_dir}
   exit ${exit_status}
 }

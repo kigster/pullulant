@@ -11,6 +11,9 @@
 #_______________________________________________________________________________
 
 sudo-disable() {
-  [[ -n "${sudoers_enabled}" && -z "${skip_sudo_disable}" ]] && run "sudo rm -f /private/etc/sudoers.d/${USER}"
-  export sudoers_enabled=
+  if [[ ${sudoers_enabled} == true && ${skip_sudo_disable} == false ]]; then
+    pu-print-section-header "${txtblk}${bakylw}" "Disabling sudo without a password... "
+    run "sudo rm -f /private/etc/sudoers.d/${USER} # hide-command"
+  fi
+  unset sudoers_enabled
 }
