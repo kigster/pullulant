@@ -28,8 +28,9 @@ function on_start {
     printf "\n\n${txtrst}At least ${bldylw}${sudo}${txtrst} runners require sudo access.\nPlease enter your password when requested.\n"
     [[ ${sudo} -gt 0 ]] && sudo-enable
     export sudoers_enabled=true
-    run "sudo rm -f ${const_cmd_stdout} ${const_cmd_stderr} # hide-command"
   fi
+  
+  wipe_output
 }
 
 function remote_fsize() {
@@ -161,9 +162,13 @@ function failure {
   printf "\n${txtrst}"
 }
 
+function wipe_output() {
+  run "rm -rf ${const_cmd_stderr} # hide-command"
+  run "rm -rf ${const_cmd_stdout} # hide-command"
+}
+
 function on_exit {
-  run "sudo rm -rf ${const_cmd_stderr} # hide-command"
-  run "sudo rm -rf ${const_cmd_stdout} # hide-command"
+  wipe_output
   if [[ ${sudoers_enabled} == true ]]; then
      sudo-disable
   fi
