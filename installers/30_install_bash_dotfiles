@@ -16,7 +16,7 @@ function install_bash_dotfiles() {
   run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
   [[ -f ~/.bashrc ]] || ln -nfs ~/.bashrc ~/.bash_login
 
-  local rc="${HOME}/.bash_pullulant_setup"
+  local rc="${HOME}/.bash_pu_completion"
   touch $rc
 
   [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}' >> $rc # show-stdout"
