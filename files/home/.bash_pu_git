@@ -26,7 +26,7 @@ alias 'gpp'='git pull --rebase && git push'
 alias 'gclean'='git clean -d -f -x'
 alias 'gcl'='git.clone'
 
-function git::upstream() {
+function git.up() {
   local this_branch=$(gcb)
   this_branch=${this_branch:-master}
   git branch --set-upstream-to=origin/${this_branch} ${this_branch}
