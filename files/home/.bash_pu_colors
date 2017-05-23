@@ -8,6 +8,7 @@
 
 function clr_constants {
   if [ -z "${clr_constants_loaded}" ]; then
+
     export txtblk='\e[0;30m' # Black - Regular
     export txtred='\e[0;31m' # Red
     export txtgrn='\e[0;32m' # Green
@@ -16,6 +17,7 @@ function clr_constants {
     export txtpur='\e[0;35m' # Purple
     export txtcyn='\e[0;36m' # Cyan
     export txtwht='\e[0;37m' # White
+
     export bldblk='\e[1;30m' # Black - Bold
     export bldred='\e[1;31m' # Red
     export bldgrn='\e[1;32m' # Green
@@ -24,6 +26,7 @@ function clr_constants {
     export bldpur='\e[1;35m' # Purple
     export bldcyn='\e[1;36m' # Cyan
     export bldwht='\e[1;37m' # White
+
     export unkblk='\e[4;30m' # Black - Underline
     export undred='\e[4;31m' # Red
     export undgrn='\e[4;32m' # Green
@@ -32,6 +35,7 @@ function clr_constants {
     export undpur='\e[4;35m' # Purple
     export undcyn='\e[4;36m' # Cyan
     export undwht='\e[4;37m' # White
+
     export bakblk='\e[40m'   # Black - Background
     export bakred='\e[41m'   # Red
     export bakgrn='\e[42m'   # Green
@@ -40,7 +44,35 @@ function clr_constants {
     export bakpur='\e[45m'   # Purple
     export bakcyn='\e[46m'   # Cyan
     export bakwht='\e[47m'   # White
+
     export txtrst='\e[0m'    # Text Reset
+    export clr='\e[0m'       # Text Reset
+    export rst='\e[0m'       # Text Reset
+
+    export bg_deep_green="\033[48;5;28m"
+    export bg_deep_blue="\033[48;5;27m"
+
+    export bg_sky_blue="\033[48;5;39m"
+    export bg_bright_green="\033[48;5;82m"
+
+    export bg_mustard="\033[48;5;178m"
+    export bg_salmon="\033[48;5;208m"
+    export bg_grey="\033[48;5;239m"
+    export bg_pink="\033[48;5;89m"
+
+    export fg_deep_blue="\033[38;5;27m"
+    export fg_sky_blue="\033[38;5;39m"
+
+    export fg_deep_green="\033[38;5;28m"
+    export fg_bright_green="\033[38;5;82m"
+    export fg_light_green="\033[38;5;108m"
+    
+    export fg_mustard="\033[38;5;178m"
+    export fg_salmon="\033[38;5;208m"
+    export fg_pink="\033[38;5;89m"
+    export fg_doll="\033[38;5;183m"
+    export fg_purr="\033[38;5;219m"
+    export fg_grey="\033[38;5;239m"
 
     export clr_constants_loaded=yes
 
