@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# dnsmadeeasy-update.sh
+#
+# This script updates Dynamic DNS records on DNE Made Easy's
+# DNS servers.  You must have wget installed for this to work.
+
+# Author: Jeff Larkin <fu_fish@users.sourceforge.net>
+# Last Modified: 08-February-2002
+
+# Modified by: Konstantin Gredeskoul <kig@reinvent.one>
+# Last Modified: Sat Jun 17 12:48:02 PDT 2017
+
+
+function dnsmadeeasy-update-ip() {
+
+  printf "${bldylw}DNS Made Easy Host Updated${txrrst} v1.0\n\n"
+
+  DMEUSER=${DMEUSER:=kigster@gmail.com}
+  DMEID=${DMEID:=33860953}
+  DMEPASS=${DMEPASS:=moosie123}
+
+  [[ -n $DMEPASS ]] || { 
+    # This is your password
+    printf "${txtgrn}Please enter the password for Dynamic Host ${DMEID}: ${bldblu}"
+    read DMEPASS
+    printf "${txtrst}"
+  }
+
+  # This is the unique number for the record that you are updating.
+  # This number can be obtained by clicking on the DDNS link for the
+  # record that you wish to update; the number for the record is listed
+  # on the next page.
+
+  # Obtain current ip address
+  IPADDR=`dig +short myip.opendns.com @resolver1.opendns.com`
+  DMEURL="http://cp.dnsmadeeasy.com/servlet/updateip?username=$DMEUSER\&password=$DMEPASS\&id=$DMEID\&ip=$IPADDR"
+  
+  printf "${txtpur}Calling out to DNS Made Easy, with the following data:${txtblu}\n\n"
+  printf "     USER = ${DMEUSER}\n"
+  printf "     PASS = ${DMEPASS}\n"
+  printf "     ID   = ${DMEID}\n"
+  printf "     IP   = ${IPADDR}\n"
+  printf "     URL  = ${DMEURL}\n\n"
+  
+  success=$(wget -qS ${DMEURL} -O /dev/null 2>&1 | grep '200 OK') 
+  
+  [[ -n ${success} ]] && printf "\n${txtpur}${success}${txtrst}\n"
+
+  if [[ -n ${success}  ]];  then
+    printf "${bldgrn}OK — DNS Record has been updated. ${txtrst}\n"
+  else
+    printf "${bldred}Error — Problem updating DNS record, response headers are below:${txtrst}\n"
+    wget -qS ${DMEURL} -O /dev/null  2>&1 
+  fi
+}

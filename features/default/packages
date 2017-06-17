@@ -98,7 +98,7 @@
 "
 
 [[ -n "${alfred_plugins}" ]] || alfred_plugins="
-  https://github.com/bevesce/unicode-symbols-search/raw/master/alfred/Unicode%20Symbols%20Search.alfredworkflow
+  https://github.com/bevesce/unicode-symbols-search/blob/master/Unicode%20Symbols%20Search.alfredworkflow?raw=true
   https://github.com/packal/repository/raw/master/fspinillo.alfredv2.slackfred/slackfred.alfredworkflow
   https://github.com/packal/repository/raw/master/net.deanishe.alfred-stackoverflow/stackoverflow-1.2.alfredworkflow
   https://github.com/packal/repository/raw/master/com.ipaterson.alfred.wunderlist/wunderlist.alfredworkflow
