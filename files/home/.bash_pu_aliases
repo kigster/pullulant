@@ -39,3 +39,5 @@ alias rake="rbenv exec bundle exec rake"
 alias cap="rbenv exec bundle exec cap"
 
 [[ -n $(which vim) ]] && alias vi='vim'
+
+alias filetree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
