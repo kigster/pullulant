@@ -295,6 +295,32 @@ replf() {
 repld(){
   local regex=${1}
   local dir=${2:-"."}
-  echo find ${dir} -type f -exec sed -i -e "'${regex}'" {} \; -print 
-  find ${dir} -type f -exec sed -i -e "${regex}" {} \; -print 
+  echo find ${dir} -type f -exec sed -i -e "'${regex}'" {} \; -print
+  find ${dir} -type f -exec sed -i -e "${regex}" {} \; -print
+}
+
+
+[[ $(uname -s ) != 'Darwin' ]] && return
+
+function see() {
+  qlmanage -p $* 2>/dev/null
+}
+
+osx.hostname() {
+  local host=$*
+  [[ -z $host ]] && {
+    echo "usage: osx.hostname desired-host-name"
+    return
+  }
+
+  echo setting ComputerName to $host...
+  sudo scutil --set ComputerName $host
+
+  localhost=$(echo $host | sed -E 's/\..*$//g')
+
+  echo setting LocalHostName to $localhost...
+  sudo scutil --set LocalHostName ${localhost}
+
+  echo setting HostName to $host...
+  sudo scutil --set HostName $host
 }
