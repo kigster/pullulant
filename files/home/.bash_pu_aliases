@@ -30,6 +30,7 @@ alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
 alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\", \$1/1024/1024, \$2 }"'
 
 alias be="bundle exec"
+alias birb="be irb -I lib -I ."
 alias rake="rbenv exec bundle exec rake"
 alias cap="rbenv exec bundle exec cap"
 
