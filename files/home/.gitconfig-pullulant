@@ -26,6 +26,7 @@
 	ol = log --format=\"%C(yellow)%h%Creset %C(cyan)%aN%Creset\t%s\"
 	w = whatchanged
 	uncommit = reset --soft HEAD^
+        su = branch --set-upstream-to=origin/master master
 [core]
 	pager = less -FXRS -x2
 [apply]
