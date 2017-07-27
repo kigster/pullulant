@@ -324,3 +324,6 @@ osx.hostname() {
   echo setting HostName to $host...
   sudo scutil --set HostName $host
 }
+
+
+

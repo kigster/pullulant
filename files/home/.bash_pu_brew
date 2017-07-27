@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+if [[ -z ${enabled_services[*]} ]]; then
+  declare -a enabled_services=$(brew services list | tail +2 | cut -f1 -d ' ')
+fi
+  
+
+function svcs() {
+  command=$1
+  svc=$2
+  
+  local action=
+  
+  [[ ${command} == "start" || ${command} == "stop" ]] && action=${command}
+  [[ ${command} == "status" ]] && action="list"
+  
+  [[ -z ${action} ]] && {
+    case ${command} in 
+      up) 
+        action=start
+        ;;
+      down)
+        action=stop
+        ;;
+
+      *)
+        echo "Usage: svcs [ start|up ] [ stop|down ] [ status ]"
+        return 1
+    esac
+  }
+
+  if [[ -z $svc ]]; then
+    echo "${action}ing services"
+    if [[ ${action} == "list" ]]; then
+      brew services $action $service
+    else      
+      for service in ${enabled_services[@]}; do 
+        brew services $action $service
+      done
+    fi
+  else
+    if [[ ${enabled_services[*]} =~ $svc ]]; then
+      printf "${action}ing service $svc..."
+      brew services $action $svc
+    else
+      printf "service ${txtred}${svc}${txtrst} is unknown, only the following is installed:\n"
+      printf "${bldgrn}${enabled_services[*]}${txtrst}\n"
+    fi      
+  fi
+  
+}
