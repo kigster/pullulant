@@ -10,7 +10,6 @@
 	sta = stash
 	llog = log --date=local
 	flog = log --pretty=fuller --decorate
-	lg = log --oneline
 	lol = log --graph --decorate --oneline
 	lola = log --graph --decorate --oneline --all
 	blog = log origin/master... --left-right
@@ -27,6 +26,7 @@
 	w = whatchanged
 	uncommit = reset --soft HEAD^
         su = branch --set-upstream-to=origin/master master
+        lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 [core]
 	pager = less -FXRS -x2
 [apply]
