@@ -37,6 +37,19 @@ alias gap='git add -p'
 alias gclean='git clean -d -f -x'
 alias gcl='git.clone'
 
+alias hpr='hub pull-request'
+alias hci='hub ci-status'
+
+function git.squash() {
+  number=${1}
+  [[ -z ${number} ]] && { 
+    echo "Usage: git.squash <number> # of commits to go back"
+    return
+  }
+  git reset --soft HEAD~${number}
+  git commit
+}
+
 function git.up() {
   local this_branch=$(gcb)
   this_branch=${this_branch:-master}
