@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# © 2016-2017 Konstantin Gredeskoul
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+export tmux_default_session=bash
+
+function t-n() {
+  tmux new $*
+}
+
+function t-l() {
+  tmux list-sessions
+}
+
+function t-a() {
+  tmux attach $*
+}
