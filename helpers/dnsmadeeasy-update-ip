@@ -18,7 +18,7 @@ function dnsmadeeasy-update-ip() {
 
   DMEUSER=${DMEUSER:=kigster@gmail.com}
   DMEID=${DMEID:=33860953}
-  DMEPASS=${DMEPASS:=moosie123}
+  DMEPASS=${DMEPASS:=moosie}
 
   [[ -n $DMEPASS ]] || { 
     # This is your password
