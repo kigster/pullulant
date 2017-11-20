@@ -326,4 +326,39 @@ osx.hostname() {
 }
 
 
+function csr.create() { 
+  local name=$1
+  if [[ -z $name ]] ; then
+    echo 'usage: scr::create site.domain.com'
+    exit 1
+  fi
+
+  openssl req -new -newkey rsa:2048 -nodes -keyout $name.key -out $name.csr
+}
+
+
+function rsync.incremental() {
+  local from=$1
+  shift
+  local to=$1
+  shift
+
+  if [[ -z $from || -z $to ]] ; then
+    echo "usage: ${bldylw}rsync.incremental <from> <to> [ rsync flags ]${clr}"
+    echo "   eg: rsync.incremental /Volumes/Foo/ /Volumes/foo-new"
+    return
+  fi
+
+  printf  "${bldblu}Starting rsync from ${bldylw}${from}${bldblu} to ${bldgrn}${to}${clr}...\n"
+
+  rsync -aXh --stats --progress --update \
+      --exclude='**/.Spotlight-*' \
+      --exclude="**/.DS_Store" \
+      --exclude="**/.Trashes" \
+      --exclude="**/.TemporaryItems" \
+      --exclude="**/.DocumentRevision*" \
+      --ignore-errors $* $from $to
+}
+
+alias rsi='rsync.incremental'
 
