@@ -1,71 +1,16 @@
 # encoding: utf-8
-
-@irbtools = %w(yes true 1 enable enabled).include?(ENV['IRBTOOLS'])
-@irbtools = !%w(no false 0 disable disabled).include?(ENV['IRBTOOLS'])
-
-require 'rubygems'
-
-GEMS_TO_LOAD = %w(colored2)
-
-if @irbtools
-  require 'irb/completion' 
-  GEMS_TO_LOAD << 'irbtools'
-end
-puts "Loading gems #{GEMS_TO_LOAD}... "
-railsrc_path = File.expand_path('~/.irbrc_rails')
-if ( ENV['RAILS_ENV'] || defined? Rails ) && File.exist?( railsrc_path )
-  begin
-    load railsrc_path
-  rescue Exception
-  end
-end
+require 'readline'
+require 'irb/completion'
 
 begin
-  require 'colored2' 
-rescue LoadError
+  require 'colored2'
+rescue LoadError => e
+  puts "Unable to load gem dependency: #{e.message}"
+  puts "Installing them for you...."
+  puts `gem install colored2`
+  puts "Now run irb again, and you should be fine :)"
+  exit 1
 end
-
-unless defined?(Colored2)
-  class String
-    def noop
-      self
-    end
-    %i(clear dark black yellow red blue green bold italic cyan on).each do |m|
-      alias_method m, :noop;
-    end
-  end
-end
-
-class GemLoader
-  TRIES = 2
-
-  attr_accessor :gem_name
-  def initialize(gem_name)
-    self.gem_name = gem_name
-  end
-  def load &block
-    begin
-      tries ||= TRIES
-      printf 'Loading '.bold.blue 
-      printf '%12.12s...'.bold.yellow, gem_name
-      require gem_name
-      printf "OK\n".bold.green
-    rescue Exception
-      if tries == TRIES
-        printf "MISSING\n".bold.red
-        printf 'Installing '.bold
-        printf '%9.9s...'.bold.yellow, gem_name
-        %x(gem install #{gem_name})
-        printf "HIFIVE!\n".bold.green
-        Gem.clear_paths
-        tries -= 1
-        retry        
-      end
-    end
-  end
-end
-
-GEMS_TO_LOAD.each { |gem_name| GemLoader.new(gem_name).load } 
 
 puts '—' * (ENV['COLUMNS'] || 80)
 
@@ -88,30 +33,31 @@ module Kernel
   end
 end
 
-
 # irb history
 IRB.conf[:EVAL_HISTORY]     = 1000
 IRB.conf[:SAVE_HISTORY]     = 1000
-IRB.conf[:HISTORY_FILE]     = File::expand_path('~/.irbhistory')
+#IRB.conf[:HISTORY_FILE]     = File::expand_path('~/.irbhistory')
 IRB.conf[:IRB_NAME]         = ('I'.red << 'R'.yellow << 'B'.green).dark.bold
 IRB.conf[:MATH_MODE]        = false
-IRB.conf[:INSPECT_MODE]     = false
-IRB.conf[:IRB_RC]           = nil
+IRB.conf[:INSPECT_MODE]     = true
+#IRB.conf[:IRB_RC]           = "#{ENV['HOME']}/.irbrc"
 IRB.conf[:BACK_TRACE_LIMIT] = 16
 IRB.conf[:USE_LOADER]       = false
 IRB.conf[:USE_READLINE]     = true
 IRB.conf[:USE_TRACER]       = false
-IRB.conf[:IGNORE_SIGINT]    = true
-IRB.conf[:IGNORE_EOF]       = false
+IRB.conf[:IGNORE_SIGINT]    = false
+IRB.conf[:IGNORE_EOF]       = true
 IRB.conf[:DEBUG_LEVEL]      = 0
 
 
 IRB.conf[:PROMPT][:PULLULANT] = {
-  :PROMPT_I => "%N" + "(%m):%03n:%i> ".blue.bold,
-  :PROMPT_S => "%N" + "(%m):%03n:%i%l ".blue.dark,
-  :PROMPT_C => "%N" + "(%m):%03n:%i* ".blue.dark,
+  :PROMPT_I => "%N" + "(%m):%03n:%i> ".yellow,
+  :PROMPT_S => "%N" + "(%m):%03n:%i%l ".red,
+  :PROMPT_C => "%N" + "(%m):%03n:%i* ".blue,
   :RETURN => " ⤷ %s\n" # used to printf
 }
+
+Colored2.disable!
 
 IRB.conf[:PROMPT_MODE]  = :PULLULANT
 
