@@ -362,3 +362,18 @@ function rsync.incremental() {
 
 alias rsi='rsync.incremental'
 
+function wifi.setup() {
+  [[ ! -x /usr/local/bin/airport ]] && sudo ln -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport
+  [[ ! -x /usr/local/bin/watch   ]] && cd /usr/local/bin && sudo curl -O http://ktwit.net/code/watch-0.2-macosx/watch && sudo chmod 755 watch
+}
+
+function wifi.show() {
+  wifi.setup
+  while true; do
+    airport -s | awk 'BEGIN{FS=" -"}{printf("%10d%s\n", -$2, $0)}' | sort -nr > /tmp/wifi
+    clear
+    cat /tmp/wifi
+    sleep 1
+  done
+}
+
