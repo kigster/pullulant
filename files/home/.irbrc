@@ -1,16 +1,19 @@
 # encoding: utf-8
 require 'readline'
 require 'irb/completion'
-
+require 'irb/ext/save-history'
 begin
   require 'colored2'
 rescue LoadError => e
   puts "Unable to load gem dependency: #{e.message}"
   puts "Installing them for you...."
-  puts `gem install colored2`
-  puts "Now run irb again, and you should be fine :)"
-  exit 1
+  puts `gem install colored2 irbtools --no-ri --no-rdoc`
+  puts
+  puts "Replacing current process with the new IRB..."
+
+  exec ARGV.join(' ')
 end
+
 
 puts '—' * (ENV['COLUMNS'] || 80)
 
@@ -36,19 +39,19 @@ end
 # irb history
 IRB.conf[:EVAL_HISTORY]     = 1000
 IRB.conf[:SAVE_HISTORY]     = 1000
-#IRB.conf[:HISTORY_FILE]     = File::expand_path('~/.irbhistory')
+IRB.conf[:HISTORY_FILE]     = "#{ENV['HOME']}/.history.irb.#{RUBY_VERSION}"
 IRB.conf[:IRB_NAME]         = ('I'.red << 'R'.yellow << 'B'.green).dark.bold
 IRB.conf[:MATH_MODE]        = false
-IRB.conf[:INSPECT_MODE]     = true
-#IRB.conf[:IRB_RC]           = "#{ENV['HOME']}/.irbrc"
+IRB.conf[:INSPECT_MODE]     = false
 IRB.conf[:BACK_TRACE_LIMIT] = 16
 IRB.conf[:USE_LOADER]       = false
 IRB.conf[:USE_READLINE]     = true
 IRB.conf[:USE_TRACER]       = false
-IRB.conf[:IGNORE_SIGINT]    = false
-IRB.conf[:IGNORE_EOF]       = true
+IRB.conf[:IGNORE_SIGINT]    = true
+IRB.conf[:IGNORE_EOF]       = false
 IRB.conf[:DEBUG_LEVEL]      = 0
 
+#Colored2.disable!
 
 IRB.conf[:PROMPT][:PULLULANT] = {
   :PROMPT_I => "%N" + "(%m):%03n:%i> ".yellow,
@@ -57,7 +60,6 @@ IRB.conf[:PROMPT][:PULLULANT] = {
   :RETURN => " ⤷ %s\n" # used to printf
 }
 
-Colored2.disable!
 
 IRB.conf[:PROMPT_MODE]  = :PULLULANT
 
@@ -68,3 +70,4 @@ IRB.conf[:PROMPT][:PULLULANT_HUGE] = {
   :PROMPT_C    => "%N" + " (%m) ".blue + " [:%03n] ".cyan.on.black + ":%i*  >".green.italic + ' '.clear,
   :RETURN      => "%80s".yellow + "   ⬅︎ ┝━".blue.bold  + "━" * 50 + "\n"# used to printf
 }
+
