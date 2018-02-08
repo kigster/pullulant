@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-if [[ -z ${enabled_services[*]} ]]; then
-  declare -a enabled_services=$(brew services list | tail +2 | cut -f1 -d ' ')
-fi
-  
 
 function svcs() {
   command=$1
   svc=$2
+
+  if [[ -z ${enabled_services[*]} ]]; then
+    declare -a enabled_services=$(brew services list | tail +2 | cut -f1 -d ' ')
+  fi
+  
   
   local action=
   

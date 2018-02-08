@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# © 2016-2017 Konstantin Gredeskoul
+# (c) 2016-2017 Konstantin Gredeskoul
 # https://github.com/kigster/pullulant/
 #
 # MIT License
@@ -27,7 +27,8 @@ alias glp='git log -p -2'
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
 alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
-alias gpr='git pull --rebase'
+#alias gpr='git pull --rebase'
+alias gpr='git sp' # smart pull
 alias gprs='git stash && git pull --rebase && git stash pop'
 alias gpp='git pull --rebase && git push'
 
@@ -37,7 +38,10 @@ alias gap='git add -p'
 alias gclean='git clean -d -f -x'
 alias gcl='git.clone'
 
-alias hpr='hub pull-request'
+function hpr() {
+  hub pull-request
+}
+
 alias hci='hub ci-status'
 
 function git.squash() {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #_______________________________________________________________________________
 #
-# © 2016-2017 Konstantin Gredeskoul
+# (c) 2016-2017 Konstantin Gredeskoul
 # https://github.com/kigster/pullulant/
 #
 # MIT License
@@ -41,7 +41,7 @@ function ruby.gems() {
       declare -a RUBY_GEMS=($_gems)
     fi
   else
-    declare -a RUBY_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print activesupport pivotal_git_scripts)
+    declare -a RUBY_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print activesupport pivotal_git_scripts travis)
   fi
   local gems=($@)
   local existing=$(gem list)

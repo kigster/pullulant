@@ -17,5 +17,6 @@ function t-l() {
 }
 
 function t-a() {
+  local args=
   tmux attach $*
 }
