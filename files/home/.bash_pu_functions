@@ -1,5 +1,56 @@
 #!/usr/bin/env bash
 
+##-----------------------------------------------------------------------------
+## description: finds and renames all files in a current folder recursively,
+##              using a custom bash function for replacing each name
+##
+##    function: rename <find file pattern> <match regex> <replace regex>
+##          or: rename <find file pattern> <single-file rename bash function>
+##          eg: 
+##              rename::kit::add-test() { echo $1 | sed 's/\.rb/_test.rb/g';  }
+##              rename '*.rb' rename::kit::add-test
+
+rename() {
+  local pattern="$1"
+  local match="$2"
+  local replace="$3"
+  local newname
+
+  [[ ${pattern} =~ '*' ]] || pattern="*${pattern}"
+  printf "${bldylw}pattern: [${pattern}], match=[${match}], replace=[${replace}]\n"
+  if [[ -n $(type "${match}" 2>/dev/null) ]] ; then
+    for file in $(find . -type f -name "${pattern}" -print); do
+      rename::do ${file} $(${match} ${file})
+    done
+  elif [[ -n "${match}" && -n "${replace}" ]] ; then
+    for file in $(find . -type f -name "${pattern}"); do
+      newname=$(echo ${file} | sed -E "s/${match}/${replace}/g")
+      rename::do ${file} ${newname}
+    done
+  else
+    echo "usage: rename <find file pattern> <match regex> <replace regex>"
+    echo "   or: rename <find file pattern> <single-file rename bash function>"
+  fi
+}
+
+## "kit" functions are meant to be passed as a second argument to rename().
+# They provide various pre-defined renaming patterns.
+
+__rename::kit::add-test::func() { echo $1 | sed 's/\.rb/_test.rb/g';  }
+rename::kit::add-test()         { rename "$1" "__rename::kit::add-test::func" ; }
+
+__rename::kit::add-spec::func() { echo $1 | sed 's/\.rb/_spec.rb/g';  }
+rename::kit::add-spec()         { rename "$1" "__rename::kit::add-spec::func" ; }
+
+## 
+
+## rename() helpers
+rename::do()           { 
+  [[ -n ${DEBUG} ]] && rename::print ${1} ${2}
+  [[ -n ${DEBUG} ]] || rename::mv ${1} ${2}
+}
+rename::print()         { printf "${bldgrn}%-30.30s ➔ ${bldylw}%-40.40s\n" ${1} ${2}; }
+rename::mv()            { [[ -f ${1} ]] && mv "${1}" "${2}";  }
 
 ##-----------------------------------------------------------------------------
 ##    function: mem [egrep pattern] [ -U user[,..] | -g group[,..]
@@ -337,43 +388,5 @@ function csr.create() {
 }
 
 
-function rsync.incremental() {
-  local from=$1
-  shift
-  local to=$1
-  shift
 
-  if [[ -z $from || -z $to ]] ; then
-    echo "usage: ${bldylw}rsync.incremental <from> <to> [ rsync flags ]${clr}"
-    echo "   eg: rsync.incremental /Volumes/Foo/ /Volumes/foo-new"
-    return
-  fi
-
-  printf  "${bldblu}Starting rsync from ${bldylw}${from}${bldblu} to ${bldgrn}${to}${clr}...\n"
-
-  rsync -aXh --stats --progress --update \
-      --exclude='**/.Spotlight-*' \
-      --exclude="**/.DS_Store" \
-      --exclude="**/.Trashes" \
-      --exclude="**/.TemporaryItems" \
-      --exclude="**/.DocumentRevision*" \
-      --ignore-errors $* $from $to
-}
-
-alias rsi='rsync.incremental'
-
-function wifi.setup() {
-  [[ ! -x /usr/local/bin/airport ]] && sudo ln -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport
-  [[ ! -x /usr/local/bin/watch   ]] && cd /usr/local/bin && sudo curl -O http://ktwit.net/code/watch-0.2-macosx/watch && sudo chmod 755 watch
-}
-
-function wifi.show() {
-  wifi.setup
-  while true; do
-    airport -s | awk 'BEGIN{FS=" -"}{printf("%10d%s\n", -$2, $0)}' | sort -nr > /tmp/wifi
-    clear
-    cat /tmp/wifi
-    sleep 1
-  done
-}
 
