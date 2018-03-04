@@ -11,6 +11,24 @@ alias bss='brew services start'
 alias bst='brew services stop'
 alias bsr='brew services restart'
 
+declare -a DEFAULT_RUBY_GEMS=(
+  bundler 
+  irbtools 
+  warp-dir 
+  colored2 
+  sym 
+  pg 
+  pry 
+  pry-doc 
+  rspec 
+  awesome_print 
+  activesupport 
+  pivotal_git_scripts 
+  git-smart
+  travis
+  awscli
+)
+
 ##..................................................................................
 ##
 ##    function: ruby.rbenv
@@ -27,8 +45,8 @@ function ruby.rbenv() {
 function ruby.init() {
   ruby.gems
   wd install --dotfile ~/.bash_${USER} > /dev/null
-  sym --bash-completion ~/.bash_${USER} > /dev/null
-  printf "${bldred}You should now reboot, dude.${txtrst}\n"
+  sym -B ~/.bash_${USER}
+  printf "${bldred}Maybe you should reboot now, dude.${txtrst}\n"
 }
 
 function ruby.gems() {
@@ -41,8 +59,9 @@ function ruby.gems() {
       declare -a RUBY_GEMS=($_gems)
     fi
   else
-    declare -a RUBY_GEMS=(bundler irbtools warp-dir colored2 sym pg pry pry-doc rspec awesome_print activesupport pivotal_git_scripts travis)
+    declare -a RUBY_GEMS=(${DEFAULT_RUBY_GEMS[@]})
   fi
+
   local gems=($@)
   local existing=$(gem list)
 
