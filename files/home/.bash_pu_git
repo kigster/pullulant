@@ -20,7 +20,11 @@ alias gd='git diff'
 alias gdc='git diff --cached'
 alias gc='git commit'
 alias gcm='git commit -m'
+
 alias gco='git checkout'
+alias gcob='git checkout -b'
+alias gcom='git checkout master'
+alias gcod='git checkout develop'
 
 alias gl='git log'
 alias glp='git log -p -2'
