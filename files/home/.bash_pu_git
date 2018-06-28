@@ -42,6 +42,8 @@ alias gap='git add -p'
 alias gclean='git clean -d -f -x'
 alias gcl='git.clone'
 
+alias gbs='git branch --sort=committerdate  | tail -20'
+
 function hpr() {
   hub pull-request
 }
