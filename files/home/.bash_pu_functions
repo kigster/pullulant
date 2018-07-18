@@ -1,5 +1,85 @@
 #!/usr/bin/env bash
 
+# Returns result of find operation that works for files and folder
+# with spaces.
+files::ls() { 
+  local pattern="$1"
+  [[ -z "${pattern}" ]] && return
+  while IFS= read -d $'\0' -r file ; do
+    echo "${file}"
+  done < <(find . -iname "${pattern}" -print0)
+}
+
+files::ls::mp3() {
+  array::ls '*.mp3'
+}
+
+
+## "kit" functions are meant to be passed as a second argument to rename().
+# They provide various pre-defined renaming patterns.
+better-sed() {
+  [[ $(which gsed) ]] && { printf $(which gsed); return ; }
+  [[ $(which sed)  ]] && { printf $(which sed); return ; }
+}
+
+__sed() { better-sed; }
+
+__rename::kit::add-test::func() { echo "$1" | __sed -E 's/\.rb/_test.rb/g';  }
+rename::kit::add-test()         { rename "$1" "__rename::kit::add-test::func" ; }
+
+__rename::kit::add-spec::func() { echo "$1" | __sed -E 's/\.rb/_spec.rb/g';  }
+rename::kit::add-spec()         { rename "$1" "__rename::kit::add-spec::func" ; }
+
+## rename() helpers
+rename::do()           { 
+  [[ -n ${DEBUG} ]] && rename::print "${1}" "${2}"
+  [[ -n ${DEBUG} ]] || rename::mv "${1}" "${2}"
+}
+
+rename::print()         { printf "moving ${bldgrn}%-70.70s\n    ➜ ${bldylw}%-70.70s${clr}\n" "${1}" "${2}"; }
+
+rename::mv()            { 
+  local from="$1"
+  local to="$2"
+  
+  [[ ! -f "${from}" ]] && {
+    printf "${bldred}Source file ${from} does not exists.\n"
+    return 1
+  }
+
+  [[ -f "${to}" ]] && {
+    printf "${bldred}Destination file ${to} already exists.\n"
+    return 2
+  }
+
+  [[ -z "${to}" ]] && {
+    printf "${bldred}Destination file appears to be blank.\n"
+    return 3
+  }
+
+  printf ${txtblu};
+  mv "${from}" "${to}"
+  code=$?; printf ${clr}
+  
+  [[ ${code} -ne 0 ]] && {
+    printf "${bldred}Command mv exited with status ${code}\n"
+    rename::error "${from}" "${to}"
+    return 4
+  }
+  
+  rename::print "${from}" "${to}"
+  return 0
+}
+
+rename::error() {
+  local from="$1"
+  local to="$2"
+  
+  printf "${bldred}An error occurred while attempting to move\n"
+  printf "   source file: ${bldylw}${from}${bldred}\n"
+  printf "   destination: ${bldpur}${to}${clr}.\n\n"
+}
+
 ##-----------------------------------------------------------------------------
 ## description: finds and renames all files in a current folder recursively,
 ##              using a custom bash function for replacing each name
@@ -9,48 +89,80 @@
 ##          eg: 
 ##              rename::kit::add-test() { echo $1 | sed 's/\.rb/_test.rb/g';  }
 ##              rename '*.rb' rename::kit::add-test
-
 rename() {
   local pattern="$1"
   local match="$2"
   local replace="$3"
+  local sedflags=${4:-"g"}
   local newname
+  
+  local find_command="-print"
+  
+  local _sed=$(__sed)
 
   [[ ${pattern} =~ '*' ]] || pattern="*${pattern}"
-  printf "${bldylw}pattern: [${pattern}], match=[${match}], replace=[${replace}]\n"
+
+  readarray -t file_array <<< $(files::ls "${pattern}")
+  printf "${bldblu}✅  discovered ${#file_array} files matching ${bldylw}${pattern}\n\n"
+
   if [[ -n $(type "${match}" 2>/dev/null) ]] ; then
-    for file in $(find . -type f -name "${pattern}" -print); do
-      rename::do ${file} $(${match} ${file})
+    for file in "${file_array[@]}"; do
+      rename::mv "${file}" $(${match} "${file}")
     done
   elif [[ -n "${match}" && -n "${replace}" ]] ; then
-    for file in $(find . -type f -name "${pattern}"); do
-      newname=$(echo ${file} | sed -E "s/${match}/${replace}/g")
-      rename::do ${file} ${newname}
+    for file in "${file_array[@]}"; do
+      newname=$(echo "${file}" | sed -E "s#${match}#${replace}#${sedflags}")
+      rename::mv "${file}" "${newname}"
     done
   else
-    echo "usage: rename <find file pattern> <match regex> <replace regex>"
-    echo "   or: rename <find file pattern> <single-file rename bash function>"
+    printf "${bldred}Invalid usage.${clr}
+
+${bldpur}USAGE:${clr}    
+ 
+    ${bldgrn}rename 'pattern' 'replace-argument-bash-function'
+    ${bldgrn}rename 'pattern' 'find regex' 'replace regex' [ 'sed flags' ]
+
+${bldpur}DESCRIPTION:${clr}    
+    There are two ways to use this function:
+  
+    1. Using a BASH function that receives a single file name, and must 
+       output the expected renamed version. 
+
+    2. By passing three arguments: file search pattern that's passed to 
+       'find', regular expression defining what we are replacing, and 
+       finally the replace part. If you have 'gsed' in the PATH, it will 
+       be used the by default. Otherwise, regular 'sed' is used with -E flag. 
+       In this mode, any fourth argument (if provided) replaces the default
+       flag 'g' used in, eg. ${bldylw}sed -E 's/bash/zsh/${bldgrn}g'${clr}.
+
+${bldpur}EXAMPLES:${clr}    
+
+    ${bldylw}1. BASH Function Example
+    ${bldblk}# first define a function that insert '_test' into the argument
+    passed to it, but only if it ends with '.rb'.
+
+        \$ ${bldgrn}append_test() { echo \$1 | sed 's/\.rb/_test.rb/g';  }
+
+    ${bldylw}Next, we call rename and pass both the file search pattern and
+    the bash function neme.
+
+        \$ ${bldgrn}rename '*.rb' append_test
+
+    ${bldylw}2. SED expression 
+    ${bldblk}# Similar to the above, the following will append '-cd1' to 
+    every mp3 file in the current directory, recursively.
+    
+        \$ ${bldgrn}rename '*.mp3' '\.mp3' '-cd1.mp3'
+
+
+${bldpur}LICENSE:${clr}    
+    MIT 
+
+"
+
   fi
 }
 
-## "kit" functions are meant to be passed as a second argument to rename().
-# They provide various pre-defined renaming patterns.
-
-__rename::kit::add-test::func() { echo $1 | sed 's/\.rb/_test.rb/g';  }
-rename::kit::add-test()         { rename "$1" "__rename::kit::add-test::func" ; }
-
-__rename::kit::add-spec::func() { echo $1 | sed 's/\.rb/_spec.rb/g';  }
-rename::kit::add-spec()         { rename "$1" "__rename::kit::add-spec::func" ; }
-
-## 
-
-## rename() helpers
-rename::do()           { 
-  [[ -n ${DEBUG} ]] && rename::print ${1} ${2}
-  [[ -n ${DEBUG} ]] || rename::mv ${1} ${2}
-}
-rename::print()         { printf "${bldgrn}%-30.30s ➔ ${bldylw}%-40.40s\n" ${1} ${2}; }
-rename::mv()            { [[ -f ${1} ]] && mv "${1}" "${2}";  }
 
 ##-----------------------------------------------------------------------------
 ##    function: mem [egrep pattern] [ -U user[,..] | -g group[,..]
