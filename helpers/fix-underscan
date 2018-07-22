@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+
+
+function osx::underscan() {
+  cd /var/
+  cp .com.apple.iokit.graphics  .com.apple.iokit.graphics.bak
+  open /System/Library/PreferencePanes/Displays.prefPane
+  /usr/bin/osascript -e  'display dialog "Please change resolution on the problem monitor — to any other: its not important what — just that it changed."'
+  line=$((0 + $(diff .com.apple.iokit.graphics .com.apple.iokit.graphics.bak1 | head -1 | sed 's/c.*//g') ))
+  if [[ "${line}" -gt 0 ]]; then
+    /usr/bin/vim +$(( $line - 3 ))
+  fi
+}
+
+
