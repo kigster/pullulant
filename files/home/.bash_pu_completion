@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+#        File: pu-completion
+#     Project: Pullulant — Completion
+#              © 2015—2016 Konstantin Gredeskoul, all rights reserved.
+#     License: MIT
+#   Home Page: https://github.com/kigster/pullulant
+#
+#_______________________________________________________________________________
+
+PU_HOME=/Users/kig/workspace/oss/bash/pullulant; PATH=$PATH:${PU_HOME}
+
+_pu_flags() {
+  if [[ -z "$PU_FLAGS" ]]; then
+    pushd $PU_HOME > /dev/null
+    export PU_FLAGS=$(./pu -H | egrep '^  \-[a-zA-Z]' | sed 's/    / /g' | awk '{print $1}' | tr '\n' ' ')
+    popd >/dev/null
+  fi
+  echo -n $PU_FLAGS
+}
+
+_pu() {
+    [[ -z "$PU_HOME" ]] && return
+
+    local PU_COMP_OPTIONS cur prev
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    COMPREPLY=()
+
+    if [[ "${prev}" == "-r" ]]; then
+      PU_COMP_INSTALLERS=${PU_COMP_INSTALLERS:-$(pu -e 'pu-installers; pu-helpers')}
+      PU_COMP_OPTIONS=$PU_COMP_INSTALLERS
+    elif [[ "${prev}" == "-f" ]]; then
+      PU_COMP_FEATURES=${PU_COMP_FEATURES:-$(pu -e 'pu-features')}
+      PU_COMP_OPTIONS=$PU_COMP_FEATURES
+    else
+      PU_COMP_OPTIONS=$(_pu_flags)
+    fi
+    COMPREPLY=( $(compgen -W "${PU_COMP_OPTIONS}" -- ${cur}) )
+    return 0
+}
+
+complete -F _pu pu

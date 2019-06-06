@@ -14,21 +14,6 @@ files::ls::mp3() {
   array::ls '*.mp3'
 }
 
-blah-to-mp3() {
-  local ext="${1:-'m4v'}"; shift
-
-  [[ -z $(which ffmpeg) ]] && {
-    printf "Please install ffmpeg with ${bldgrn}brew install ffmpeg${clr}\n"
-    return 1
-  }
-
-  for file in $(find . -type f -name "*.${ext}"); do 
-    local dest=$(echo $file | sed "s/\\.${ext}//g").mp3
-    echo
-    printf "file ${bldylw}${file}${clr} ➜ ${bldgrn}${dest}${clr}\n"
-    ffmpeg -stats -v 5 -y -i "${file}" -acodec libmp3lame -ac 2 -ab 320k ${dest}
-  done
-}
 
 ## "kit" functions are meant to be passed as a second argument to rename().
 # They provide various pre-defined renaming patterns.

@@ -17,7 +17,7 @@ alias gst='git status'
 alias gss='git show --stat'
 
 alias gd='git diff'
-alias gdc='git diff --cached'
+alias gdc='git diff --cached -b'
 alias gc='git commit --verbose'
 alias gcm='git commit -m'
 
@@ -135,3 +135,23 @@ function git.clean() {
   fi
 }
 
+
+_git_checkout ()
+{
+    __git_has_doubledash && return;
+    case "$cur" in
+        --conflict=*)
+            __gitcomp "diff3 merge" "" "${cur##--conflict=}"
+        ;;
+        --*)
+            __gitcomp_builtin checkout
+        ;;
+        *)
+            local flags="--track --no-track --no-guess" track_opt="--track";
+            if [ "$GIT_COMPLETION_CHECKOUT_NO_GUESS" = "1" ] || [ -n "$(__git_find_on_cmdline "$flags")" ]; then
+                track_opt='';
+            fi;
+            __git_complete_refs $track_opt
+        ;;
+    esac
+}
