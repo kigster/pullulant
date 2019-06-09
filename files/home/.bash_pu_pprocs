@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+#
+# pprocs family of functions
+# Author: Konstantin Gredeskoul
+# Project: Pullulant.
+#
+
+[[ -f ~/.bash_pu_colors ]] && source ~/.bash_pu_colors
+
+set +e
+
+# Single PID operations
+
+# Check if the process is running
+proc::alive() {
+  local pid="$1"
+  [[ -n "${pid}" && -n $(ps -p "${pid}" | grep -v TTY) ]]
+}
+
+# Send a signal to a process
+proc::sig() {
+  local pid="${1}"; shift
+  local signal="${1}"; shift
+
+  [[ -z "${pid}" || -z "${signal}" ]] && {
+    echo "usage: proc::sig <pid> <signal>"
+    return 1
+  }
+
+  printf "${bldgrn}sending ${bldred}${signal} to ${bldylw}${pid}${clr}...\n"
+  proc::alive ${pid} && kill -s ${signal} ${pid}
+}
+
+# Stop a running process by sending it a TERM first then KILL
+# Usage: 
+#    proc::stop <pid> [ seconds-to-wait ]
+#
+proc::stop() {
+  local pid=${1}; shift
+  local delay=${1:-"0.3"}; shift
+
+  if [[ -z ${pid} ]] ; then
+    echo "descr: if the given PID is active, first sends TERM, then KILL"
+    echo "usage: proc::stop <pid>"
+    return 1
+  fi
+
+  proc::alive "${pid}" && \
+    ( proc::sig "${pid}" "TERM" || true ) && \
+    sleep ${delay}
+
+  proc::alive "${pid}" && \
+    proc::sig "${pid}" "KILL"
+}
+
+# Normalize search pattern, by inserting a '[' in the beginning
+pprocs::normalize::pattern() {
+  local pattern="$*"
+  # convert a simple pattern, eg. "puma" into eg. "[p]uma"
+  [[ "${pattern:0:1}" == '[' ]] || pattern="[${pattern:0:1}]${pattern:1}"
+  printf "${pattern}"
+}
+
+pprocs::pids() {
+  local pattern="${1}"  
+
+  if [[ -z "${pattern}" ]]; then
+    echo "descr: finds process IDs matching a given pattern"
+    echo "usage: pprocs::pids <pattern>"
+    echo "   eg: pprocs::pids puma"
+    return 0
+  fi
+
+  # grab the pids
+  ps -ef | egrep "${pattern}" | egrep -v grep | awk '{print $2}' | sort -n
+}
+
+pprocs::all() {
+  if [[ -z "${1}" ]]; then
+    echo "descr: prints processes matching a given pattern"
+    echo "usage: pprocs::all <pattern>"
+    echo "   eg: pprocs::all puma"
+    return 0
+  fi
+
+  local pattern="$(pprocs::normalize::pattern "$1")"; shift
+  ps -ef | egrep "${pattern}" | egrep -v grep
+}
+
+#
+# Usage:   pprocs::for-each <pattern> function
+#    eg:   pprocs::for-each puma proc::stop
+#
+pprocs::for-each() {
+  if [[ -z "${1}" || -z "${2}" ]] ; then
+    echo "descr: sends a given signal(s) to PIDs matching a given pattern"
+    echo "usage: pprocs::for-each <pattern> <function>"
+    echo "   eg: pprocs::for-each puma echo"
+    return 0
+  fi
+  
+  local pattern="$(pprocs::normalize::pattern "$1")"; shift
+  local func=${1:-"echo"}
+
+  if [[ -z $(which ${func}) && -z $(type ${func} 2>/dev/null) ]]; then
+    echo "ERROR: function / command ${func} is invalid."
+    return 1
+  fi
+
+  while true; do
+    local -a pids=($(pprocs::pids "${pattern}"))
+
+    if [[ ${#pids[@]} == 0 ]]; then
+      break
+    fi
+
+    eval "${func} ${pids[0]}"
+    sleep 0.2
+  done
+}
+
+#
+# Usage: pprocs::stop <pattern>
+#
+pprocs::stop() {
+  if [[ -z "${1}" ]] ; then
+    echo "descr: finds and stops IDs matching a given pattern"
+    echo "usage: pprocs::stop <pattern>"
+    echo "   eg: pprocs::stop puma"
+    return 0
+  fi
+
+  pprocs::for-each "${1}" "proc::stop"
+}
+
+# An Alias
+pzap() {
+  pprocs::stop "$@"
+}
+

@@ -32,6 +32,7 @@ source ~/.bash_pu_colors
 #source ~/.bash_pu_completion
 #source ~/.bash_pu_docker
 source ~/.bash_pu_functions
+source ~/.bash_pu_pprocs
 source ~/.bash_pu_git
 source ~/.bash_pu_grep
 source ~/.bash_pu_pgsql
