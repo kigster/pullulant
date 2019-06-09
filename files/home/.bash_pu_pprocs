@@ -134,7 +134,14 @@ pprocs::stop() {
 }
 
 # An Alias
-pzap() {
+pstop() {
   pprocs::stop "$@"
 }
 
+pall() {
+  pprocs::all "$@"
+}
+
+ppids() {
+  pprocs::pids "$@"
+}
