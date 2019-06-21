@@ -11,12 +11,12 @@
 #_______________________________________________________________________________
 #
 
-function install_bash_it() {
+function bash_it() {
   last_command_status=0
   [[ -d ${bash_it_home} && -n "${opts_force}" ]] && run "rm -rf ${bash_it_home}"
 
   [[ ! -d ${bash_it_home} ]] && {
-    run "git clone https://github.com/bash-it/bash-it.git ${bash_it_home}"
+    run "git clone https://github.com/kigster/bash-it.git ${bash_it_home}"
     run "rm -f ~/.bash_profile.bak"
     run "cd ${bash_it_home} && echo 'n'| ./install.sh && cd -"
   }
@@ -27,7 +27,6 @@ function install_bash_it() {
 
   install_bash_it_prompt
   update_bashrc
-  use_newer_bash
 }
 
 function update_bashrc() {
@@ -43,20 +42,7 @@ function install_bash_it_prompt() {
      -z "$(egrep 'bash_it_prompt_theme' $HOME/.bash_profile)" ]] && \
 
      sed -i.bak -E \
-     's/^export BASH_IT_THEME="?.*$/[[ -s \$HOME\/.bash_it_prompt_theme ]] \&\& export BASH_IT_THEME=\$(cat \$HOME\/.bash_it_prompt_theme)\nexport BASH_IT_THEME=\${BASH_IT_THEME:-\"powerline-multiline\"}/g' $HOME/.bash_profile
-}
-
-function use_newer_bash() {
-  local newer_bash=$(which /usr/local/bin/bash)
-  [[ -z "${newer_bash}" ]] && return
-  [[ -z "$(grep ${newer_bash} /etc/shells)" ]] && {
-    run "echo ${newer_bash} | sudo tee -a /etc/shells >/dev/null # show-stdout"
-  }
-
-  local current_shell=$(finger ${USER} | grep Shell | awk 'BEGIN{FS="Shell: "}{print $2}')
-  if [[ "${current_shell}" != "${newer_bash}" && -s "${newer_bash}" ]] ; then
-    run "sudo chsh -s ${newer_bash} ${USER}"
-  fi
+     's/^export BASH_IT_THEME="?.*$/export BASH_IT_THEME="powerline-multiline"/g' $HOME/.bash_profile
 }
 
 function bash_it_component() {

@@ -13,7 +13,7 @@
 # This is a brew installer meant to replace the complicated sprout-homebrew cookbooks.
 #
 
-function install_brew() {
+function brew() {
   brew=`which brew 2>/dev/null`
   if [ -z "${brew}" ]; then
     curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install > /tmp/brew.rb

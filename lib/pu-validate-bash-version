@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+pu-validate-bash-version() {
+  local required_version="${1:-"4"}"
+  local current_bash_version=${BASH_VERSION:0:1}
+  if [[ ${current_bash_version} -lt ${required_version} ]]; then
+    echo
+    printf "
+  ${bldred}<< WHOOPS! You are running an old version of BASH: ${bldylw}Version ${current_bash_version} ${bldred}>> ${clr}\n"
+
+    sleep 0.5
+
+    printf "
+    To use this script you must be running BASH version 4 or later.
+
+    Below we describe the steps you should take to install BASH v5
+    on Mac OS-X. Please follow these steps precisely, and then
+    return here to run ${bldylw}pu${clr}.
+    "
+
+    printf "
+  ${bldred}WARNING: ${bldblu}
+
+    After you perform the below described steps, keep this terminal
+    open (do not close it) until you are able to open new terminal
+    session with the new BASH activated. If you make a mistake and
+    accidentally close this terminal, you may not be able to login
+    at all. So always test the new shell by opening a new Terminal
+    window, and verifying that you have the right version there..${clr}
+    "
+
+    printf "
+
+  ${clr}Please perform the following steps to upgrade your BASH.
+  To make things simple, we provided a handy script:
+
+    1. please ensure you have ${bldblu}brew${clr} (Homebrew) installed.
+    2. run this script: ${bldblu}./helpers/upgrade-shell${clr}
+
+  Alternatively, you can upgrade your shell manually using the following
+  commands:
+
+    1. ${bldgrn}brew install bash${clr}
+    2. ${bldgrn}sudo echo '/usr/local/bin/bash' >> /etc/shells${clr}
+    3. ${bldgrn}chsh -s /usr/local/bin/bash${clr} ${bldblk}# and follow the prompts${clr}
+    4. ${bldgrn}echo 'export PATH=/usr/local/bin:\${PATH}' >> ~/.bash_profile${clr}
+
+  Why? Because you want the ${bldgrn}/usr/local/bin/bash${clr} to be ahead
+  of the built-in old ${bldylw}/usr/bin/bash${clr} in the path. This way
+  BASH scripts that declare ${bldblu}#!/usr/bin/env bash${clr} (like pu!)
+  would pick up the latest bash version.
+
+    "
+    exit 1
+  fi
+}

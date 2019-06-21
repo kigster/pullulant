@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+declare -a iterm_files=(
+  "./Saved Application State/com.googlecode.iterm2.savedState"
+  "./Preferences/com.googlecode.iterm2.plist"
+  "./Caches/com.googlecode.iterm2"
+)
+
+iterm-backup-prefs() {
+  local pwd=$(pwd)
+  cd ~/
+  run "tar cvzf /tmp/iterm2.tarz \"${iterm_files[@]}\""
+  cd "${pwd}"
+  run "mv /tmp/iterm2.tarz files"
+}

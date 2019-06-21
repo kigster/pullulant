@@ -8,10 +8,9 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-[[ -n "${bash_it_plugins}" ]]     || bash_it_plugins="git hub osx postgres ssh nginx"
+[[ -n "${bash_it_plugins}" ]]     || bash_it_plugins="alias-completion base git"
 [[ -n "${bash_it_aliases}" ]]     || bash_it_aliases="atom git homebrew homebrew-cask npm osx vim"
 [[ -n "${bash_it_completions}" ]] || bash_it_completions="brew git hub ssh"
-
 
 # List of Brew Formulas to install and l`ink
 [[ -n "${brew_packages}" ]] || brew_packages="
@@ -34,14 +33,13 @@
   nginx
   nmap
   openssl
+  jemalloc
   pcre
   pstree
   qt
   rbenv
   redis
   ruby-build
-  tmux
-  tmux-mem-cpu-load
   tree
   vim
   watch
@@ -55,12 +53,8 @@
   atom
   github-desktop
   gitx
-  istat-menus
-  iterm2
-  shiftit
   teamviewer
   textmate
-  dash
 "
 
 [[ -n "${brew_relink_packages}" ]] || brew_relink_packages="
@@ -78,8 +72,8 @@
 # This is the ruby/python version that will be installed using rbenv
 # the first one in the list will be set as the default. At least one
 # is required to keep going with SproutWrap.
-[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.3.1")
-[[ -n "${rbenv_ruby_default}" ]]    || rbenv_ruby_default="2.3.1"
+[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.6.3 2.6.2")
+[[ -n "${rbenv_ruby_default}" ]]    || rbenv_ruby_default="2.6.2"
 [[ -n "${pyenv_python_versions}" ]] || pyenv_python_versions=()
 
 # These define optional modules for node, python and ruby. Note that
@@ -93,26 +87,31 @@
   thefuck
 "
 [[ -n "${ruby_modules}" ]]   || ruby_modules="
+  activesupport
+  awesome_print
+  awscli
   bundler
+  colored2
+  git-smart
+  irbtools
+  pg
+  pivotal_git_scripts
+  pry
+  pry-doc
+  rspec
+  sym
+  travis
   warp-dir
 "
 
 [[ -n "${alfred_plugins}" ]] || alfred_plugins="
-  https://github.com/bevesce/unicode-symbols-search/blob/master/Unicode%20Symbols%20Search.alfredworkflow?raw=true
-  https://github.com/packal/repository/raw/master/fspinillo.alfredv2.slackfred/slackfred.alfredworkflow
-  https://github.com/packal/repository/raw/master/net.deanishe.alfred-stackoverflow/stackoverflow-1.2.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.ipaterson.alfred.wunderlist/wunderlist.alfredworkflow
+  https://github.com/bevesce/unicode-symbols-search/raw/master/Unicode%20Symbols%20Search.alfredworkflow
+  https://github.com/deanishe/alfred-stackoverflow/raw/master/StackOverflow-1.2.1.alfredworkflow
   https://github.com/packal/repository/raw/master/com.shaoshing.alfred-evernote/search_evernote.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.alfredapp.mdeboer.atom/atom.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.stuartryan.alfred.advancedgooglemaps/advanced_google_maps_search.alfredworkflow
+  https://github.com/packal/repository/raw/master/com.alfredapp.mdeboer.atom/atom.without.icons_.alfredworkflow
   https://github.com/packal/repository/raw/master/com.spr.translate/translate.alfredworkflow
-  https://github.com/packal/repository/raw/master/net.deanishe.alfred-google-similar-images/google_similar_images-1.0.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.pierbover.googleapps/googleapps.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.stuartryan.alfred.rapidbrowsertabs/rapid-browser-tabs.alfredworkflow
   https://github.com/packal/repository/raw/master/wolph.unit-converter/unit_converter.alfredworkflow
-  https://github.com/packal/repository/raw/master/org.kollectiv.crashPlan/crashplancontrol.alfredworkflow
   https://github.com/packal/repository/raw/master/com.fniephaus.homebrew/homebrew-for-alfred.alfredworkflow
-  https://github.com/packal/repository/raw/master/hue-alfred-workflow/philips.hue_.controller.v2.4.alfredworkflow
 "
 
 [[ -n "${iterm_themes}" ]]     || iterm_themes="BirdsOfParadise Atom Desert 3024 "

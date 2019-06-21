@@ -9,27 +9,40 @@
 #_______________________________________________________________________________
 #
 
-function setup {
+unset current_bash_version
+export current_bash_version=3 #"${BASH_VERSION:0:1}"
+
+pu-source-file() {
+  local file="files/home/$1"
+  [[ "$1" =~ '/' ]] && file="$1"
+  [[ -f "${file}" ]] && source "${file}"
+}
+
+function pu-setup {
   export original_dir=$(pwd)
   export pu_home="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-  cd ${pu_home}
+  cd "${pu_home}"
   source "lib/pu-loader"
 }
 
-
-function help-command() {
+function pu-help-command() {
   pu-welcome-screen-short
   pu-print-help
 }
 
+pu-setup
+pu-source-file .bash_pu_colors
+pu-source-file lib/pu-validate-bash-version
+
+pu-validate-bash-version 4
+
 # All installers and helpers
-declare -A installer_sudo_map
+declare -a installer_sudo_map
 export installer_sudo_map
 # Just the runners specified
 declare -A runner_sudo_map
 export runner_sudo_map
 
-setup
 
 opts_features=""
 
@@ -157,11 +170,11 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZe:b:dhilkmnops:qtvyx" opt; do
       echo
       finish;                 ;;
     h)
-      printf "$(help-command && pu-help-examples && pu-debug-help)" | less -R
+      printf "$(pu-help-command && pu-help-examples && pu-debug-help)" | less -R
       exit 0
       ;;
     H)
-      help-command
+      pu-help-command
       pu-help-examples
       pu-debug-help
       exit 0

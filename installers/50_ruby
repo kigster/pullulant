@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 
-function install_ruby_modules {
+function ruby {
   [[ -n "${ruby_modules}" ]] && {
     declare -a pre_installed=($(current_gems))
     for gem in ${ruby_modules}; do

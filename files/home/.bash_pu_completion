@@ -8,7 +8,13 @@
 #
 #_______________________________________________________________________________
 
-PU_HOME=/Users/kig/workspace/oss/bash/pullulant; PATH=$PATH:${PU_HOME}
+PU_PWD=$(pwd)
+export PU_BINARY=${PU_BINARY:-"$(find ${PU_PWD} -name pu -type f)"}
+
+if [[ -n ${PU_BINARY} && -s ${PU_BINARY} ]]; then
+  export PU_HOME="$(dirname ${PU_BINARY})"
+  export PATH="$PATH:${PU_HOME}"
+fi
 
 _pu_flags() {
   if [[ -z "$PU_FLAGS" ]]; then
@@ -16,11 +22,12 @@ _pu_flags() {
     export PU_FLAGS=$(./pu -H | egrep '^  \-[a-zA-Z]' | sed 's/    / /g' | awk '{print $1}' | tr '\n' ' ')
     popd >/dev/null
   fi
-  echo -n $PU_FLAGS
 }
 
 _pu() {
     [[ -z "$PU_HOME" ]] && return
+
+    _pu_flags
 
     local PU_COMP_OPTIONS cur prev
 
@@ -36,7 +43,7 @@ _pu() {
       PU_COMP_FEATURES=${PU_COMP_FEATURES:-$(pu -e 'pu-features')}
       PU_COMP_OPTIONS=$PU_COMP_FEATURES
     else
-      PU_COMP_OPTIONS=$(_pu_flags)
+      PU_COMP_OPTIONS=$(echo -n $PU_FLAGS)
     fi
     COMPREPLY=( $(compgen -W "${PU_COMP_OPTIONS}" -- ${cur}) )
     return 0
