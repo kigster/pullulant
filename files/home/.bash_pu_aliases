@@ -14,7 +14,7 @@ alias dir='ls -alF'
 alias lr='ls -alrt'
 alias l='ls -lF'
 alias ds='du -k  | grep -v "\/.*\/"'
-alias diskspace="du -k | grep -v './.*\/'"
+alias dss="du -k | grep -v './.*\/'"
 alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
 alias ppjson="jq '.'"
 alias b64paste='pbpaste | base64 --decode'
