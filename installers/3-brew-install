@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+# This is a brew installer meant to replace the complicated sprout-homebrew cookbooks.
+#
+
+function brew-install() {
+  brew=`which brew 2>/dev/null`
+  if [ -z "${brew}" ]; then
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install > /tmp/brew.rb
+    run 'printf "Installing Homebrew from scratch, this is so exciting!...\n"'
+    run "/usr/bin/ruby < /tmp/brew.rb"
+  else
+    cmd='echo "Homebrew is already installed – version: $(brew --version)"'
+    run "$cmd"
+  fi
+
+  # Let's run this damn upgrade
+  brew-upgrade
+
+  # Let's install that goddamn brew-cask
+  run "brew tap caskroom/cask" "true"
+
+  brew_partial_install=
+  if [ -n "${opts_brew_link_only}" -o -n "${opts_brew_casks_only}" -o -n "${opts_brew_formulae_only}" ]; then
+    brew_partial_install=yes
+  fi
+
+  # this is a prerequisite
+  run "brew cask install java --verbose #show-stdout"
+
+  [[ -z "${brew_partial_install}" || -n "${opts_brew_formulae_only}" ]] && {
+    for package in $brew_packages; do
+      brew_install $package
+    done
+  }
+
+  [[ -z "${brew_partial_install}" || -n "${opts_brew_casks_only}" ]] && {
+    for package in $brew_casks; do
+      brew_cask_install $package
+    done
+  }
+
+  [[ -n "${opts_brew_link_only}" ]] && {
+    for package in $brew_relink_packages; do
+      brew_relink $package
+    done
+  }
+
+  result=$(which gsed)
+  last_command_status=$?
+  if [ $last_command_status -ne 0 ]; then
+    run "brew install gnu-sed"
+    run "ln -nfs /usr/local/bin/gsed /usr/local/bin/sed"
+  fi
+  last_command_status=$?
+}
+
+
+function brew_relink {
+  pkg=${1}
+  run "brew link ${opts_verbose} $pkg --overwrite"
+}
+``
+function brew_cask_install {
+  package=$1
+
+  [[ ${#pu_brew_casks_already_installed[@]} == 0 ]] && {
+    run "printf \"loading list of installed brew casks...\n\""
+    pu_brew_casks_already_installed=($(brew cask list -1))
+  }
+
+  already_installed=$(array-contains-element $package "${pu_brew_casks_already_installed[@]}")
+  probable_destination="${var_brew_cask_appdir}/$(uppercase-first-letter ${package}).app"
+  if [[ "$already_installed" == "true" ]] ; then
+    run "printf \"${bldblu}found previously installed cask ${bldgrn}$package${txtrst}...\n\""
+  elif [[ -d "${probable_destination}" ]]; then
+    run "printf \"${bldblu}found existing destination ${bldblu}${probable_destination}${txtrst}...\n\""
+  else
+    run "brew cask install ${opts_force} --appdir=${var_brew_cask_appdir} ${package}"
+  fi
+}
+
+function brew_install_handler() {
+  package=$1
+  if [[ -n "($which md5)" ]]; then
+    tmp=/tmp/$(md5 -s "$$-$RANDOM" | awk '{print $4}')
+  else
+    tmp=/tmp/$RANDOM$$.tmp
+  fi
+  tmp=${tmp:0:11}
+  run "brew install $package ${opts_force} ${opts_verbose} 2>$tmp" "ignore_error"
+  status=$?
+  if [[ $status -ne 0 ]]; then
+    if [[ -n "$(grep link $tmp)" ]]; then
+      brew_relink $package
+    else
+      last_command_status=$status
+    fi
+  fi
+  run "rm -f $tmp #hide-command "
+}
+
+function brew_install {
+  package=$1
+
+  if [[ -z "${packages_to_force_link}" ]]; then
+    declare -a packages_to_force_link=(${brew_packages_to_link_after_install})
+  fi
+
+  if [ ! -z "${opts_brew_reinstall}" ]; then
+    run "brew uninstall ${opts_verbose} $package ${opts_force}" "true"
+    run "brew unlink    ${opts_verbose} $package ${opts_force}" "true"
+    run "brew install   ${opts_verbose} $package ${opts_force} 2>&1 #show-stdout" "true"
+    run "brew link      ${opts_verbose} $package --overwrite 2>&1  #show-stdout" "true"
+  else
+    [[ ${#pu_brew_already_installed[@]} == 0 ]] && {
+      run "printf \"loading list of installed brew packages...\n\" #is-a-command"
+      pu_brew_already_installed=($(brew list -1))
+    }
+    already_installed=$(array-contains-element $(basename $package) "${pu_brew_already_installed[@]}")
+    if [[ "$already_installed" == "false" ]]; then
+      brew_install_handler $package
+      pu_brew_already_installed=(${pu_brew_already_installed[@]} ${package})
+    else
+      run "printf \"${bldblu}found previously installed ${bldgrn}$package${txtrst}\n\""
+    fi
+
+    if [[ -z "${opts_brew_link_force}" ]]; then
+      # this logic is for packages that must be linked but arent' for some reason.
+      must_link=$(array-contains-element "${package}" "${packages_to_force_link[@]}")
+      if [[ "${must_link}" == "true" ]]; then
+        brew_relink ${package}
+      fi
+    else
+      brew_relink ${package}
+    fi
+  fi
+}

@@ -22,7 +22,7 @@ function require_dir {
     source ${file}
     if [[ $(grep -c 'sudo' ${file}) -gt 0 ]]; then
       if [[ ${subfolder} =~ 'install' ]]; then
-        installer_sudo_map[${submodule:3}]=yes
+        installer_sudo_map[${submodule:2}]=yes
       else
         installer_sudo_map[${submodule}]=yes
       fi
@@ -31,7 +31,7 @@ function require_dir {
 }
 
 function pu-installers() {
-  ls -1 $modules_dir | sed -E 's/[0-9]+_//g'
+  ls -1 $modules_dir | sed -E 's/[0-9]+-//g'
 }
 
 function pu-helpers() {

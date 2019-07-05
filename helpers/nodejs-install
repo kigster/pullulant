@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+function install_if_not_installed {
+  # http://stackoverflow.com/questions/10972176/find-the-version-of-an-installed-npm-package
+  package=$1
+  run "echo 'Checking if module $package is already globally installed'"
+  result=$(npm ll -pg --depth=0 $package 2>/dev/null | grep -o "@.*:" | sed 's/.$//; s/^.//; s/ //g; s/\n//g' | uniq | tr '\n' '-')
+  if [ -z "${result}" ]; then
+    run "npm uninstall -g $package"
+    run "npm install -g $package"
+  else
+    run "echo $package is already installed, version $result"
+  fi
+  return 0
+}
+
+function install_nodejs {
+  result=$(which node)
+  if [ -z "$result" ]; then
+    run "brew install nodejs --force"
+  fi
+  result=$(which npm)
+  if [ -z "$result" ]; then
+    run "brew install npm    --force"
+  fi
+  run "npm install npm@latest -g"
+  for module in $(echo "${nodejs_modules}"); do
+    run 'echo "installing module $module..."'
+    install_if_not_installed $module
+  done
+}

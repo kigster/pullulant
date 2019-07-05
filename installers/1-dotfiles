@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+# File: pu-completion
+#_______________________________________________________________________________
+#
+function dotfiles() {
+  [[ -f ~/.bashrc ]] || touch ~/.bashrc
+  run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
+  [[ -f ~/.bashrc ]] || ln -nfs ~/.bashrc ~/.bash_login
+
+  local rc="${HOME}/.bash_pu_completion"
+  touch $rc
+
+  [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}' >> $rc # show-stdout"
+
+  [[ -z "$(grep 'pu-completion' $rc)" ]] && run "cat ${pu_home}/bin/pu-completion >> $rc # show-stdout"
+
+  [[ -z "$(grep pullulant ${HOME}/.gitconfig 2>/dev/null )" ]] && {
+    touch ${HOME}/.gitconfig
+    echo "
+[include]
+    path = ${HOME}/.gitconfig-pullulant
+"   >> ${HOME}/.gitconfig
+  }
+
+  [[ -z "$(grep bash_pullulant ${HOME}/.bashrc 2>/dev/null )" ]] && {
+    echo "
+    # automatically appended by pullulant's installer
+    source ~/.bash_pullulant
+"   >> ${HOME}/.bashrc
+  }
+
+}
+
+# shortcut
+function _bash {
+  bash_install
+}

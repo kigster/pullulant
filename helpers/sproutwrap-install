@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#_______________________________________________________________________________
+#
+# (c) 2016 Konstantin Gredeskoul
+# https://github.com/kigster
+#
+# For project Pullulant
+# https://github.com/kigster/pullulant/
+#
+# MIT License
+#_______________________________________________________________________________
+#
+
+function install_sproutwrap() {
+  export sprout_wrap_home="$(pwd)/../sprout-wrap"
+  if [ ! -z "${opts_skip_sprout_wrap}" ]; then
+    run "echo 'Skipping sprout-wrap'"
+    return
+  fi
+
+  install_ruby                   # won't run again, if ran already
+  prepare_sprout_wrap_folder    # checkout and prepare folders for chef
+  replace_configuration         # overwrite configuration with our own
+  run_soloist                   # run the f$$$er
+}
+
+function run_soloist {
+  run "pushd ${sprout_wrap_home}"
+  export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+  export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
+  run 'eval "$(rbenv init -)"' "ignore_error"
+  eval "$(rbenv init -)"
+  [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
+  printf "Current ruby version is ${bldwht}${bakpur}%s${txtrst}\n" "$(cat .ruby-version)"
+  if [[ "${opts_nokogiri_donot_use_system_libraries}" == "yes" ]]; then
+    run "bundle              # show-stdout"
+  else
+    run "export NOKOGIRI_USE_SYSTEM_LIBRARIES=1 && bundle install # show-stdout"
+  fi
+  run "bundle exec soloist # show-stdout"
+  export last_command_status=$?
+  run "cd ${pu_home}"
+}
+
+function prepare_sprout_wrap_folder {
+  run "sudo mkdir -p /var/chef"
+  run "sudo chown -R $USER /var/chef"
+  if [ ! -d ${sprout_wrap_home} ]; then
+    run "git clone ${const_sprout_wrap_repo} ${sprout_wrap_home}"
+  fi
+  run "pushd ${sprout_wrap_home}"
+  [[ "$(git diff | wc -l)" -gt 0 ]] && run "git reset --hard"
+  run "git pull origin master"
+  run "popd"
+}
+
+function replace_configuration {
+  run "cp -f ./files/sprout-wrap/* ${sprout_wrap_home}"
+  run "cp -f ./files/sprout-wrap/.ruby-version ${sprout_wrap_home}"
+  run "rm -f ${sprout_wrap_home}/Cheffile.lock"
+  # so that the damn Nokogiri gets built with the latest possible version,
+  # not the ancient damn stupidity checked into the lock file.
+  run "rm -f ${sprout_wrap_home}/Gemfile.lock"
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+function gitx-install() {
+  [[ -d /Applications/GitX.app ]] && { 
+    printf "${bldgrn}%s" "GitX is already installed in /Applications.\n${clr}"
+    return 0
+  }
+
+  if [[ ! -d /Volumen/GitX* ]]; then
+    run "curl -L -O -s 'https://github.com/rowanj/gitx/releases/download/builds%2F0.15%2F1964/GitX-dev-1964.dmg'"
+    run "mv GitX-* GitX.dmg"
+    [[ -f GitX.dmg ]] && run "open GitX.dmg && sleep 8"
+  fi
+
+  if [[ -n $(ls -1 /Volumes | grep GitX) ]]; then
+    run "cp -Rp /Volumes/GitX*/GitX.app /Applications/"
+    run "open /Applications/GitX.app"
+    run "diskutil eject /Volumes/GitX*"
+  fi
+}

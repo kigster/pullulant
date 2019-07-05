@@ -9,7 +9,7 @@
 #_______________________________________________________________________________
 
 function alfred-install() {
-  [[ -d /Applications/Alfred\ 4.app ]] || { 
+  [[ -z $(ls -1 /Applications/Alfred*.app) ]] || { 
     [[ -z "$(brew cask list -1 | grep alfred)" ]] && {
       run "brew cask install alfred"
     }
@@ -22,3 +22,4 @@ function alfred-install() {
   run "open ${alfred_dir}"
   run "popd"
 }
+

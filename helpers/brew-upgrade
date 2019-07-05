@@ -24,7 +24,8 @@ function brew-upgrade {
   fi
   if [ -z "$brew_has_been_upgraded" ]; then
     run "printf '${bldylw}Upgrading every homebrew formula and cask, please wait while its fermenting...${txtrst}\n'"
-    run "brew upgrade --cleanup"
+    run "brew cleanup"
+    run "brew upgrade"
     [[ $last_command_status -ne 0 ]] && brew-repair
     export brew_has_been_upgraded=yes
   fi

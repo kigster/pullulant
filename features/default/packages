@@ -8,68 +8,84 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-[[ -n "${bash_it_plugins}" ]]     || bash_it_plugins="git hub osx postgres ssh nginx"
-[[ -n "${bash_it_aliases}" ]]     || bash_it_aliases="atom git homebrew homebrew-cask npm osx vim"
-[[ -n "${bash_it_completions}" ]] || bash_it_completions="brew git hub ssh"
+[[ -n "${bash_it_aliases}" ]]     || bash_it_aliases="git vim ruby homebrew homebrew-cask"
+[[ -n "${bash_it_plugins}" ]]     || bash_it_plugins="git osx postgres ssh nginx ruby "
+[[ -n "${bash_it_completions}" ]] || bash_it_completions="brew git hub ssh rake capistrano brew"
 
 
 # List of Brew Formulas to install and l`ink
 [[ -n "${brew_packages}" ]] || brew_packages="
-  ack
-  bash
-  bash-completion
-  cmake
-  git
-  go
-  haproxy
-  rsync
-  hub
-  imagemagick
-  jq
-  libiconv
-  libmemcached
-  libxml2
-  libxslt
-  libzip
-  nginx
-  nmap
-  openssl
-  pcre
-  pstree
-  qt
-  rbenv
-  redis
-  ruby-build
-  tmux
-  tmux-mem-cpu-load
-  tree
-  vim
-  watch
-  wget
-  zlib
+7z
+ack
+autoconf
+bash
+bash-completion
+bash-it
+cmake
+coreutils
+direnv
+fping
+gettext
+git
+go
+haproxy
+htop
+hub
+icu4c
+imagemagick
+jemalloc
+jq
+libevent
+libiconv
+libmemcached
+libxml2
+libxslt
+libzip
+memcached
+ncurses
+nginx
+nmap
+openssl
+p7zip
+pcre
+pkg-config
+postgresql
+pstree
+qt
+rbenv
+readline
+redis
+rsync
+ruby-build
+the_silver_searcher
+tmux
+tmux-mem-cpu-load
+tree
+unrar
+vim
+watch
+wget
+xz
+zlib
 "
 
 [[ -n "${brew_packages_to_link_after_install}" ]] || brew_packages_to_link_after_install=""
 
 [[ -n "${brew_casks}" ]] || brew_casks="
-  atom
-  github-desktop
-  gitx
-  istat-menus
-  iterm2
-  shiftit
-  teamviewer
-  textmate
-  dash
+atom
+iterm2
+teamviewer
+textmate
+dash
 "
 
 [[ -n "${brew_relink_packages}" ]] || brew_relink_packages="
-  libiconv
-  libxml2
-  libxslt
-  libzip
-  openssl
-  zlib
+libiconv
+libxml2
+libxslt
+libzip
+openssl
+zlib
 "
 # these hosts will be added to /etc/hosts as 127.0.0.1
 # eg. local.mydomain.com
@@ -78,8 +94,8 @@
 # This is the ruby/python version that will be installed using rbenv
 # the first one in the list will be set as the default. At least one
 # is required to keep going with SproutWrap.
-[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.3.1")
-[[ -n "${rbenv_ruby_default}" ]]    || rbenv_ruby_default="2.3.1"
+[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.6.3" "2.5.3")
+[[ -n "${rbenv_ruby_default}" ]]    || rbenv_ruby_default="2.6.3"
 [[ -n "${pyenv_python_versions}" ]] || pyenv_python_versions=()
 
 # These define optional modules for node, python and ruby. Note that
@@ -87,32 +103,33 @@
 # So python would only install if `python_install` is run.
 
 [[ -n "${nodejs_modules}" ]] || nodejs_modules="
-  bower
+bower
 "
 [[ -n "${python_modules}" ]] || python_modules="
-  thefuck
+thefuck
 "
 [[ -n "${ruby_modules}" ]]   || ruby_modules="
-  bundler
-  warp-dir
+bundler
+warp-dir
+sym
+irbtools
+colored2
+prybug
 "
 
 [[ -n "${alfred_plugins}" ]] || alfred_plugins="
-  https://github.com/bevesce/unicode-symbols-search/blob/master/Unicode%20Symbols%20Search.alfredworkflow?raw=true
-  https://github.com/packal/repository/raw/master/fspinillo.alfredv2.slackfred/slackfred.alfredworkflow
-  https://github.com/packal/repository/raw/master/net.deanishe.alfred-stackoverflow/stackoverflow-1.2.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.ipaterson.alfred.wunderlist/wunderlist.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.shaoshing.alfred-evernote/search_evernote.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.alfredapp.mdeboer.atom/atom.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.stuartryan.alfred.advancedgooglemaps/advanced_google_maps_search.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.spr.translate/translate.alfredworkflow
-  https://github.com/packal/repository/raw/master/net.deanishe.alfred-google-similar-images/google_similar_images-1.0.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.pierbover.googleapps/googleapps.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.stuartryan.alfred.rapidbrowsertabs/rapid-browser-tabs.alfredworkflow
-  https://github.com/packal/repository/raw/master/wolph.unit-converter/unit_converter.alfredworkflow
-  https://github.com/packal/repository/raw/master/org.kollectiv.crashPlan/crashplancontrol.alfredworkflow
-  https://github.com/packal/repository/raw/master/com.fniephaus.homebrew/homebrew-for-alfred.alfredworkflow
-  https://github.com/packal/repository/raw/master/hue-alfred-workflow/philips.hue_.controller.v2.4.alfredworkflow
+'https://github.com/bevesce/unicode-symbols-search/blob/master/Unicode%20Symbols%20Search.alfredworkflow?raw=true'
+'https://github.com/packal/repository/raw/master/com.yannickglt.alfred2.slack/slack.alfredworkflow'
+'https://github.com/packal/repository/raw/master/net.deanishe.alfred-stackoverflow/stackoverflow-1.2.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.ipaterson.alfred.wunderlist/wunderlist.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.shaoshing.alfred-evernote/search_evernote.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.alfredapp.mdeboer.atom/atom.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.stuartryan.alfred.advancedgooglemaps/advanced_google_maps_search.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.spr.translate/translate.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.pierbover.googleapps/googleapps.alfredworkflow'
+'https://github.com/packal/repository/raw/master/wolph.unit-converter/unit_converter.alfredworkflow'
+'https://github.com/packal/repository/raw/master/org.kollectiv.crashPlan/crashplancontrol.alfredworkflow'
+'https://github.com/packal/repository/raw/master/com.fniephaus.homebrew/homebrew-for-alfred.alfredworkflow'
 "
 
 [[ -n "${iterm_themes}" ]]     || iterm_themes="BirdsOfParadise Atom Desert 3024 "
