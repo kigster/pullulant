@@ -10,8 +10,12 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function vim {
-  run "mkdir -p ${HOME}/.vim"
-  run "sudo chown -R ${USER} ${HOME}/.vim"
-  run "rsync ${opts_rsync_backup} -v --perms -a ./files/vim/ ${HOME} # show-stdout "
+function pu_monofonts() {
+  if [ ! -d "powerline-fonts" ]; then
+    run "git clone https://github.com/powerline/fonts.git powerline-fonts"
+  fi
+  run "cd powerline-fonts && ./install.sh # show-stdout"
+  run "cd -"
+  run "cd files/mono-fonts && ./install.sh # show-stdout"
+  run "cd -"
 }

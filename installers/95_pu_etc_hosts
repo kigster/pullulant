@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function etc_hosts() {
+function pu_etc_hosts() {
     for hostname in $local_hosts; do
         add_hostname $hostname
     done

@@ -11,9 +11,14 @@
 #_______________________________________________________________________________
 #
 
-function bash_it() {
+function pu_bash_it() {
   last_command_status=0
-  [[ -d ${bash_it_home} && -n "${opts_force}" ]] && run "rm -rf ${bash_it_home}"
+
+  [[ -d ${bash_it_home} && -z "${opts_force}" ]] && {
+    return 0
+  }
+
+  run "rm -rf ${bash_it_home}"
 
   [[ ! -d ${bash_it_home} ]] && {
     run "git clone https://github.com/kigster/bash-it.git ${bash_it_home}"

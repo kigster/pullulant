@@ -10,9 +10,6 @@
 #_______________________________________________________________________________
 #
 
-unset current_bash_version
-export current_bash_version=3
-
 pu-source-file() {
   local file="files/home/$1"
   [[ "$1" =~ '/' ]] && file="$1"

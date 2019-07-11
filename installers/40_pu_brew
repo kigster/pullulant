@@ -13,20 +13,17 @@
 # This is a brew installer meant to replace the complicated sprout-homebrew cookbooks.
 #
 
-function brew() {
+function pu_brew() {
+
   brew=`which brew 2>/dev/null`
-  if [ -z "${brew}" ]; then
-    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install > /tmp/brew.rb
+
+  if [[ -z "${brew}" ]]; then
     run 'printf "Installing Homebrew from scratch, this is so exciting!...\n"'
-    run "/usr/bin/ruby < /tmp/brew.rb"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   else
     cmd='echo "Homebrew is already installed – version: $(brew --version)"'
     run "$cmd"
-    brew-update
   fi
-
-  # Let's run this damn upgrade
-  brew-upgrade
 
   # Let's install that goddamn brew-cask
   run "brew tap caskroom/cask" "true"
@@ -71,7 +68,7 @@ function brew_relink {
   pkg=${1}
   run "brew link ${opts_verbose} $pkg --overwrite"
 }
-``
+
 function brew_cask_install {
   package=$1
 

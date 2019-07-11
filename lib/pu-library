@@ -72,7 +72,7 @@ function check_exit {
     fi
 
     # print the actual STDOUT if present, or nothing when captured
-    printf "${txtblu}"
+    printf "${txtylw}"
 
     if [ -n "${cmd_prints}" ]; then
         eval "$cmd 2>${const_cmd_stderr}"
@@ -81,11 +81,6 @@ function check_exit {
     else
         eval "$cmd 2>${const_cmd_stderr} 1>${const_cmd_stdout}"
     fi
-
-    echo "———————————————"
-    printf "standard error:\n"
-    cat ${const_cmd_stderr}
-    echo "———————————————"
 
     real_status=$?
     last_command_status=${real_status}

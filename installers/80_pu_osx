@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function cleanup_prefs {
+function pu_cleanup_prefs {
   run "mkdir -p $backup_dir"
 }
 
