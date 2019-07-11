@@ -76,11 +76,16 @@ function check_exit {
 
     if [ -n "${cmd_prints}" ]; then
         eval "$cmd 2>${const_cmd_stderr}"
-        elif [ -n "${cmd_verbose}" -a -z "${cmd_quiet}" ]; then
+    elif [ -n "${cmd_verbose}" -a -z "${cmd_quiet}" ]; then
         eval "$cmd 2>${const_cmd_stderr}"
     else
         eval "$cmd 2>${const_cmd_stderr} 1>${const_cmd_stdout}"
     fi
+
+    echo "———————————————"
+    printf "standard error:\n"
+    cat ${const_cmd_stderr}
+    echo "———————————————"
 
     real_status=$?
     last_command_status=${real_status}
