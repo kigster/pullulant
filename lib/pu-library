@@ -12,194 +12,194 @@
 # encoding: UTF-8
 
 function on_start {
-  local sudo=false
-  for mod in "${!runner_sudo_map[@]}"; do
-    local needs_sudo=${runner_sudo_map[${mod}]}
-    if [[ ${needs_sudo} == 'yes' ]]; then
-      [[ $sudo == false ]] || sudo=$(($sudo + 1))
-      [[ $sudo == false ]] && sudo=1
-      break
+    local sudo=false
+    for mod in "${!runner_sudo_map[@]}"; do
+        local needs_sudo=${runner_sudo_map[${mod}]}
+        if [[ ${needs_sudo} == 'yes' ]]; then
+            [[ $sudo == false ]] || sudo=$(($sudo + 1))
+            [[ $sudo == false ]] && sudo=1
+            break
+        fi
+    done
+
+    [[ ${sudo} == false ]] && return
+
+    if [[ ${sudo} -gt 0 ]]; then
+        printf "\n\n${txtrst}At least ${bldylw}${sudo}${txtrst} runners require sudo access.\nPlease enter your password when requested.\n"
+        [[ ${sudo} -gt 0 ]] && sudo-enable
+        export sudoers_enabled=true
     fi
-  done
 
-  [[ ${sudo} == false ]] && return
-
-  if [[ ${sudo} -gt 0 ]]; then
-    printf "\n\n${txtrst}At least ${bldylw}${sudo}${txtrst} runners require sudo access.\nPlease enter your password when requested.\n"
-    [[ ${sudo} -gt 0 ]] && sudo-enable
-    export sudoers_enabled=true
-  fi
-  
-  wipe_output
+    wipe_output
 }
 
 function remote_fsize() {
-  local url=$1
-  printf $(($(curl -sI $url | grep -i 'Content-Length' | awk '{print $2}') + 0))
+    local url=$1
+    printf $(($(curl -sI $url | grep -i 'Content-Length' | awk '{print $2}') + 0))
 }
 
 function fsize() {
-  local file=$1
-  printf $(($(wc -c < $file) + 0))
+    local file=$1
+    printf $(($(wc -c < $file) + 0))
 }
 
 function check_exit {
-  local cmd=$1
-  local ignore_error=${2-""}
-  local cmd_prints=  # 'yes' if the command actually meant to output something, null otherwise
-  local cmd_verbose= # 'yes' if the verbose flag is passed, or "#show-stdout" comment included
-  local cmd_quiet=   # 'yes' if globally quiet, or command passed #hide-command command
-  local out=
+    local cmd=$1
+    local ignore_error=${2-""}
+    local cmd_prints=  # 'yes' if the command actually meant to output something, null otherwise
+    local cmd_verbose= # 'yes' if the verbose flag is passed, or "#show-stdout" comment included
+    local cmd_quiet=   # 'yes' if globally quiet, or command passed #hide-command command
+    local out=
 
-  out=$(echo "$cmd" | egrep -c 'echo|printf')
-  [[ $? -eq 0 ]]             && cmd_prints=yes
+    out=$(echo "$cmd" | egrep -c 'echo|printf')
+    [[ $? -eq 0 ]]             && cmd_prints=yes
 
-  out=$(echo "$cmd" | egrep -c 'hide-command')
-  [[ $? -eq 0 ]]             && cmd_quiet=yes
-  [[ -n "${opts_quiet}" ]]   && cmd_quiet=yes
+    out=$(echo "$cmd" | egrep -c 'hide-command')
+    [[ $? -eq 0 ]]             && cmd_quiet=yes
+    [[ -n "${opts_quiet}" ]]   && cmd_quiet=yes
 
-  out=$(echo "$cmd" | egrep -c 'show-stdout')
-  [[ $? -eq 0 ]]             && cmd_verbose=yes
-  [[ -n "${opts_verbose}" ]] && cmd_verbose=yes
+    out=$(echo "$cmd" | egrep -c 'show-stdout')
+    [[ $? -eq 0 ]]             && cmd_verbose=yes
+    [[ -n "${opts_verbose}" ]] && cmd_verbose=yes
 
-  # print the user-visible info about the command, if any
-  if [ -z "${cmd_prints}" -a -z "${cmd_quiet}" ]; then
-    if [ -z "${cmd_verbose}" ]; then
-      printf "${bldpur}%-77.77s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
-    else
-      printf "${bldpur}%s${txtrst}\n" "$cmd" | tee -a ${const_cmd_stdout}
-    fi
-  fi
-
-  # print the actual STDOUT if present, or nothing when captured
-  printf "${txtblu}"
-
-  if [ -n "${cmd_prints}" ]; then
-    eval "$cmd 2>${const_cmd_stderr}"
-  elif [ -n "${cmd_verbose}" -a -z "${cmd_quiet}" ]; then
-    eval "$cmd 2>${const_cmd_stderr}"
-  else
-    eval "$cmd 2>${const_cmd_stderr} 1>${const_cmd_stdout}"
-  fi
-
-  real_status=$?
-  last_command_status=${real_status}
-
-  if [ -n "${ignore_error}" -a $last_command_status -ne 0 ]; then
-    last_command_status=0
-    commands_ignored=$(($commands_ignored + 1))
-  elif [  $last_command_status -ne 0  ]; then
-    commands_failed=$(($commands_failed + 1))
-  fi
-
-  [[ $last_command_status -eq 0 ]] && commands_completed=$(($commands_completed + 1))
-
-  if [ -n "${cmd_prints}" ]; then
-    return $last_command_status
-  fi
-
-  if [ "$last_command_status" -eq 0 ]; then
-    if [ -z "${cmd_quiet}" ]; then
-      if [ -z "${cmd_verbose}" ]; then
-        if [ $real_status -ne 0 ]; then
-          printf "${var_pullulant_symbol_ignored}${txtrst}\n"
+    # print the user-visible info about the command, if any
+    if [ -z "${cmd_prints}" -a -z "${cmd_quiet}" ]; then
+        if [ -z "${cmd_verbose}" ]; then
+            printf "${bldpur}%-77.77s ${bldylw}→" "$cmd" | tee -a ${const_cmd_stdout}
         else
-          printf "${var_pullulant_symbol_ok}${txtrst}\n"
+            printf "${bldpur}%s${txtrst}\n" "$cmd" | tee -a ${const_cmd_stdout}
         fi
-      fi
     fi
-  else # error – print a little icon
-    [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
 
-    [[ -s "${const_cmd_stderr}" ]] && {
-      echo
-      pu-underline-header "Command Output:"
-      echo
-      printf "${bldwht}${bakred}\n\n$(cat ${const_cmd_stderr})\n${txtrst}\n"
-    }
+    # print the actual STDOUT if present, or nothing when captured
+    printf "${txtylw}"
 
-    printf "\n${txtrst}"
-    pu-box-top
-    pu-box-header "${txtrst}" "         Runner: ${bldgrn}${runner}${txtrst}"
-    pu-box-header "${txtrst}" "Failing Command: ${bldblu}${cmd}"
-    pu-box-header "${txtrst}" "      Exit Code:${txtred} $last_command_status${txtrst}"
-    pu-box-header "${txtrst}" " Current Folder: ${bldylw}$(pwd)${txtrst}"
-    pu-box-bottom
+    if [ -n "${cmd_prints}" ]; then
+        eval "$cmd 2>${const_cmd_stderr}"
+    elif [ -n "${cmd_verbose}" -a -z "${cmd_quiet}" ]; then
+        eval "$cmd 2>${const_cmd_stderr}"
+    else
+        eval "$cmd 2>${const_cmd_stderr} 1>${const_cmd_stdout}"
+    fi
 
-    [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
-      cat ${const_cmd_stderr} >> ${const_combined_stderr}
-      printf "            Action: ${bldgrn}IGNORE & CONTINUE...${txtrst}\n"
-      last_command_status=0
-      return 0
-    }
+    real_status=$?
+    last_command_status=${real_status}
 
-    [[ "${opts_continue_on_runner_error}" == "yes" ]] && {
-      # Let's skip to the next runner using signals
-      kill -USR1 $$
-    }
+    if [ -n "${ignore_error}" -a $last_command_status -ne 0 ]; then
+        last_command_status=0
+        commands_ignored=$(($commands_ignored + 1))
+        elif [  $last_command_status -ne 0  ]; then
+        commands_failed=$(($commands_failed + 1))
+    fi
 
-    gracefull_exit_with_summary
-  fi
+    [[ $last_command_status -eq 0 ]] && commands_completed=$(($commands_completed + 1))
 
-  return $last_command_status
+    if [ -n "${cmd_prints}" ]; then
+        return $last_command_status
+    fi
+
+    if [ "$last_command_status" -eq 0 ]; then
+        if [ -z "${cmd_quiet}" ]; then
+            if [ -z "${cmd_verbose}" ]; then
+                if [ $real_status -ne 0 ]; then
+                    printf "${var_pullulant_symbol_ignored}${txtrst}\n"
+                else
+                    printf "${var_pullulant_symbol_ok}${txtrst}\n"
+                fi
+            fi
+        fi
+    else # error – print a little icon
+        [[ -z "${cmd_verbose}" ]] && printf "${bldred}${var_pullulant_symbol_error}${txtrst}\n"
+
+        [[ -s "${const_cmd_stderr}" ]] && {
+            echo
+            pu-underline-header "Command Output:"
+            echo
+            printf "${bldwht}${bakred}\n\n$(cat ${const_cmd_stderr})\n${txtrst}\n"
+        }
+
+        printf "\n${txtrst}"
+        pu-box-top
+        pu-box-header "${txtrst}" "         Runner: ${bldgrn}${runner}${txtrst}"
+        pu-box-header "${txtrst}" "Failing Command: ${bldblu}${cmd}"
+        pu-box-header "${txtrst}" "      Exit Code:${txtred} $last_command_status${txtrst}"
+        pu-box-header "${txtrst}" " Current Folder: ${bldylw}$(pwd)${txtrst}"
+        pu-box-bottom
+
+        [[ "${opts_continue_on_statement_error}" == "yes" ]] && {
+            cat ${const_cmd_stderr} >> ${const_combined_stderr}
+            printf "            Action: ${bldgrn}IGNORE & CONTINUE...${txtrst}\n"
+            last_command_status=0
+            return 0
+        }
+
+        [[ "${opts_continue_on_runner_error}" == "yes" ]] && {
+            # Let's skip to the next runner using signals
+            kill -USR1 $$
+        }
+
+        gracefull_exit_with_summary
+    fi
+
+    return $last_command_status
 }
 
 function success {
-  printf "${txtblk}"
-  printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
-  printf "\n${txtrst}"
+    printf "${txtblk}"
+    printf "\n 😃   ${bldgrn}Everything is awesome.${txtblk} \n"
+    printf "\n${txtrst}"
 }
 
 function abort {
-  [[ "$sudoers_enabled" ]] && sudo-disable
-  on_exit && failure
-  cd ${original_dir}
-  exit $*
+    [[ "$sudoers_enabled" ]] && sudo-disable
+    on_exit && failure
+    cd ${original_dir}
+    exit $*
 }
 function failure {
-  printf "${txtblk}"
-  printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
-  printf "\n${txtrst}"
+    printf "${txtblk}"
+    printf "\n ⛔️    ${bldred}Too bad :( ${txtblk}\n"
+    printf "\n${txtrst}"
 }
 
 function wipe_output() {
-  run "rm -rf ${const_cmd_stderr} # hide-command"
-  run "rm -rf ${const_cmd_stdout} # hide-command"
+    run "rm -rf ${const_cmd_stderr} # hide-command"
+    run "rm -rf ${const_cmd_stdout} # hide-command"
 }
 
 function on_exit {
-  wipe_output
-  if [[ ${sudoers_enabled} == true ]]; then
-     sudo-disable
-  fi
-  return 1
+    wipe_output
+    if [[ ${sudoers_enabled} == true ]]; then
+        sudo-disable
+    fi
+    return 1
 }
 
 function finish {
-  exit_last_command_status=${1-0}
-  on_exit
-  success
-  printf "${txtrst}"
-  cd ${original_dir}
-  exit ${exit_status}
+    exit_last_command_status=${1-0}
+    on_exit
+    success
+    printf "${txtrst}"
+    cd ${original_dir}
+    exit ${exit_status}
 }
 
 function uppercase-first-letter() {
-  foo=$1
-  foo="$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}"
-  echo -n $foo
+    foo=$1
+    foo="$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}"
+    echo -n $foo
 }
 function run {
-  cmd=$1
-  ignore_error=${2-""}
-  last_command_status=0
-  if [ ! -z "${opts_dryrun}" ]; then
-    [[ "${cmd}"  =~ "printf" ]]  && eval "$cmd 2>${const_cmd_stderr}"
-    [[ "${cmd}"  =~ "printf" ]]  || printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
-  else
-    check_exit "$cmd" $ignore_error
-  fi
-  return $last_command_status
+    cmd=$1
+    ignore_error=${2-""}
+    last_command_status=0
+    if [ ! -z "${opts_dryrun}" ]; then
+        [[ "${cmd}"  =~ "printf" ]]  && eval "$cmd 2>${const_cmd_stderr}"
+        [[ "${cmd}"  =~ "printf" ]]  || printf "[opts_dryrun]  ${txtgrn}${cmd}${txtrst}\n"
+    else
+        check_exit "$cmd" $ignore_error
+    fi
+    return $last_command_status
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -207,8 +207,8 @@ function run {
 # pu-array-contains-element "a string" "${array[@]}"
 # ( prints "true" or "false" )
 pu-array-contains-element () {
-  local e
-  local r=false
-  for e in "${@:2}"; do [[ "$e" == "$1" ]] && r=true; done
-  echo -n $r
+    local e
+    local r=false
+    for e in "${@:2}"; do [[ "$e" == "$1" ]] && r=true; done
+    echo -n $r
 }

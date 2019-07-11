@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function install_monofonts() {
+function pu_monofonts() {
   if [ ! -d "powerline-fonts" ]; then
     run "git clone https://github.com/powerline/fonts.git powerline-fonts"
   fi

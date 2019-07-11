@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# If you want to be able to tell if the script is run or sourced:
+ ( [[ -n ${ZSH_EVAL_CONTEXT} && ${ZSH_EVAL_CONTEXT} =~ :file$ ]] || \
+   [[ -n $BASH_VERSION && $0 != "$BASH_SOURCE" ]]) && __ran_as_script=0 || __ran_as_script=1
+
+ export __ran_as_script
+
+ function upgrade-shell() {
+  local shell_version=${BASH_VERSION:0:1}
+
+  [[ ${shell_version} -gt 3 ]] && {
+    printf "You are already running a recent version of BASH — version ${bldgrn}${BASH_VERSION}${clr}\n"
+    return 0
+  }
+  local newer_bash=$(which /usr/local/bin/bash)
+
+  [[ -z "${newer_bash}" ]] && run "brew install bash"
+  [[ -z "$(grep ${newer_bash} /etc/shells)" ]] && {
+    run "echo ${newer_bash} | sudo tee -a /etc/shells >/dev/null # show-stdout"
+  }
+
+  local current_shell=$(finger ${USER} | grep Shell | awk 'BEGIN{FS="Shell: "}{print $2}')
+  if [[ "${current_shell}" != "${newer_bash}" && -s "${newer_bash}" ]] ; then
+    run "sudo chsh -s ${newer_bash} ${USER}"
+  fi
+}
+
+(( $__ran_as_script )) && {
+  source lib/pu.bash
+  upgrade-shell
+}

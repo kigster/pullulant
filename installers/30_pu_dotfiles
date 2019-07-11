@@ -11,7 +11,7 @@
 # File: pu-completion
 #_______________________________________________________________________________
 #
-function install_bash_dotfiles() {
+function pu_dotfiles() {
   [[ -f ~/.bashrc ]] || touch ~/.bashrc
   run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout "
   [[ -f ~/.bashrc ]] || ln -nfs ~/.bashrc ~/.bash_login
@@ -38,9 +38,4 @@ function install_bash_dotfiles() {
 "   >> ${HOME}/.bashrc
   }
 
-}
-
-# shortcut
-function _bash {
-  bash_install
 }

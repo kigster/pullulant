@@ -1,5 +1,6 @@
 powerline-fonts/
 .idea/
+.vscode/
 **/.DS_Store
 *.gem
 *.rbc
@@ -36,3 +37,6 @@ build/
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
+**/bashmatic
+**/bootstrap
+

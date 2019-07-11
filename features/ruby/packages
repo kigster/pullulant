@@ -23,7 +23,6 @@ rbenv_ruby_default="2.3.1"
 }
 
 ruby_modules="${ruby_modules}
-  require_dir
   gem-browse
   pry
   irbtools

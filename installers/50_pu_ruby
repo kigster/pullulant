@@ -10,12 +10,13 @@
 # MIT License
 #_______________________________________________________________________________
 
-function install_ruby_modules {
+
+function pu_ruby {
   [[ -n "${ruby_modules}" ]] && {
     declare -a pre_installed=($(current_gems))
     for gem in ${ruby_modules}; do
       if [[ $(array-contains-element $gem "${pre_installed[@]}") != "true" ]]; then
-        run "gem install --no-ri --no-rdoc $gem"
+        run "gem install $gem"
       else
         run "printf \"%-20s${txtrst} %s\" ${gem} \"is already installed\""
         run echo
@@ -24,23 +25,43 @@ function install_ruby_modules {
   }
 }
 
-function current_gems(){
+function pu_jemalloc() {
+  if [[ -z $(brew ls -1 | egrep "^jemalloc") ]]; then
+    run "brew install jemalloc"
+  fi
+}
+
+function pu_verify_jemalloc() {
+  local libs=$(rbenv exec ruby -r rbconfig -e "puts RbConfig::CONFIG['LIBS']")
+  if [[ -z "${libs}" ]] ; then
+    libs=$(rbenv exec ruby -r rbconfig -e "puts RbConfig::CONFIG['MAINLIBS']")
+  fi
+  [[ "${libs}" =~ "jemalloc" ]]
+}
+
+function current_gems() {
   gem list | cut -d' ' -f1
 }
 
 export rubyinstall_ran=
 function install_ruby {
+
   [[ -n "${rubyinstall_ran}" ]] && return
+
+  pu_jemalloc
+
   run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
+
   local default_ruby=${rbenv_ruby_default:-${rbenv_ruby_versions[-1]}}
+
   for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
     last_command_status=$(rbenv versions | grep ${rbenv_ruby_version})
     if [ $? -ne 0 ]; then
       run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
-      run "rbenv install -s ${opts_verbose} ${rbenv_ruby_version}"
+      run "RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install -s ${opts_verbose} ${rbenv_ruby_version}"
       run "eval $(rbenv init -) && rbenv rehash"
       run "hash -r"
-      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler --no-ri --no-rdoc"
+      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
       export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     fi
     run "rbenv global ${rbenv_ruby_version}"

@@ -313,7 +313,7 @@ $(pu-underline-header 'Interaction and Output Control:')
   -p          su[p]press pretty section headers for more compact output
   -q          [q]uiet mode: stop printing commands before and after run.
   -v          [v]erbose - show each command's output, and add -v to some
-  -n          dry-ru[n] – print commands, but don't actually run them.
+  -n          dry-ru[n] – print commands, but don't actually run them.
 "
 }
 

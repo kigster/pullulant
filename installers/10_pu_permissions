@@ -10,7 +10,7 @@
 # MIT License
 #_______________________________________________________________________________
 
-function fix_permissions() {
+function permissions() {
   run "xcode-select --install 2>/dev/null; true"
 
   local tmpfile=/tmp/sudo.${USER}
@@ -24,5 +24,4 @@ function fix_permissions() {
     run "sudo chown -R ${USER}:${my_group} ${dir}"
     run "sudo chmod -R u=xwr,g=wrx,o= ${dir}"
   done
-  zsh-permissions
 }
