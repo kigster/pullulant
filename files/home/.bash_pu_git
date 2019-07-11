@@ -32,7 +32,6 @@ alias glp='git log -p -2'
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
 alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
-alias gpr='git sp' # smart pull
 alias gpf='git push --force'
 alias gprs='git stash && git pull --rebase && git stash pop'
 alias gpp='git pull --rebase && git push'
@@ -44,6 +43,14 @@ alias gclean='git clean -d -f -x'
 alias gcl='git.clone'
 
 alias gbs='git branch --sort=committerdate  | tail -20'
+
+unalias gpr
+function gpr() {
+  [[ -n $(which git-smart-pull) ]] || gem install -N git-smart >/dev/null
+  hash -r 2>/dev/null
+  git-smart-pull    
+}
+
 
 function git.completions(){
   local dir="/usr/local/etc/bash_completion.d"

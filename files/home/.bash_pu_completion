@@ -8,12 +8,13 @@
 #
 #_______________________________________________________________________________
 
-PU_PWD=$(pwd)
-export PU_BINARY=${PU_BINARY:-"$(find ${PU_PWD} -name pu -type f)"}
-
-if [[ -n ${PU_BINARY} && -s ${PU_BINARY} ]]; then
-  export PU_HOME="$(dirname ${PU_BINARY})"
-  export PATH="$PATH:${PU_HOME}"
+if [[ -z ${PU_HOME} ]] ; then
+  export PU_BINARY=${PU_BINARY:-"$(find ~/workspace -name pu -type f)"}
+ 
+  if [[ -n ${PU_BINARY} && -s ${PU_BINARY} ]]; then
+    export PU_HOME="$(dirname ${PU_BINARY})"
+    export PATH="$PATH:${PU_HOME}"
+  fi
 fi
 
 _pu_flags() {

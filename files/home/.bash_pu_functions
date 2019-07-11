@@ -14,18 +14,6 @@ files::ls::mp3() {
   array::ls '*.mp3'
 }
 
-function diskspace() {
-  printf "Calculating disk space under:\n${bldblu}$(pwd)${clr}:\n"
-
-  printf "${txtgrn}"
-  du -H -d 1 | \
-    sed 's/\.\///g' | \
-    sort -n | \
-    awk '{printf "%20.20s: %12.0f Mb\n", $2, ($1/1024/1024)}' | \
-    egrep -v ' .:'
-
-  printf "${clr}\n"
-}
 
 ## "kit" functions are meant to be passed as a second argument to rename().
 # They provide various pre-defined renaming patterns.
