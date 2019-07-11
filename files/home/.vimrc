@@ -4,7 +4,7 @@ set autoindent
 set autoread
 set background=dark
 set encoding=utf8
-set expandtab 
+set expandtab
 set hlsearch
 set ignorecase
 set laststatus=2
@@ -25,25 +25,21 @@ if has ("autocmd")
   filetype indent on
 endif
 
-set t_Co=256 
-
-colorscheme slate
-"colorscheme peachpuff
+set t_Co=256
 colorscheme evolution
+"colorscheme peachpuff
 
 set guicursor+=n-v-c:blinkon0
 set guifont=Consolas:h16
 
 filetype plugin indent on
 
-map ,a :ChefFindAny<cr>
-map ,t :ChefFindAttribute<cr>
-map ,r :ChefFindRecipe<cr>
-map ,d :ChefFindDefinition<cr> 
-map ,w :ChefFindLWRP<cr>
-map ,s :ChefFindSource<cr>
-map ,r :ChefFindRelated<cr>
-
+map ,f :Ack!<cr>
+map ,g y:Ack!'<C-R>0'<cr>
+map \ :NERDTreeToggle<cr>
+nnoremap <silent> <Space> :nohl<CR><C-l>
+map ,t :Vipe bundle exec rspec <c-r>%:<c-r>=line('.')<cr><cr>
+map ,y :Vipe<cr>
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
@@ -59,6 +55,6 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 "
 let g:netrw_browse_split = 4
 let g:netrw_banner = 0
-let g:netrw_liststyle = 4
+let g:netrw_liststyle = 3
 let g:netrw_altv = 1
-let g:netrw_winsize = 20
+let g:netrw_winsize = 25
