@@ -76,9 +76,14 @@ function git-completions(){
   fi
 }
 
-gcmp() {
-  gcm $1
-  gp $2  
+function gcmp() {
+  git commit -m "$1"; shift
+  git push "$@"
+}
+
+gacmp() {
+  git add .
+  gcmp "$@"
 }
 
 function git-squash() {
