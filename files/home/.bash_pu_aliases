@@ -27,6 +27,11 @@ alias birb="be irb -I lib -I ."
 alias mypubkey='cat ~/.ssh/id_rsa.pub | tr -d "\n" | pbcopy && echo "Your public key is now in your Clipboard"'
 alias myprikey='cat ~/.ssh/id_rsa     | tr -d "\n" | pbcopy && echo "Your public key is now in your Clipboard"'
 
+alias bundl='bundle install --full-index'
+
+alias dea='direnv allow .'
+alias ded='direnv deny .'
+
 # turn off git in the prompt
 alias nogit="export SCM_CHECK=false"
 alias nogitdetails="export SCM_CHECK=false"

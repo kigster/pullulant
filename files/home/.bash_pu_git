@@ -44,7 +44,7 @@ alias gcl='git.clone'
 
 alias gbs='git branch --sort=committerdate  | tail -20'
 
-unalias gpr
+[[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
 function gpr() {
   [[ -n $(which git-smart-pull) ]] || gem install -N git-smart >/dev/null
   hash -r 2>/dev/null
