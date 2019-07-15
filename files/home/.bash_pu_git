@@ -89,12 +89,12 @@ function gcmp() {
   ensure_arguments 'git commit message' "$1"  || return 1
   set +x
   git commit -m "$1"; shift
-  set -x
+  set -x > /dev/null
   printf "\n${bldgrn}About to do git push... You can 1 second to Ctrl-C...${clr}\n"
   sleep 1
   set -x
   git push "$@"
-  set +x
+  set +x > /dev/null
 }
 
 gacmp() {
@@ -102,7 +102,7 @@ gacmp() {
   printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
   set -x
   git add .
-  set +x
+  set +x > /dev/null
   printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C...${clr}\n"
   sleep 1
   gcmp "$@"
@@ -115,7 +115,7 @@ function git-squash() {
     return
   }
   git reset --soft HEAD~${number}
-git commit
+  git commit
 }
 
 function git-up() {
