@@ -27,6 +27,13 @@ alias gcom='git checkout master'
 alias gcod='git checkout develop'
 alias gca='git commit --amend --verbose'
 
+
+alias gco='git checkout'
+alias gcob='git checkout -b'
+alias gcom='git checkout master'
+alias gcod='git checkout develop'
+alias gca='git commit --amend --verbose'
+
 alias gl='git log'
 alias glp='git log -p -2'
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
@@ -52,7 +59,7 @@ function gpr() {
 }
 
 
-function git.completions(){
+function git-completions(){
   local dir="/usr/local/etc/bash_completion.d"
   local file="${dir}/git-completion.bash"
 
@@ -69,13 +76,12 @@ function git.completions(){
   fi
 }
 
-function hpr() {
-  hub pull-request
+gcmp() {
+  gcm $1
+  gp $2  
 }
 
-alias hci='hub ci-status'
-
-function git.squash() {
+function git-squash() {
   number=${1}
   [[ -z ${number} ]] && { 
     echo "Usage: git.squash <number> # of commits to go back"
@@ -85,7 +91,7 @@ git reset --soft HEAD~${number}
 git commit
 }
 
-function git.up() {
+function git-up() {
   local this_branch=$(gcb)
   this_branch=${this_branch:-master}
   git branch --set-upstream-to=origin/${this_branch} ${this_branch}
@@ -97,7 +103,7 @@ function git.up() {
 ## description: git glone from current user's github repo. Also aliased to 'gcl'
 ##          eg: git.clone ruby-web # assumign $USER == "wanelo"
 ##
-function git.clone() {
+function git-clone() {
   local repo=$1
   local who=${2:-${USER}}
   local folder=${3}
@@ -123,7 +129,7 @@ function __reset_terminal() {
   echo "Resetting terminal..."
 }
 
-function git.clean() {
+function git-clean() {
   local lib=${PU_HOME}/lib/pu-interaction
   if [[ -d ${PU_HOME} && -f ${lib} ]] ; then
     source ${lib}
