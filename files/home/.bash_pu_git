@@ -79,7 +79,7 @@ function git-completions(){
 # Usage: ensure_arguments 'argument name', $1
 ensure_arguments() {
   if [[ -z "$2" ]] ; then
-    printf "\n${bldred}This function requires an argument: ${bldylw}$1\n"
+    printf "\n${bldred}This function requires an argument: ${bldylw}$1${clr}\n"
     return 1
   fi
   return 0
@@ -87,17 +87,23 @@ ensure_arguments() {
 
 function gcmp() {
   ensure_arguments 'git commit message' "$1"  || return 1
+  set +x
   git commit -m "$1"; shift
-  printf "\n${bldgrn}About to do git push... You can 1 second to Ctrl-C...\n"
+  set -x
+  printf "\n${bldgrn}About to do git push... You can 1 second to Ctrl-C...${clr}\n"
   sleep 1
+  set -x
   git push "$@"
+  set +x
 }
 
 gacmp() {
   ensure_arguments 'git commit message' "$1" || return 1
-  printf "\n${bldgrn}Adding any locally modified files..."
+  printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
+  set -x
   git add .
-  printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C..."
+  set +x
+  printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C...${clr}\n"
   sleep 1
   gcmp "$@"
 }
