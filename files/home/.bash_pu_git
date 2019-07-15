@@ -76,13 +76,29 @@ function git-completions(){
   fi
 }
 
+# Usage: ensure_arguments 'argument name', $1
+ensure_arguments() {
+  if [[ -z "$2" ]] ; then
+    printf "\n${bldred}This function requires an argument: ${bldylw}$1\n"
+    return 1
+  fi
+  return 0
+}
+
 function gcmp() {
+  ensure_arguments 'git commit message' "$1"  || return 1
   git commit -m "$1"; shift
+  printf "\n${bldgrn}About to do git push... You can 1 second to Ctrl-C...\n"
+  sleep 1
   git push "$@"
 }
 
 gacmp() {
+  ensure_arguments 'git commit message' "$1" || return 1
+  printf "\n${bldgrn}Adding any locally modified files..."
   git add .
+  printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C..."
+  sleep 1
   gcmp "$@"
 }
 
@@ -90,9 +106,9 @@ function git-squash() {
   number=${1}
   [[ -z ${number} ]] && { 
     echo "Usage: git.squash <number> # of commits to go back"
-  return
-}
-git reset --soft HEAD~${number}
+    return
+  }
+  git reset --soft HEAD~${number}
 git commit
 }
 
