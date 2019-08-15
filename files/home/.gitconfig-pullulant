@@ -1,62 +1,78 @@
+; vim:set filetype=gitconfig:
 [alias]
-        sma = submodule add
-        sms = submodule summary
-        sm = submodule
-	st = status
-	di = diff
-	co = checkout
-	ci = commit
-	br = branch
-        sm = smart-merge
-        sp = smart-pull
-        sl = smart-log
-	sta = stash
-	llog = log --date=local
-	flog = log --pretty=fuller --decorate
-	lg = log --oneline
-	lol = log --graph --decorate --oneline
-	lola = log --graph --decorate --oneline --all
-	blog = log origin/master... --left-right
-	ds = diff --staged
-	fixup = commit --amend -C HEAD
-	squash = commit --squash
-	unstage = reset HEAD
-	rum = rebase master@{u}
-	burn = reset --hard HEAD^
-	g = log --pretty=format:\"%h %an - %s\" --graph
-	lc = log ORIG_HEAD.. --stat --no-merges
-	nuke = reset --hard HEAD
-	ol = log --format=\"%C(yellow)%h%Creset %C(cyan)%aN%Creset\t%s\"
-	w = whatchanged
-	uncommit = reset --soft HEAD^
-        su = branch --set-upstream-to=origin/master master
+  sma = submodule add
+  sms = submodule summary
+  sm = submodule
+  st = status
+  di = diff
+  co = checkout
+  ci = commit
+  br = branch
+  sm = smart-merge
+  sp = smart-pull
+  sl = smart-log
+  sta = stash
+  llog = log --date=local
+  flog = log --pretty=fuller --decorate
+  lg = log --oneline
+  lol = log --graph --decorate --oneline
+  lola = log --graph --decorate --oneline --all
+  blog = log origin/master... --left-right
+  ds = diff --staged
+  fixup = commit --amend -C HEAD
+  squash = commit --squash
+  unstage = reset HEAD
+  rum = rebase master@{u}
+  burn = reset --hard HEAD^
+  g = log --pretty=format:\"%h %an - %s\" --graph
+  lc = log ORIG_HEAD.. --stat --no-merges
+  nuke = reset --hard HEAD
+  ol = log --format=\"%C(yellow)%h%Creset %C(cyan)%aN%Creset\t%s\"
+  w = whatchanged
+  uncommit = reset --soft HEAD^
+  su = branch --set-upstream-to=origin/master master
+
 [core]
-	pager = less -FXRS -x2
+  pager = less -FXRS -x2
+
 [apply]
-	whitespace = nowarn
+  whitespace = nowarn
+
 [color]
-	branch = auto
-	diff = auto
-	interactive = auto
-	status = auto
-	ui = true
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+  ui = true
+
 [branch]
-	autosetupmerge = true
-	autosetuprebase = remote
-	mergeoptions = --no-commit --no-ff
+  autosetupmerge = true
+  autosetuprebase = remote
+  mergeoptions = --no-commit --no-ff
+
 [rebase]
-	autosquash = true
+  autosquash = true
+
 [push]
-	default = current
+  default = current
+
 [hub]
-	protocol = git
-[credential]
-	helper = cache --timeout 32400
+  protocol = git
+
 [autosetup]
-	rebase = true
+  rebase = true
+
 [pull]
-	default = current
+  default = current
+
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
-	required = true
+  clean = git-lfs clean %f
+  smudge = git-lfs smudge %f
+  required = true
+
+[user]
+  name = Konstantin Gredeskoul
+  email = kigster@gmail.com
+
+[commit]
+  gpgsign = true
