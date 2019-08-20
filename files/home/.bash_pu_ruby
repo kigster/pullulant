@@ -7,9 +7,14 @@
 # MIT License
 #_______________________________________________________________________________
 
-alias bss='brew services start'
-alias bst='brew services stop'
-alias bsr='brew services restart'
+alias gi='gem install'
+alias bif='bundle install --full-index'
+
+alias be='bundle exec'
+alias bre='bundle exec rspec'
+alias bru='bundle exec rubocop'
+alias bra='bundle exec rubocop -a'
+alias bu='bundle update'
 
 declare -a DEFAULT_RUBY_GEMS=(
   bundler 
@@ -21,12 +26,14 @@ declare -a DEFAULT_RUBY_GEMS=(
   pry 
   pry-doc 
   rspec 
+  rspec-its 
   awesome_print 
   activesupport 
   pivotal_git_scripts 
   git-smart
   travis
   awscli
+  arli
 )
 
 ##..................................................................................
@@ -40,13 +47,6 @@ function ruby.rbenv() {
   else
     eval "$(rbenv init - )"
   fi
-}
-
-function ruby.init() {
-  ruby.gems
-  wd install --dotfile ~/.bash_${USER} > /dev/null
-  sym -B ~/.bash_${USER}
-  printf "${bldred}Maybe you should reboot now, dude.${txtrst}\n"
 }
 
 function ruby.gems() {
@@ -68,19 +68,42 @@ function ruby.gems() {
   [[ ${#gems} -eq 0 ]] && gems=(${RUBY_GEMS[@]})
 
   printf "${blkcya}installing gems:\n\t${txtrst}"
+
   local gems_installed=0
+  
   for gem in ${gems[@]}; do
     if [[ "${existing}" =~ "${gem}" ]]; then
       printf "${txtgrn}${gem} ✔ ${txtrst} "
     else
       printf "${txtblu}${gem}${txtrst} "
-      gem install -q --force --no-document $gem 2>&1 | cat >/dev/null
-      [[ $? -eq 0 ]] && printf "✅  "
+      gem install -q --force --no-document $gem 1>/dev/null 2>&1 
+      local result=$?
+      if [[ ${result} -eq 0 ]] ; then
+        printf "✅  "
+      else
+        printf "❌  (code=${result}) "
+      fi
     fi
     gems_installed=$(($gems_installed + 1))
     [[ $(($gems_installed % 5)) == 0 ]] && printf "\n\t"
   done
   echo
+}
+
+function ruby.init() {
+  local target="${1:-"${HOME}/.bash_${USER}"}"
+  ruby.gems
+  set -x  
+  rbenv rehash
+  which warp-dir >/dev/null && warp-dir install --dotfile "${target}"
+  which sym >/dev/null && sym -B "${target}"
+  set +x
+  printf "${bldylw}Now, we'll open a new terminal for you...${clr}\n"
+  if [[ -d /Applications/iTerm.app ]] ; then
+    open /Applications/iTerm.app
+  else
+    open /Applications/Utilities/Terminal.app
+  fi
 }
 
 alias be="bundle exec"
