@@ -11,15 +11,20 @@
 #_______________________________________________________________________________
 
 function postgres-master-pid {
-  # took me forever to track down that the name of the function was in arguments,
-  # so ps -ef | grep postgres was matching this process even with the [p] trick!
-  pidlist=$(bash -c "ps -ef | egrep '[p]ostgres ' | grep -v $0")
-  pid=$(echo $pidlist | cut -d ' ' -f 5 | uniq)
-  echo -n $pid
+  ps -ef | grep [p]ostgres | grep -v 'postgres:' | awk '{print $2}'
 }
 
 function postgres-install {
-  run "brew install ${opts_verbose} postgres ${opts_force}"
+  local package="postgresql"
+  local data_dir="/usr/local/var/postgres"
+
+  [[ -n ${opts_postgres_version} ]] && {
+     package="postgresql@${opts_postgres_version}"
+     data_dir="/usr/local/var/${package}"
+  }
+
+  brew_install ${package}
+  brew_cask_install postgrespreferencepane
 
   [[ -z "$(postgres-master-pid)" ]] || {
     run "printf '${bldylw}Warning: ${bldwht}PostgreSQL is running, skipping\nRun \"postgres-wipe\" to reinstall.'\n"
@@ -27,12 +32,17 @@ function postgres-install {
   }
 
   run "sudo chown ${USER} /usr/local/var"
-  if [ -d "/usr/local/var/postgres" ]; then
-    backup="/usr/local/var/postgres.backup.$$"
-    run "mv /usr/local/var/postgres $backup"
+  if [ -d "${data_dir}" ]; then
+    backup="${data_dir}.backup.$$"
+    run "mv ${data_dir} ${backup}"
     run "printf 'Previous data folder was moved to $backup and ignored.\n'"
   fi
-  run "initdb -D /usr/local/var/postgres -E UTF8 -U postgres"
+  run "initdb -D ${data_dir} -E UTF8 -U postgres"
+
+  [[ -f config/postgresql.conf ]] && {
+    run "cp ${data_dir}/postgresql.conf ${data_dir}/postgresql.conf.original"
+    run "cp config/postgresql.conf ${data_dir}"
+  }
 
   postgres-start
 }

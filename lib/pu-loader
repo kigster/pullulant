@@ -19,10 +19,11 @@ function require_dir {
   submodules=$(echo $(ls -1 ${subfolder}))
   for submodule in ${submodules}; do
     local file="${subfolder}/${submodule}"
+    [[ -n $DEBUG ]] && printf "sourcing ${txtblu}${file}${reset}...\n"
     source ${file}
     if [[ $(grep -c 'sudo' ${file}) -gt 0 ]]; then
       if [[ ${subfolder} =~ 'install' ]]; then
-        installer_sudo_map[${submodule:3}]=yes
+        installer_sudo_map[${submodule/[0-9][0-9]_/}]=yes
       else
         installer_sudo_map[${submodule}]=yes
       fi
@@ -31,7 +32,7 @@ function require_dir {
 }
 
 function pu-installers() {
-  ls -1 $modules_dir | sed -E 's/[0-9]+_//g'
+  ls -1 $modules_dir | sed -E 's/[0-9]*_//g'
 }
 
 function pu-helpers() {

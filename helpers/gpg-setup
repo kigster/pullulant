@@ -1,0 +1,127 @@
+#!/bin/bash
+
+source lib/pu-bashmatic
+
+gpg::setup() {
+  pu::ensure::bashmatic
+
+  gpg --version &> /dev/null
+  local exit_code="$?"
+
+  if [[ "$exit_code" != "0" ]]; then
+    warning "gpg not found, installing with homebrew"
+    brew_install gpg
+  fi
+
+  # Error on command failures from now on, we don't want this for the
+  # gpg check and the brew install (brew doesn't seem to use status codes properly)
+  set -e
+  # Check gpg was actually installed correctly
+  gpg --version &> /dev/null
+}
+
+gpg::key::get() {
+  local gpg_keys=$(gpg --list-secret-keys --keyid-format LONG)
+
+  if [[ "$gpg_keys" =~ sec[[:space:]]+rsa[[:digit:]]+/([A-F0-9]+)[[:space:]][^\<]+\<(.*@${domain})\> ]]; then
+    export gpg_key_identifier=${BASH_REMATCH[1]}
+    export gpg_key_email=${BASH_REMATCH[2]}
+  fi
+}
+
+gpg::git::user.email() {
+  git config --global user.email
+}
+
+gpg::git::user.name() {
+  git config --global user.name
+}
+
+gpg::key::create() {
+  gpg::key::get
+
+  [[ -n "$gpg_key_identifier" ]] && {
+    info "Found existing GPG key, using that."
+    return
+  }
+
+  warning "Couldn't find a gpg key with @${domain} email address..."
+  info "Creating now using configured git user and email..."
+
+  local user_email="$(gpg::git::user.email)"
+  local user_name="$(gpg::git::user.name)"
+
+  if [[ ! ${user_email} =~ "@${domain}" ]]; then
+    error "Your git config isn't set to use your email, ${user_email} does not match ${domain}." \
+          "Please update with: ${bldylw}git config --global user.email <name>@${domain}"
+    exit 1
+  fi
+
+  if [[ -z ${user_name} ]]; then
+    error "Your git config doesn't have a name set." \
+          "Please update with: ${bldylw}git config --global user.name <Your Name>"
+    exit 1
+  fi
+
+  echo \
+"%no-protection
+Key-Type: default
+Key-Length: 4096
+Subkey-Type: default
+Name-Real: ${user_name}
+Name-Email: ${user_email}
+Expire-Date: 0" | gpg --generate-key --batch
+}
+
+# Test gpg signing works
+gpg::git::verify() {
+  set -e
+  bash -c "cd $(mktemp -d) && git init . && git commit --allow-empty -m 'Test' -S" > /dev/null
+  success "Successfully signed a git commit."
+  set +e
+
+  if [[ "$(git config --global commit.gpgsign)" != "true" ]]; then
+    info "Setting git to always sign commits (commit.gpgsign = true)"
+    run "git config --global commit.gpgsign true"
+  fi
+}
+
+gpg::key:copy-and-open() {
+  local key="$1"; shift
+  local url="$1"
+  gpg --armor --export "${key}" | pbcopy
+  info "Copied gpg key to clipboard"
+
+  h1 "Opening github gpg settings, please paste the new public key there..."
+  sleep 2
+  open
+}
+
+gpg::key::install() {
+
+  gpg::setup
+  gpg::key::create
+  gpg::key::get
+
+  if [[ -z "$gpg_key_identifier" ]]; then
+    error "Still couldn't find a gpg key with @${domain} email address!"
+    exit 1
+  fi
+
+  local signing_key="$(git config --global user.signingKey || true)"
+  if [[ "${signing_key}" != "${gpg_key_identifier}" ]]; then
+    info "Setting git config user.signingKey"
+    run "git config --global user.signingKey ${gpg_key_identifier}"
+  fi
+
+  gpg::git::verify
+  gpg::key::copy-and-open ${gpg_key_identifier} "https://${github_domain}/settings/gpg/new"
+
+  success "All done!"
+}
+
+gpg-setup() {
+  export domain=${1:-"gmail.com"}; shift
+  export github_domain=${1:-"github.com"}
+  gpg::key::install
+}

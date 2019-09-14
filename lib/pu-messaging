@@ -248,8 +248,12 @@ $(pu-underline-header "Runners:")
 
 $(pu-underline-header 'Runner-specific Flags:')
 
-  -b ruby-version 
-              Override ruby version to install specified in packages
+  -V postgresql-version
+              If provided, this version is installed, otherwise the latest 
+              is installed. Valid versions are ${opts_postgres_versions[*]}.
+
+   -b ruby-version Override ruby version to install specified in packages
+
   -S          [S]proutwrap is disabled during the full install
   -B          [B]rew-upgrade is disabled during the full install
   -P          No backu[P] for rsync of bash and zsh files (default is to backup)

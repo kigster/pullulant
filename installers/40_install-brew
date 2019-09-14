@@ -13,7 +13,7 @@
 # This is a brew installer meant to replace the complicated sprout-homebrew cookbooks.
 #
 
-function pu_brew() {
+function install-brew() {
 
   brew=`which brew 2>/dev/null`
 
@@ -33,8 +33,7 @@ function pu_brew() {
     brew_partial_install=yes
   fi
 
-  # this is a prerequisite
-  run "brew cask install java --verbose #show-stdout"
+  brew_cask_install java
 
   [[ -z "${brew_partial_install}" || -n "${opts_brew_formulae_only}" ]] && {
     for package in $brew_packages; do

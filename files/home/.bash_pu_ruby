@@ -17,19 +17,19 @@ alias bra='bundle exec rubocop -a'
 alias bu='bundle update'
 
 declare -a DEFAULT_RUBY_GEMS=(
-  bundler 
-  irbtools 
-  warp-dir 
-  colored2 
-  sym 
-  pg 
-  pry 
-  pry-doc 
-  rspec 
-  rspec-its 
-  awesome_print 
-  activesupport 
-  pivotal_git_scripts 
+  bundler
+  irbtools
+  warp-dir
+  colored2
+  sym
+  pg
+  pry
+  pry-doc
+  rspec
+  rspec-its
+  awesome_print
+  activesupport
+  pivotal_git_scripts
   git-smart
   travis
   awscli
@@ -70,13 +70,13 @@ function ruby.gems() {
   printf "${blkcya}installing gems:\n\t${txtrst}"
 
   local gems_installed=0
-  
+
   for gem in ${gems[@]}; do
     if [[ "${existing}" =~ "${gem}" ]]; then
       printf "${txtgrn}${gem} ✔ ${txtrst} "
     else
       printf "${txtblu}${gem}${txtrst} "
-      gem install -q --force --no-document $gem 1>/dev/null 2>&1 
+      gem install -q --force --no-document $gem 1>/dev/null 2>&1
       local result=$?
       if [[ ${result} -eq 0 ]] ; then
         printf "✅  "
@@ -93,7 +93,7 @@ function ruby.gems() {
 function ruby.init() {
   local target="${1:-"${HOME}/.bash_${USER}"}"
   ruby.gems
-  set -x  
+  set -x
   rbenv rehash
   which warp-dir >/dev/null && warp-dir install --dotfile "${target}"
   which sym >/dev/null && sym -B "${target}"

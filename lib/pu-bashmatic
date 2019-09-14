@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+pu::ensure::bashmatic() {
+  [[ -d ~/.bashmatic ]] || curl -fsSL https://bit.ly/bashmatic | /usr/bin/env bash
+  source ~/.bashmatic/lib/Loader.bash
+}

@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function pu_atom() {
+function install-atom() {
   last_command_status=0
 
   if [[ -d "${HOME}/.atom" && -z "${opts_force}" ]]; then

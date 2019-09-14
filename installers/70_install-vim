@@ -10,8 +10,10 @@
 # MIT License
 #_______________________________________________________________________________
 #
-function pu_pgsql() {
-    postgres-permissions
-    postgres-install
-    echo
+function install-vim {
+  run "mkdir -p ${HOME}/.vim"
+  run "sudo chown -R ${USER} ${HOME}/.vim"
+  run "rsync ${opts_rsync_backup} -v --perms -a ./files/vim/ ${HOME} # show-stdout "
+  run "[[ -f ~/.vimrc ]] && mv ~/.vimrc ~/.vimrc.~bak"
+  run "cp files/home/.vimrc ${HOME}"
 }
