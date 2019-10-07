@@ -29,11 +29,11 @@ gpg::key::get() {
   fi
 }
 
-gpg::git::user.email() {
+gpg::git::user::email() {
   git config --global user.email
 }
 
-gpg::git::user.name() {
+gpg::git::user::name() {
   git config --global user.name
 }
 
@@ -48,8 +48,8 @@ gpg::key::create() {
   warning "Couldn't find a gpg key with @${domain} email address..."
   info "Creating now using configured git user and email..."
 
-  local user_email="$(gpg::git::user.email)"
-  local user_name="$(gpg::git::user.name)"
+  local user_email="$(gpg::git::user::email)"
+  local user_name="$(gpg::git::user::name)"
 
   if [[ ! ${user_email} =~ "@${domain}" ]]; then
     error "Your git config isn't set to use your email, ${user_email} does not match ${domain}." \
@@ -86,7 +86,7 @@ gpg::git::verify() {
   fi
 }
 
-gpg::key:copy-and-open() {
+gpg::key::copy-and-open() {
   local key="$1"; shift
   local url="$1"
   gpg --armor --export "${key}" | pbcopy
@@ -94,11 +94,10 @@ gpg::key:copy-and-open() {
 
   h1 "Opening github gpg settings, please paste the new public key there..."
   sleep 2
-  open
+  open "${url}"
 }
 
 gpg::key::install() {
-
   gpg::setup
   gpg::key::create
   gpg::key::get
@@ -115,13 +114,12 @@ gpg::key::install() {
   fi
 
   gpg::git::verify
-  gpg::key::copy-and-open ${gpg_key_identifier} "https://${github_domain}/settings/gpg/new"
-
+  gpg::key::copy-and-open "${gpg_key_identifier}" "https://${github_domain}/settings/gpg/new"
   success "All done!"
 }
 
 gpg-setup() {
-  export domain=${1:-"gmail.com"}; shift
   export github_domain=${1:-"github.com"}
   gpg::key::install
 }
+

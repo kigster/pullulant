@@ -51,6 +51,16 @@ alias gcl='git.clone'
 
 alias gbs='git branch --sort=committerdate  | tail -20'
 
+function gitconfig-ssh() {
+  if [[ -f .git/config ]]; then
+    grep -q "url = git@" .git/config && return 0
+    cat .git/config | sed -E 's#url = https://github\.com/([^/]*)/#url = git@github\.com:\1/#g' > .git/config-ssh
+    mv -v .git/config .git/config-https
+    ln -sv .git/config-ssh .git/config
+    ls -al .git/
+  fi
+}
+
 [[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
 function gpr() {
   [[ -n $(which git-smart-pull) ]] || gem install -N git-smart >/dev/null
