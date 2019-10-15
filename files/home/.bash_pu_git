@@ -21,12 +21,16 @@ alias gdc='git diff --cached -b'
 alias gc='git commit --verbose'
 alias gcm='git commit -m'
 
+alias grs='git reset'
+alias grsh='git reset --hard'
+alias gtits='git reset --hard && git clean -dfx'
+alias gtots='git clean --dry-run -dfx'
+
 alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gcom='git checkout master'
 alias gcod='git checkout develop'
 alias gca='git commit --amend --verbose'
-
 
 alias gco='git checkout'
 alias gcob='git checkout -b'
