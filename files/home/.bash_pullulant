@@ -15,8 +15,9 @@
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+export WS=$HOME/workspace
 export NODE_PATH=/usr/local/share/npm
-export PATH="$HOME/bin:/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin"
+export GOPATH=$HOME/$WS/golang
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export PGUSER=postgres
 export EDITOR=vim
