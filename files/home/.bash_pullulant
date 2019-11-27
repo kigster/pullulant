@@ -34,6 +34,5 @@ source ~/.bash_pu_pprocs
 source ~/.bash_pu_git
 source ~/.bash_pu_grep
 source ~/.bash_pu_pgsql
-source ~/.bash_pu_ruby
 #source ~/.bash_pu_services
 #source ~/.bash_pu_tmux
