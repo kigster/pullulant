@@ -18,8 +18,10 @@ alias gss='git show --stat'
 
 alias gd='git diff'
 alias gdc='git diff --cached -b'
-alias gc='git commit --verbose'
-alias gcm='git commit -m'
+
+alias gc='EDITOR=/usr/local/bin/vim git commit --verbose'
+alias gcm='EDITOR=/usr/local/bin/vim git commit -m'
+alias gca='EDITOR=/usr/local/bin/vim git commit --amend --verbose'
 
 alias grs='git reset'
 alias grsh='git reset --hard'
@@ -30,13 +32,11 @@ alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gcom='git checkout master'
 alias gcod='git checkout develop'
-alias gca='git commit --amend --verbose'
 
 alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gcom='git checkout master'
 alias gcod='git checkout develop'
-alias gca='git commit --amend --verbose'
 
 alias gl='git log'
 alias glp='git log -p -2'

@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# vim:filetype=sh
+#!/usr/bin/env bash # vim:filetype=sh
 #_______________________________________________________________________________
 #
 # © 2016 Konstantin Gredeskoul
@@ -8,7 +7,8 @@
 #
 # Distributed under MIT License
 #_______________________________________________________________________________
-#
+
+
 
 pu-source-file() {
   local file="files/home/$1"
@@ -18,8 +18,11 @@ pu-source-file() {
 
 function pu-setup {
   export original_dir=$(pwd)
+
   export pu_home="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   cd "${pu_home}"
+  export pu_version="$( cat VERSION | tr -d '\n')"
+
   source "lib/pu-loader"
 }
 
@@ -28,8 +31,12 @@ function pu-help-command() {
   pu-print-help
 }
 
+function pu-version-info() {
+  pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version ${PU_VERSION})\n"
+}
+
 pu-setup
-pu-source-file .bash_pu_colors
+pu-version-info
 pu-source-file lib/pu-validate-bash-version
 pu-validate-bash-version 4
 

@@ -135,6 +135,13 @@ function pu-short-header {
 }
 
 
+function box-yellow-on-grey() {
+  printf "${bldylw}"
+  pu-box-top
+  pu-box-header "$"
+  pu-box-bottom
+}
+
 function pu-installers-helpers {
   local installer_list=$(pu-indent-list "$installers" 65 "   ")
   local helper_list=$(pu-indent-list    "$helpers"    65 "   ")

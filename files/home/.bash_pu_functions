@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 # Returns result of find operation that works for files and folder
 # with spaces.
 files::ls() { 
