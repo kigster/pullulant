@@ -1,6 +1,0 @@
-location:San Francisco, USA
-daylight:true
-fetch_cmd:ftp -V -o -
-units:metric
-daylight:true
-api_key:

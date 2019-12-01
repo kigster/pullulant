@@ -18,21 +18,31 @@ alias gss='git show --stat'
 
 alias gd='git diff'
 alias gdc='git diff --cached -b'
-alias gc='git commit --verbose'
-alias gcm='git commit -m'
+
+alias gc='EDITOR=/usr/local/bin/vim git commit --verbose'
+alias gcm='EDITOR=/usr/local/bin/vim git commit -m'
+alias gca='EDITOR=/usr/local/bin/vim git commit --amend --verbose'
+
+alias grs='git reset'
+alias grsh='git reset --hard'
+alias gtits='git reset --hard && git clean -dfx'
+alias gtots='git clean --dry-run -dfx'
 
 alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gcom='git checkout master'
 alias gcod='git checkout develop'
-alias gca='git commit --amend --verbose'
+
+alias gco='git checkout'
+alias gcob='git checkout -b'
+alias gcom='git checkout master'
+alias gcod='git checkout develop'
 
 alias gl='git log'
 alias glp='git log -p -2'
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
 alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
-alias gpr='git sp' # smart pull
 alias gpf='git push --force'
 alias gprs='git stash && git pull --rebase && git stash pop'
 alias gpp='git pull --rebase && git push'
@@ -45,7 +55,25 @@ alias gcl='git.clone'
 
 alias gbs='git branch --sort=committerdate  | tail -20'
 
-function git.completions(){
+function gitconfig-ssh() {
+  if [[ -f .git/config ]]; then
+    grep -q "url = git@" .git/config && return 0
+    cat .git/config | sed -E 's#url = https://github\.com/([^/]*)/#url = git@github\.com:\1/#g' > .git/config-ssh
+    mv -v .git/config .git/config-https
+    ln -sv .git/config-ssh .git/config
+    ls -al .git/
+  fi
+}
+
+[[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
+function gpr() {
+  [[ -n $(which git-smart-pull) ]] || gem install -N git-smart >/dev/null
+  hash -r 2>/dev/null
+  git-smart-pull    
+}
+
+
+function git-completions(){
   local dir="/usr/local/etc/bash_completion.d"
   local file="${dir}/git-completion.bash"
 
@@ -62,23 +90,49 @@ function git.completions(){
   fi
 }
 
-function hpr() {
-  hub pull-request
+# Usage: ensure_arguments 'argument name', $1
+ensure_arguments() {
+  if [[ -z "$2" ]] ; then
+    printf "\n${bldred}This function requires an argument: ${bldylw}$1${clr}\n"
+    return 1
+  fi
+  return 0
 }
 
-alias hci='hub ci-status'
+function gcmp() {
+  ensure_arguments 'git commit message' "$1"  || return 1
+  set -x
+  git commit -m "$1"; shift
+  set +x 2>&1 > /dev/null
+  printf "\n${bldgrn}About to do git push... You can 1 second to Ctrl-C...${clr}\n"
+  sleep 1
+  set -x
+  git push "$@"
+  set +x 2>&1 > /dev/null
+}
 
-function git.squash() {
+gacmp() {
+  ensure_arguments 'git commit message' "$1" || return 1
+  printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
+  set -x
+  git add .
+  set +x 2>&1 > /dev/null
+  printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C...${clr}\n"
+  sleep 1
+  gcmp "$@"
+}
+
+function git-squash() {
   number=${1}
   [[ -z ${number} ]] && { 
     echo "Usage: git.squash <number> # of commits to go back"
-  return
-}
-git reset --soft HEAD~${number}
-git commit
+    return
+  }
+  git reset --soft HEAD~${number}
+  git commit
 }
 
-function git.up() {
+function git-up() {
   local this_branch=$(gcb)
   this_branch=${this_branch:-master}
   git branch --set-upstream-to=origin/${this_branch} ${this_branch}
@@ -90,7 +144,7 @@ function git.up() {
 ## description: git glone from current user's github repo. Also aliased to 'gcl'
 ##          eg: git.clone ruby-web # assumign $USER == "wanelo"
 ##
-function git.clone() {
+function git-clone() {
   local repo=$1
   local who=${2:-${USER}}
   local folder=${3}
@@ -116,7 +170,7 @@ function __reset_terminal() {
   echo "Resetting terminal..."
 }
 
-function git.clean() {
+function git-clean() {
   local lib=${PU_HOME}/lib/pu-interaction
   if [[ -d ${PU_HOME} && -f ${lib} ]] ; then
     source ${lib}

@@ -15,7 +15,7 @@ function pu_cleanup_prefs {
   run "mkdir -p $backup_dir"
 }
 
-function osx() {
+function install-osx() {
   # stop forced authentication for os-x updates
   run "sudo defaults delete /Library/Preferences/com.apple.SoftwareUpdate CatalogURL; true"
   run "sudo ln -nfs /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport"

@@ -135,6 +135,13 @@ function pu-short-header {
 }
 
 
+function box-yellow-on-grey() {
+  printf "${bldylw}"
+  pu-box-top
+  pu-box-header "$"
+  pu-box-bottom
+}
+
 function pu-installers-helpers {
   local installer_list=$(pu-indent-list "$installers" 65 "   ")
   local helper_list=$(pu-indent-list    "$helpers"    65 "   ")
@@ -248,8 +255,12 @@ $(pu-underline-header "Runners:")
 
 $(pu-underline-header 'Runner-specific Flags:')
 
-  -b ruby-version 
-              Override ruby version to install specified in packages
+  -V postgresql-version
+              If provided, this version is installed, otherwise the latest 
+              is installed. Valid versions are ${opts_postgres_versions[*]}.
+
+   -b ruby-version Override ruby version to install specified in packages
+
   -S          [S]proutwrap is disabled during the full install
   -B          [B]rew-upgrade is disabled during the full install
   -P          No backu[P] for rsync of bash and zsh files (default is to backup)

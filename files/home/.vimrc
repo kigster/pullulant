@@ -37,8 +37,8 @@ filetype plugin indent on
 map ,f :Ack!<cr>
 map ,g y:Ack!'<C-R>0'<cr>
 map \ :NERDTreeToggle<cr>
-nnoremap <silent> <Space> :nohl<CR><C-l>
-map ,t :Vipe bundle exec rspec <c-r>%:<c-r>=line('.')<cr><cr>
+wwnnoremap <silent> <Space> :nohl<CR><C-l>
+map ,t q:Vipe bundle exec rspec <c-r>%:<c-r>=line('.')<cr><cr>
 map ,y :Vipe<cr>
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
@@ -51,6 +51,7 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 :autocmd FileType cpp setlocal shiftwidth=4 tabstop=4
 :autocmd BufNewFile,BufReadPost *.ino,*.pde set filetype=cpp
 :autocmd BufNewFile * ShebangInsert
+:autocmd BufNewFile,BufReadPost *.sh,*.bash,*.bats set filetype=sh
 "
 " 1 = horizontal, 2 = vertical, 3 = new tab, 4 = previous window
 "
@@ -103,7 +104,7 @@ Plug '~/my-prototype-plugin'
 " Varnish VCL Syntax
 Plug 'fgsch/vim-varnish'
 
-" TOML 
+" TOML
 Plug 'cespare/vim-toml'
 
 " #!
@@ -112,4 +113,77 @@ Plug 'sbdchd/vim-shebang'
 
 " Initialize plugin system
 call plug#end()
+
+
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+" Make sure you use single quotes
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
+
+" Any valid git URL is allowed
+Plug 'https://github.com/junegunn/vim-github-dashboard.git'
+
+" Multiple Plug commands can be written in a single line using | separators
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+
+" Using a non-master branch
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+Plug 'fatih/vim-go', { 'tag': '*' }
+
+" Plugin options
+Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+" Unmanaged plugin (manually installed and updated)
+Plug '~/my-prototype-plugin'
+
+" Varnish VCL Syntax
+Plug 'fgsch/vim-varnish'
+
+" TOML
+Plug 'cespare/vim-toml'
+
+" nginx
+Plug 'chr4/nginx.vim'
+"
+" Add maktaba and bazel to the runtimepath.
+" (The latter must be installed before it can be used.)
+Plug 'google/vim-maktaba'
+Plug 'bazelbuild/vim-bazel'
+
+" Emmet to auto-complete HTML and stylesheet tags
+Plug 'mattn/emmet-vim'
+
+" Initialize plugin system
+call plug#end()
+
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+let g:user_emmet_leader_key='<C-Y>'
+
+let g:user_emmet_settings = {
+  \  'ruby' : {
+  \    'extends' : 'html',
+  \    'filters' : 'c',
+  \  },
+  \  'xml' : {
+  \    'extends' : 'html',
+  \  },
+  \  'haml' : {
+  \    'extends' : 'html',
+  \  },
+  \}
 

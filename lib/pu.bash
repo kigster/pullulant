@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+source "lib/pu-bashmatic"
+
+pu::ensure::bashmatic
+
 source "lib/pu-config"
 source "lib/pu-interaction"
 source "lib/pu-signal"

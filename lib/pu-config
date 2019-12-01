@@ -50,13 +50,24 @@ function package-config {
     /opt
     /Library/Ruby
     "
+
   readonly export postgresql_dir="/usr/local/var/postgres"
+
+
+  if [[ -n $(which brew) ]] ; then
+    declare -a pgversions=($(brew search postgresql -v | grep '@' | cut -d '@' -f 2))
+  else
+    declare -a pgversions=(10 11 12.1)
+  fi
+
+  declare -a supported_postgres_versions=(${pgversions[@]})
 
   # Path that includes rbenv and pyenv
   export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
+  readonly export supported_postgres_versions
   readonly export pu_signal_next_runner=$(kill -l SIGUSR1)
   readonly export pu_signal_interrupt=$(kill -l SIGTERM)
 
@@ -76,8 +87,6 @@ function package-config {
   readonly export alfred_dir="${HOME}/Desktop/Pullulant/Alfred"
 
   [[ -n "$(which apm)" ]] && apm=apm
-  [[ -n "$(which apm-beta)" ]] && apm="apm-beta"
-
 
   # these can be overridden by the flags
   readonly export pu_options="
@@ -102,6 +111,7 @@ function package-config {
     opts_brew_link_only
     opts_change_shell_to_zsh
     opts_features
+    opts_postgres_version
   "
 
   for option in ${pu_options}; do

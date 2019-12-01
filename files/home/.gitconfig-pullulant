@@ -70,9 +70,5 @@
   smudge = git-lfs smudge %f
   required = true
 
-[user]
-  name = Konstantin Gredeskoul
-  email = kigster@gmail.com
-
 [commit]
   gpgsign = true
