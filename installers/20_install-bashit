@@ -11,7 +11,7 @@
 #_______________________________________________________________________________
 #
 
-function pu_bash_it() {
+function install-bashit() {
   last_command_status=0
 
   [[ -d ${bash_it_home} && -z "${opts_force}" ]] && {

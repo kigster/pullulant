@@ -21,24 +21,24 @@
   git
   go
   haproxy
-  rsync
-  hub
   imagemagick
+  jemalloc
   jq
   libiconv
   libmemcached
   libxml2
   libxslt
   libzip
+  netcat
   nginx
   nmap
   openssl
-  jemalloc
   pcre
   pstree
   qt
   rbenv
   redis
+  rsync
   ruby-build
   tree
   vim
@@ -51,10 +51,11 @@
 
 [[ -n "${brew_casks}" ]] || brew_casks="
   atom
-  github-desktop
-  gitx
+  homebrew/cask-versions/github-beta
+  homebrew/cask-versions/docker-edge
+  rowanj-gitx
   teamviewer
-  textmate
+  macdown
 "
 
 [[ -n "${brew_relink_packages}" ]] || brew_relink_packages="
@@ -72,7 +73,7 @@
 # This is the ruby/python version that will be installed using rbenv
 # the first one in the list will be set as the default. At least one
 # is required to keep going with SproutWrap.
-[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.6.3 2.6.2")
+[[ -n "${rbenv_ruby_versions}" ]]   || rbenv_ruby_versions=("2.6.2")
 [[ -n "${rbenv_ruby_default}" ]]    || rbenv_ruby_default="2.6.2"
 [[ -n "${pyenv_python_versions}" ]] || pyenv_python_versions=()
 
@@ -84,17 +85,15 @@
   bower
 "
 [[ -n "${python_modules}" ]] || python_modules="
-  thefuck
 "
+
 [[ -n "${ruby_modules}" ]]   || ruby_modules="
   activesupport
   awesome_print
-  awscli
-  bundler
+  aws
   colored2
   git-smart
   irbtools
-  pg
   pivotal_git_scripts
   pry
   pry-doc
@@ -102,6 +101,7 @@
   sym
   travis
   warp-dir
+  rails
 "
 
 [[ -n "${alfred_plugins}" ]] || alfred_plugins="

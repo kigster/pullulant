@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+which -s git && {
+  git config --global user.email "kigster@gmail.com"
+  git config --global user.name "Konstantin Gredeskoul"
+}
+

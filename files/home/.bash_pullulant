@@ -15,9 +15,9 @@
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-export WS=$HOME/workspace
 export NODE_PATH=/usr/local/share/npm
-export GOPATH=$HOME/$WS/golang
+
+
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 export PGUSER=postgres
 export EDITOR=vim
@@ -25,14 +25,23 @@ export PAGER='less -R'
 export RI='-f ansi'
 
 source ~/.bash_pu_aliases
-#source ~/.bash_pu_brew
 source ~/.bash_pu_colors
-#source ~/.bash_pu_completion
-#source ~/.bash_pu_docker
 source ~/.bash_pu_functions
-source ~/.bash_pu_pprocs
 source ~/.bash_pu_git
 source ~/.bash_pu_grep
 source ~/.bash_pu_pgsql
+source ~/.bash_pu_ruby
+
+#source ~/.bash_pu_completion
+#source ~/.bash_pu_docker
+#source ~/.bash_pu_brew
 #source ~/.bash_pu_services
 #source ~/.bash_pu_tmux
+
+export PATH="$HOME/bin:/usr/local/bin:/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+for env in rbenv pyenv; do
+  dir="${HOME}/.${env}/shims"
+  if [[ -d "${dir}" ]] ; then
+    export PATH="${dir}:$PATH"
+  fi
+done

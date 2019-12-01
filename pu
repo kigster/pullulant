@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# vim:filetype=sh
+#!/usr/bin/env bash # vim:filetype=sh
 #_______________________________________________________________________________
 #
 # © 2016 Konstantin Gredeskoul
@@ -8,7 +7,8 @@
 #
 # Distributed under MIT License
 #_______________________________________________________________________________
-#
+
+
 
 pu-source-file() {
   local file="files/home/$1"
@@ -18,8 +18,11 @@ pu-source-file() {
 
 function pu-setup {
   export original_dir=$(pwd)
+
   export pu_home="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   cd "${pu_home}"
+  export pu_version="$( cat VERSION | tr -d '\n')"
+
   source "lib/pu-loader"
 }
 
@@ -28,11 +31,17 @@ function pu-help-command() {
   pu-print-help
 }
 
-pu-setup
-pu-source-file .bash_pu_colors
-pu-source-file lib/pu-validate-bash-version
+function pu-version-info() {
+  pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version ${PU_VERSION})\n"
+}
 
+pu-setup
+pu-version-info
+pu-source-file lib/pu-validate-bash-version
 pu-validate-bash-version 4
+
+#pu-source-file lib/pu-bashmatic
+#pu::ensure::bashmatic
 
 # All installers and helpers
 declare -a installer_sudo_map
@@ -40,7 +49,6 @@ export installer_sudo_map
 # Just the runners specified
 declare -A runner_sudo_map
 export runner_sudo_map
-
 
 opts_features=""
 
@@ -50,7 +58,7 @@ opts_features=""
   abort 0
 }
 
-while getopts "r:Rf:BCDEFHIKLNPRSTUZe:b:dhilkmnops:qtvyx" opt; do
+while getopts "r:Rf:BCDEFHIKLNPRSTUZV:e:b:dhilkmnops:qtvyx" opt; do
   case $opt in
     b)
       export install_ruby_versions=($OPTARG)
@@ -139,6 +147,17 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZe:b:dhilkmnops:qtvyx" opt; do
 
     Z)
       export opts_change_shell_to_zsh=yes     ;;
+
+    #========================= Output Control =======================
+
+    V)
+      export opts_postgres_version="$OPTARG"     
+      [[ $(lib::array::contains-element "${opts_postgres_version}" "${supported_postgres_versions[@]}") ]] || {
+        error "Version ${opts_postgres_version} is unsupported." \
+              "Valid versions are: $(lib::array::join-piped "${supported_postgres_versions[@]}")"
+        exit 1
+      }
+      ;;
 
     #========================= Output Control =======================
     p)
@@ -246,7 +265,8 @@ function run_runners() {
 
       pu-print-section-header "${bldwht}${bakblu}" ${runner}
 
-      eval ${runner}
+      eval "${runner}"
+
       runner_status=${runner_status:-1}
 
       if [ ${runner_status} -ne 0 ]; then
@@ -322,6 +342,7 @@ function main {
 
   declare -a runners_list=($runners)
   declare -a runners_skipped_list=(${pu_skip_runners})
+
   export runners_total=${#runners_list[@]}
   export runners_left=$runners_total
 
@@ -331,7 +352,7 @@ function main {
 
 #______________________________________________________________________________
 #
-export args=$*
+declare -a args="$@"
 
 function pu-interrupt() {
   printf "\n\n"
@@ -364,7 +385,7 @@ pu-trap-signals pu-interrupt INT
 [[ "${opts_continue_on_runner_error}" == "yes" ]] && pu-trap-signals abort_current_runner_and_continue USR1
 
 printf ${txtrst}
-main args
+main ${args[@]}
 printf ${txtrst}
 
 # EOF

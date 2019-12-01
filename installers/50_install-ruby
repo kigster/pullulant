@@ -11,7 +11,37 @@
 #_______________________________________________________________________________
 
 
-function pu_ruby {
+function install-ruby {
+  install_ruby
+  install_ruby_modules
+}
+
+# Private functions
+function install_ruby {
+  pu_jemalloc
+
+  run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
+
+  local default_ruby=${rbenv_ruby_default:-${rbenv_ruby_versions[-1]}}
+
+  export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+  for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
+    last_command_status=$(rbenv versions | grep ${rbenv_ruby_version})
+    if [ $? -ne 0 ]; then
+      run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
+      run "RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install -s ${opts_verbose} ${rbenv_ruby_version}"
+      run "eval $(rbenv init -) && rbenv rehash"
+      run "hash -r"
+      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
+    fi
+    run "rbenv global ${rbenv_ruby_version}"
+  done
+
+  run "rbenv global ${default_ruby}"
+}
+
+function install_ruby_modules() {
   [[ -n "${ruby_modules}" ]] && {
     declare -a pre_installed=($(current_gems))
     for gem in ${ruby_modules}; do
@@ -41,34 +71,4 @@ function pu_verify_jemalloc() {
 
 function current_gems() {
   gem list | cut -d' ' -f1
-}
-
-export rubyinstall_ran=
-function install_ruby {
-
-  [[ -n "${rubyinstall_ran}" ]] && return
-
-  pu_jemalloc
-
-  run "echo Verifying that the ruby versions ${rbenv_ruby_versions[*]} are installed"
-
-  local default_ruby=${rbenv_ruby_default:-${rbenv_ruby_versions[-1]}}
-
-  for rbenv_ruby_version in ${rbenv_ruby_versions[@]}; do
-    last_command_status=$(rbenv versions | grep ${rbenv_ruby_version})
-    if [ $? -ne 0 ]; then
-      run 'printf "${bldylw}Installing ruby from sources, this make take 2-3 minutes (get a faster box!)....${txtrst}\n"'
-      run "RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install -s ${opts_verbose} ${rbenv_ruby_version}"
-      run "eval $(rbenv init -) && rbenv rehash"
-      run "hash -r"
-      [[ "$(gem list -i bundler)" == "false" ]] && run "gem install bundler"
-      export PATH="$HOME/.rbenv/shims:$HOME/.pyenv/shims:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-    fi
-    run "rbenv global ${rbenv_ruby_version}"
-    install_ruby_modules
-  done
-
-  run "rbenv global ${default_ruby}"
-
-  export rubyinstall_ran=yes
 }

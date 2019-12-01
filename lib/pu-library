@@ -189,6 +189,7 @@ function uppercase-first-letter() {
     foo="$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}"
     echo -n $foo
 }
+
 function run {
     cmd=$1
     ignore_error=${2-""}

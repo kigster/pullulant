@@ -9,5 +9,3 @@
 # atom.workspace.observeTextEditors (editor) ->
 #   editor.onDidSave ->
 #     console.log "Saved! #{editor.getPath()}"
-#
-document.body.classList.add('an-old-hope-modify-ui')
