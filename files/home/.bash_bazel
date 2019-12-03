@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+[[ ~/.bazel/bin/bazel-complete.bash ]] && source ~/.bazel/bin/bazel-complete.bash
+
+alias bb='bazel build'
+alias bba='bazel build //...:all'
+alias bbr='bazel run'
+alias bbx='bazel clean --expunge'
+alias bbq='bazel query'
+alias bbt='bazel test'
+alias bbqa='bazel query //...:all'
+

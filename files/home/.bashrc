@@ -1,83 +1,25 @@
-set +e
 
-declare -a BASH_INIT_FILES=(
-  /usr/local/etc/bash_completion
-  ~/.bashmatic/init.sh
-  ~/.bash_it_init
-  ~/.bash_it/bash_it.sh
-  ~/.bash_kig
-  ~/.bash_coinbase
-  ~/.bash_bazel
-  ~/.bash_pullulant
-  ~/.fzf.bash
-)
+# WarpDir (v1.6.1, appended on 2019-09-11 12:14:15 -0700) BEGIN
+[[ -f ~/.bash_wd ]] && source ~/.bash_wd
+# WarpDir (v1.6.1, appended on 2019-09-11 12:14:15 -0700) END
 
-export SSH=false
 
-say() {
-  if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-    export SSH_LOGIN=true
-    return
-  else
-    printf "$*"
-  fi
-}
+# automatically appended by pullulant's installer
+[[ -f ~/.bash_pullulant ]] && source ~/.bash_pullulant
+[[ -f ~/.bashmatic/init.sh ]] && source ~/.bashmatic/init.sh
 
-install-xcode-tools() {
-  [[ -z $(which git) ]] && {
-    set -x
-    xcode-select --install
-    set +x
-  }
-}
+eval "$(rbenv init -)"
+eval "$(direnv hook bash)"
+#eval "$(pyenv init -)"
 
-install-xcode-tools
+export GOPATH=~/Coinbase/golang
+export PATH="${PATH}:${GOPATH}/bin"
 
-install-bash-it(){
-  [[ -d ${HOME}/.bash_it ]] || {
-    git clone https://github.com/kigster/bash-it .bash_it
-    cd .bash_it && ./install.sh -n # does not modifies existing dot files
-  }
-}
-install-bash-it
+[[ -f ~/.bash_bazel ]] && source ~/.bash_bazel
+[[ -f ~/.bash_${USER} ]] && source ~/.bash_${USER}
 
-install-bashmatic() {
-  export BashMatic="${HOME}/.bashmatic"
-  [[ -s ${BashMatic}/init.sh ]] || {
-    rm -rf "${BashMatic}" 2>/dev/null
-    set -e
-    git clone https://github.com/kigster/bashmatic .bashmatic 2>&1 1>/dev/null
-    set +e
-  }
-}
+[[ -f /usr/local/etc/bash_completion ]] && source /usr/local/etc/bash_completion
+[[ -f /Users/kig/.sym.completion.bash ]] && source /Users/kig/.sym.completion.bash
+[[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 
-install-bashmatic
-source ~/.bashmatic/init.sh
-
-load-dotfiles() {
-  for file in "$@"; do
-    say "   ${clr} — ${bldblu}${file}${clr}"
-    if ! [[ -f ${file} ]]; then
-      if [[ -z ${SSH_LOGIN} ]]; then
-        cursor.rewind -100
-        say " ${bldred} 𐄂\n"
-      fi
-    else
-      if [[ -z ${SSH_LOGIN} ]]; then
-        cursor.rewind -1000
-        say " ${bldgrn} ✔ \n"
-      fi
-      source "${file}"
-    fi
-  done
-}
-
-load-custom-bash-configs() {
-  load-dotfiles "${BASH_INIT_FILES[@]}"
-}
-
-main() {
-  load-custom-bash-configs
-}
-
-main "$@"
+alias mit="cat /Users/kig/Dropbox/Backups/Books/MIT-License | pbcopy"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-which -s git && {
+[[ -n $(command -v git) && ${USER} == "kig" ]] && {
   git config --global user.email "kigster@gmail.com"
   git config --global user.name "Konstantin Gredeskoul"
 }
