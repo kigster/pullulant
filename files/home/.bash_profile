@@ -56,7 +56,7 @@ export SCM_GIT_SHOW_CURRENT_USER=true
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
 
-export POWERLINE_LEFT_PROMPT="cwd scm python_venv ruby"
+export POWERLINE_LEFT_PROMPT="cwd scm ruby"
 export POWERLINE_RIGHT_PROMPT="clock"
 
 source ~/.bashrc
@@ -64,4 +64,8 @@ source ~/.bashrc
 export EDITOR=vim
 gvim.off
 
+# WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) BEGIN
+[[ -f ~/.bash_wd ]] && source ~/.bash_wd
+# WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) END
 
+export GPG_TTY=$(tty)

@@ -9,4 +9,4 @@ alias bbx='bazel clean --expunge'
 alias bbq='bazel query'
 alias bbt='bazel test'
 alias bbqa='bazel query //...:all'
-alias buildcop="find . -type f -name 'BUILD*' -or -name WORKSPACE -or -name '*.bzl' | xargs buildifier -v"
+

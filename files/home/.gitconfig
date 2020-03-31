@@ -2,4 +2,7 @@
 [include]
   path = ~/.gitconfig-pullulant
   path = ~/.gitconfig-user
-
+[pull]
+	rebase = true
+[gpg]
+	program = gpg

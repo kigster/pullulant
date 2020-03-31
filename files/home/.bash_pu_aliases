@@ -46,5 +46,6 @@ if [[ $(uname -s) == 'Darwin' ]]; then
   alias filetree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
   alias winhup='sudo killall -HUP WindowServer'
   alias wifiup='networksetup -setairportpower airport on'
+  alias cwd='pwd -P |  tr -d "\\n" | pbcopy && echo "Directory $(pwd) is in your clipboard"'
   alias wifidown='networksetup -setairportpower airport off'
 fi 

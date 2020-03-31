@@ -1,3 +1,4 @@
+
 syntax on
 
 set autoindent
@@ -27,17 +28,16 @@ endif
 
 set t_Co=256
 colorscheme evolution
-"colorscheme peachpuff
 
 set guicursor+=n-v-c:blinkon0
-set guifont=Consolas:h16
+set guifont=Menlo:h16
 
 filetype plugin indent on
 
 map ,f :Ack!<cr>
 map ,g y:Ack!'<C-R>0'<cr>
 map \ :NERDTreeToggle<cr>
-wwnnoremap <silent> <Space> :nohl<CR><C-l>
+"wwnnoremap <silent> <Space> :nohl<CR><C-l>
 map ,t q:Vipe bundle exec rspec <c-r>%:<c-r>=line('.')<cr><cr>
 map ,y :Vipe<cr>
 
@@ -47,11 +47,16 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 :autocmd BufRead,BufNewFile *.json setfiletype json
 :autocmd BufRead,BufNewFile *.nmap setfiletype nmap
 :autocmd BufRead,BufNewFile *.hamlc setfiletype haml
+:autocmd BufRead,BufNewFile *.html setfiletype html
+:autocmd BufRead,BufNewFile *.css setfiletype css
 
 :autocmd FileType cpp setlocal shiftwidth=4 tabstop=4
 :autocmd BufNewFile,BufReadPost *.ino,*.pde set filetype=cpp
-:autocmd BufNewFile * ShebangInsert
 :autocmd BufNewFile,BufReadPost *.sh,*.bash,*.bats set filetype=sh
+:autocmd BufNewFile,BufReadPost *.yaml,*.yml set filetype=yaml
+:autocmd BufNewFile,BufReadPost *.html set filetype=html
+:autocmd BufNewFile,BufReadPost *.haml set filetype=haml
+:autocmd BufNewFile,BufReadPost *.rb,Rakefile,Capfile,Gemfile,*.gemspec,*.tpl set filetype=ruby
 "
 " 1 = horizontal, 2 = vertical, 3 = new tab, 4 = previous window
 "
@@ -60,11 +65,6 @@ let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
-
-let g:shebang#shebangs = {
-            \ 'python': '#!/bin/python',
-            \ 'sh': '#!/usr/bin/env bash',
-            \ }
 
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
@@ -170,20 +170,20 @@ Plug 'mattn/emmet-vim'
 " Initialize plugin system
 call plug#end()
 
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
-let g:user_emmet_leader_key='<C-Y>'
+"let g:user_emmet_install_global = 0
+"autocmd FileType html,css EmmetInstall
+"let g:user_emmet_leader_key='<C-Y>'
 
-let g:user_emmet_settings = {
-  \  'ruby' : {
-  \    'extends' : 'html',
+"let g:user_emmet_settings = {
+"  \  'ruby' : {
+"  \    'extends' : 'html',
   \    'filters' : 'c',
-  \  },
-  \  'xml' : {
-  \    'extends' : 'html',
-  \  },
-  \  'haml' : {
-  \    'extends' : 'html',
-  \  },
-  \}
+"  \  },
+"  \  'xml' : {
+"  \    'extends' : 'html',
+"  \  },
+"  \  'haml' : {
+"  \    'extends' : 'html',
+"  \  },
+"  \}
 

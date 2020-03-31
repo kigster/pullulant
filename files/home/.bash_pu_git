@@ -19,9 +19,9 @@ alias gss='git show --stat'
 alias gd='git diff'
 alias gdc='git diff --cached -b'
 
-alias gc='EDITOR=/usr/local/bin/vim git commit --verbose'
-alias gcm='EDITOR=/usr/local/bin/vim git commit -m'
-alias gca='EDITOR=/usr/local/bin/vim git commit --amend --verbose'
+alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
+alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
+alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
 
 alias grs='git reset'
 alias grsh='git reset --hard'
