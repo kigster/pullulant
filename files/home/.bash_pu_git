@@ -16,8 +16,20 @@ alias gs='git status'
 alias gst='git status'
 alias gss='git show --stat'
 
-alias gd='git diff'
-alias gdc='git diff --cached -b'
+ 
+if [[ -n $(command -V ydiff) ]]; then
+  alias gd='ydiff'
+  alias gds='ydiff -s -w 0'
+  alias gdc='ydiff --cached'
+  alias glp='ydiff -l'
+  alias glps='ydiff -l -s -w 0'
+else
+  alias gd='git diff'
+  alias gdc='git diff --cached -b'
+  alias glp='git log -p -2'
+fi
+
+alias gl='git log'
 
 alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
 alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
@@ -38,14 +50,15 @@ alias gcob='git checkout -b'
 alias gcom='git checkout master'
 alias gcod='git checkout develop'
 
-alias gl='git log'
-alias glp='git log -p -2'
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
 alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
 alias gpf='git push --force'
 alias gprs='git stash && git pull --rebase && git stash pop'
 alias gpp='git pull --rebase && git push'
+
+alias grbc='git rebase --continue'
+alias grba='git rebase --abort'
 
 alias ga='git add'
 alias gaa='git add -A'
