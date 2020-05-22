@@ -49,3 +49,5 @@ if [[ $(uname -s) == 'Darwin' ]]; then
   alias cwd='pwd -P |  tr -d "\\n" | pbcopy && echo "Directory $(pwd) is in your clipboard"'
   alias wifidown='networksetup -setairportpower airport off'
 fi 
+
+__git_complete gco _git_checkout
