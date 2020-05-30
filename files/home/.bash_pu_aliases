@@ -9,6 +9,7 @@
 
 umask 027
 
+alias da='direnv allow .'
 alias dc='cd'
 alias dir='ls -alF'
 alias lr='ls -alrt'

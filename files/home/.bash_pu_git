@@ -18,11 +18,11 @@ alias gss='git show --stat'
 
  
 if [[ -n $(command -V ydiff) ]]; then
-  alias gd='ydiff'
-  alias gds='ydiff -s -w 0'
-  alias gdc='ydiff --cached'
-  alias glp='ydiff -l'
-  alias glps='ydiff -l -s -w 0'
+  alias gd='git diff | ydiff'
+  alias gds='git diff -s -w 0 | ydiff'
+  alias gdc='git diff --cached -b | ydiff'
+  alias glp='git diff -L | ydiff'
+  alias glps='git diff -l -s -w 0 | ydiff'
 else
   alias gd='git diff'
   alias gdc='git diff --cached -b'

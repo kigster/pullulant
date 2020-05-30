@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# vim: ft=bash
+. /usr/local/etc/bash_completion
 
 # Path to the bash it configuration
 export BASH_IT="/Users/kig/.bash_it"
@@ -9,7 +11,8 @@ export BASH_IT="/Users/kig/.bash_it"
 export BASH_IT_THEME="powerline-multiline"
 # (Advanced): Change this to the name of your remote repo if you
 # cloned bash-it with a remote other than origin such as `bash-it`.
-# export BASH_IT_REMOTE='bash-it'
+#export BASH_IT_REMOTE='bash-it'
+export BASH_IT_REMOTE='kigster/bash-it'
 
 # Your place for hosting Git repos. I use this for private repos.
 export GIT_HOSTING='git@git.domain.com'
@@ -23,14 +26,10 @@ export IRC_CLIENT='irssi'
 # Set this to the command you use for todo.txt-cli
 export TODO="t"
 
-# Set this to false to turn off version control status checking within the prompt for all themes
-export SCM_CHECK=true
-export SCM_GIT_SHOW_CURRENT_USER=true
-
 # Set Xterm/screen/Tmux title with only a short hostname.
 # Uncomment this (or set SHORT_HOSTNAME to something else),
 # Will otherwise fall back on $HOSTNAME.
-#export SHORT_HOSTNAME=$(hostname -s)
+export SHORT_HOSTNAME=$(hostname -s)
 
 # Set Xterm/screen/Tmux title with only a short username.
 # Uncomment this (or set SHORT_USER to something else),
@@ -39,7 +38,7 @@ export SCM_GIT_SHOW_CURRENT_USER=true
 
 # Set Xterm/screen/Tmux title with shortened command and directory.
 # Uncomment this to set.
-#export SHORT_TERM_LINE=true
+export SHORT_TERM_LINE=true
 
 # Set vcprompt executable path for scm advance info in prompt (demula theme)
 # https://github.com/djl/vcprompt
@@ -52,20 +51,31 @@ export SCM_GIT_SHOW_CURRENT_USER=true
 # Uncomment this to make Bash-it create alias reload.
 # export BASH_IT_RELOAD_LEGACY=1
 
-#source ~/.powerline
+# source ~/.powerline
 # Load Bash It
-source "$BASH_IT"/bash_it.sh
 
-export POWERLINE_LEFT_PROMPT="cwd scm ruby"
-export POWERLINE_RIGHT_PROMPT="clock"
+export POWERLINE_LEFT_PROMPT="ruby cwd"
+export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
 
-source ~/.bashrc
+export BASH_IT_P4_DISABLED=true
 
-export EDITOR=vim
-gvim.off
+export SCM=git
+#export SCM_CHECK=true
+export SCM_GIT_SHOW_CURRENT_USER=true
+#export SCM_GIT_SHOW_DETAILS=false
+#export SCM_GIT_SHOW_COMMIT_COUNT=false
+#export SCM_GIT_SHOW_MINIMAL_INFO=false
+#export SCM_GIT_SHOW_REMOTE_INFO=false
+#export SCM_GIT_SHOW_STASH_INFO=false
 
-# WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) BEGIN
-[[ -f ~/.bash_wd ]] && source ~/.bash_wd
-# WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) END
+if [[ "${ITERM_PROFILE}" =~ "Light" || "${ITERM_PROFILE}" =~ "light" ]]; then
+  export BASH_IT_COLORSCHEME=light
+else
+  export BASH_IT_COLORSCHEME=dark
+fi
 
-export GPG_TTY=$(tty)
+source "${BASH_IT}"/bash_it.sh
+source "${HOME}"/.bashrc
+
+export POWERLINE_LEFT_PROMPT="ruby scm cwd"
+
