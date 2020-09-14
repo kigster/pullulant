@@ -1,26 +1,26 @@
 # encoding: utf-8
 
-
-
 require 'readline'
 require 'irb/completion'
 require 'irb/ext/save-history'
+require 'colored2'
 
-begin
-  require 'colored2'
-  require 'awesome_print' 
-  # do not include irbtools if we are running under RubyMine
-  require 'irbtools' if ENV.keys.grep(/RUBYMINE/).empty?
-rescue LoadError => e
-  puts "Unable to load gem dependency: #{e.message}"
-  puts "Installing them for you...."
-  puts `gem install colored2 irbtools awesome_print --no-doc`
-  puts
-  puts "Replacing current process with the new IRB..."
+gems = %w[awesome_print]
+gems += %w[irbtools] if ENV.keys.grep(/RUBYMINE/).empty?
 
-  exec ARGV.join(' ')
+installed = false
+gems.each do |gem|
+  begin
+    require gem
+  rescue LoadError => e
+    puts "Attempting to install #{gem.bold.yellow}...\n"
+    puts "  > gem install #{gem} --no-doc\n".bold.green
+    puts `gem install #{gem} --no-doc`
+    installed = true
+  end
 end
 
+exec(ARGV.join(' ')) if installed
 
 puts '—' * (ENV['COLUMNS'] || 80)
 

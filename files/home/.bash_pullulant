@@ -22,6 +22,8 @@ export EDITOR=vim
 export PAGER='less -R'
 export RI='-f ansi'
 
+export HISTCONTROL=ignoredups
+
 source-if-exists() {
   local file
   for file in "$@"; do
