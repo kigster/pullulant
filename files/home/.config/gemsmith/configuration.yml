@@ -1,0 +1,36 @@
+:year: 2020
+:github_user: kigster
+:gem:
+  :label: "Undefined"
+  :name: "undefined"
+  :path: "undefined"
+  :class: "Undefined"
+  :platform: "Gem::Platform::RUBY"
+  :url: "https://github.com/kigster/<gem name>"
+  :license: "MIT"
+:author:
+  :name: "Konstantin Gredeskoul"
+  :email: "kigster@gmail.com"
+  :url: "http://kig.re/"
+:organization:
+  :name: "ReinventONE, Inc."
+  :url: "https://reinvent.one/"
+:versions:
+  :ruby: "2.7"
+  :rails: "6.0"
+:generate:
+  :bundler_audit: true
+  :circle_ci: true
+  :cli: true
+  :engine: false
+  :git_cop: false
+  :git_hub: false
+  :guard: false
+  :pry: false
+  :reek: false
+  :rspec: true
+  :rubocop: true
+  :simple_cov: true
+  :security: true
+:publish:
+  :sign: true

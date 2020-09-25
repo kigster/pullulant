@@ -1,12 +1,7 @@
 pairs:
-  em: Eugene Miloslavsky; eugenemi
-  es: Eric Saxby; sax
-  jh: James Hart; james
-  kg: Konstantin Gredeskoul; kig
-  tj: Telene Johnston; telene
-  iz: Igor Zilberman; igor
+  kg: Konstantin Gredeskoul; kigster
 
 email:
-  domain: reinvent.one
+  domain: gmail.com
 
 global: true

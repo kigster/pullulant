@@ -1,4 +1,4 @@
-
+# vim:ft=vim
 syntax on
 
 set autoindent
@@ -20,26 +20,27 @@ set shiftwidth=2
 set smartindent
 set softtabstop=2
 
-map <C-S-L> * exe mzgg=G`z
-map ,l * exe mzgg=G`z
+"map <C-S-L> * exe mzgg=G`z
+"map <C-S-L> * exe mzgg=G`z
+"map ,l * exe mzgg=G`z
+
 if has ("autocmd")
   filetype indent on
 endif
 
-set t_Co=256
-colorscheme evolution
-
-set guicursor+=n-v-c:blinkon0
-set guifont=Menlo:h16
+"set guicursor+=n-v-c:blinkon0
 
 filetype plugin indent on
+:filetype plugin on
 
-map ,f :Ack!<cr>
-map ,g y:Ack!'<C-R>0'<cr>
+" Github Dashboard and Activity
+map ,d :GHDashboard kigster<cr>
+map ,a :GHActivity kigster<cr>
+map ,r :GHActivity kigster/ 
+
 map \ :NERDTreeToggle<cr>
-"wwnnoremap <silent> <Space> :nohl<CR><C-l>
+
 map ,t q:Vipe bundle exec rspec <c-r>%:<c-r>=line('.')<cr><cr>
-map ,y :Vipe<cr>
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
@@ -49,14 +50,19 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 :autocmd BufRead,BufNewFile *.hamlc setfiletype haml
 :autocmd BufRead,BufNewFile *.html setfiletype html
 :autocmd BufRead,BufNewFile *.css setfiletype css
+:autocmd BufRead,BufNewFile zone* setfiletype bind
+:autocmd BufRead,BufNewFile *.zone setfiletype bind
 
 :autocmd FileType cpp setlocal shiftwidth=4 tabstop=4
+:autocmd BufNewFile,BufReadPost zone*,*.zone set filetype=bind
 :autocmd BufNewFile,BufReadPost *.ino,*.pde set filetype=cpp
 :autocmd BufNewFile,BufReadPost *.sh,*.bash,*.bats set filetype=sh
 :autocmd BufNewFile,BufReadPost *.yaml,*.yml set filetype=yaml
 :autocmd BufNewFile,BufReadPost *.html set filetype=html
+:autocmd BufNewFile,BufReadPost *.sql set filetype=sql
 :autocmd BufNewFile,BufReadPost *.haml set filetype=haml
-:autocmd BufNewFile,BufReadPost *.rb,Rakefile,Capfile,Gemfile,*.gemspec,*.tpl set filetype=ruby
+:autocmd BufNewFile,BufReadPost *.rb,*.rake,*.cap,Procfile*,Rakefile,Capfile,Gemfile,*.gemspec,*.tpl set filetype=ruby
+
 "
 " 1 = horizontal, 2 = vertical, 3 = new tab, 4 = previous window
 "
@@ -68,7 +74,7 @@ let g:netrw_winsize = 25
 
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -76,102 +82,62 @@ endif
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
-
 " Make sure you use single quotes
-
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
-
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
-
 " Multiple Plug commands can be written in a single line using | separators
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
+" Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 " On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-
 " Using a non-master branch
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-
+" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go', { 'tag': '*' }
-
 " Plugin options
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-
-" Unmanaged plugin (manually installed and updated)
-Plug '~/my-prototype-plugin'
-
-" Varnish VCL Syntax
-Plug 'fgsch/vim-varnish'
-
-" TOML
-Plug 'cespare/vim-toml'
-
-" #!
 Plug 'sbdchd/vim-shebang'
-
-
 " Initialize plugin system
-call plug#end()
-
-
-" Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.vim/plugged')
-
-" Make sure you use single quotes
-
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
-
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
-
 " Multiple Plug commands can be written in a single line using | separators
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
 " On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-
 " Using a non-master branch
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-
 " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go', { 'tag': '*' }
-
 " Plugin options
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-
 " Unmanaged plugin (manually installed and updated)
 Plug '~/my-prototype-plugin'
-
 " Varnish VCL Syntax
 Plug 'fgsch/vim-varnish'
-
 " TOML
 Plug 'cespare/vim-toml'
-
 " nginx
 Plug 'chr4/nginx.vim'
-"
 " Add maktaba and bazel to the runtimepath.
 " (The latter must be installed before it can be used.)
 Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
-
 " Emmet to auto-complete HTML and stylesheet tags
 Plug 'mattn/emmet-vim'
+Plug 'habamax/vim-asciidoctor'
+Plug 'sheerun/vim-polyglot'
+Plug 'phanviet/vim-monokai-pro'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'vim-ruby/vim-ruby'
 
 " Initialize plugin system
 call plug#end()
@@ -180,16 +146,45 @@ call plug#end()
 "autocmd FileType html,css EmmetInstall
 "let g:user_emmet_leader_key='<C-Y>'
 
-"let g:user_emmet_settings = {
-"  \  'ruby' : {
-"  \    'extends' : 'html',
-  \    'filters' : 'c',
-"  \  },
-"  \  'xml' : {
-"  \    'extends' : 'html',
-"  \  },
-"  \  'haml' : {
-"  \    'extends' : 'html',
-"  \  },
-"  \}
+" Once vim-javascript is installed you enable flow highlighting
+let g:javascript_plugin_flow = 1
+
+let g:rigel_airline = 1
+let g:airline_theme = 'rigel'
+
+let g:user_emmet_settings = {
+      \  'ruby' : {
+      \    'extends' : 'html',
+      \    'filters' : 'c',
+      \  },
+      \  'xml' : {
+      \    'extends' : 'html',
+      \  },
+      \  'haml' : {
+      \    'extends' : 'html',
+      \  },
+      \}
+
+"set t_Co=256
+set termguicolors
+"set this built-in colorscheme first
+colorscheme brogrammer
+"try to set this assuming the plugin was installed.
+colorscheme monokai_pro
+
+let g:github_dashboard = { 'username': 'kigster', 'password': '44f2196bb2e6299712741b84517e2a56e6b92d94' }
+
+" Dashboard window position
+" - Options: tab, top, bottom, above, below, left, right
+" - Default: tab
+let g:github_dashboard['position'] = 'tab'
+
+" Disable Emoji output
+" - Default: only enable on terminal Vim on Mac
+"let g:github_dashboard['emoji'] = 0
+
+" Command to open link URLs
+" - Default: auto-detect
+let g:github_dashboard['open_command'] = 'open'
+
 

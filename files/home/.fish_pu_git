@@ -1,0 +1,58 @@
+# vim: ft=fish
+
+alias gp="git push -v"
+alias gcb="git branch --no-color | grep -F '*' | cut -f 2 -d ' '"  # git current branch
+alias gs="git status"
+alias gst="git status"
+alias gss="git show --stat"
+
+if which ydiff >/dev/null
+  alias gd="git diff | ydiff"
+  alias gds="git diff -s -w 0 | ydiff"
+  alias gdc="git diff --cached -b | ydiff"
+  alias glp="git diff -L | ydiff"
+  alias glps="git diff -l -s -w 0 | ydiff"
+else
+  alias gd="git diff"
+  alias gdc="git diff --cached -b"
+  alias glp="git log -p -2"
+end
+
+alias gl="git log"
+
+alias gc="EDITOR=/usr/local/bin/vim git commit -S --verbose"
+alias gcm="EDITOR=/usr/local/bin/vim git commit -S -m"
+alias gca="EDITOR=/usr/local/bin/vim git commit -S --amend --verbose"
+
+alias grs="git reset"
+alias grsh="git reset --hard"
+alias gtits="git reset --hard && git clean -dfx"
+alias gtots="git clean --dry-run -dfx"
+
+alias gco="git checkout"
+alias gcob="git checkout -b"
+alias gcom="git checkout master"
+alias gcod="git checkout develop"
+
+alias gco="git checkout"
+alias gcob="git checkout -b"
+alias gcom="git checkout master"
+alias gcod="git checkout develop"
+
+alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+alias glg="git log --graph --all --pretty=format:'%h(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
+
+alias gpf="git push --force"
+alias gprs="git stash && git pull --rebase && git stash pop"
+alias gpp="git pull --rebase && git push"
+
+alias grbc="git rebase --continue"
+alias grba="git rebase --abort"
+
+alias ga="git add"
+alias gaa="git add -A"
+alias gap="git add -p"
+alias gclean="git clean -d -f -x"
+alias gcl="git.clone"
+alias gpr="git-smart-pull"
+alias gbs="git branch --sort=committerdate  | tail -20"

@@ -39,6 +39,7 @@ source-if-exists ~/.bash_pu_git
 source-if-exists ~/.bash_pu_grep
 source-if-exists ~/.bash_pu_pgsql
 source-if-exists ~/.bash_pu_user
+source-if-exists ~/.bash_pu_bash_it
 
 export PATH="$HOME/bin:/usr/local/bin:/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 for env in rbenv pyenv; do

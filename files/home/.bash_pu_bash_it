@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+export BASH_IT="${HOME}/.bash_it"
+export BASH_IT_THEME="powerline"
+export BASH_IT_THEME="powerline-multiline"
+# (Advanced): Change this to the name of your remote repo if you
+# cloned bash-it with a remote other than origin such as `bash-it`.
+#export BASH_IT_REMOTE='bash-it'
+export BASH_IT_REMOTE='kigster/bash-it'
+
+# Path to the bash it configuration
+source "${BASH_IT}/bash_it.sh"
+
+# Your place for hosting Git repos. I use this for private repos.
+export GIT_HOSTING='git@git.domain.com'
+
+# Uncomment this (or set SHORT_HOSTNAME to something else),
+# Will otherwise fall back on $HOSTNAME.
+export SHORT_HOSTNAME=$(hostname -s)
+
+# Set Xterm/screen/Tmux title with only a short username.
+# Uncomment this (or set SHORT_USER to something else),
+# Will otherwise fall back on $USER.
+#export SHORT_USER=${USER:0:8}
+
+# Set Xterm/screen/Tmux title with shortened command and directory.
+# Uncomment this to set.
+export SHORT_TERM_LINE=true
+export BASH_IT_P4_DISABLED=true
+
+export SCM=git
+export SCM_CHECK=true
+
+function bashit.colorscheme() {
+  local scheme="$1"
+
+  [[ -z "${scheme}" ]] && {
+    if [[ "${ITERM_PROFILE}" =~ "Light" || "${ITERM_PROFILE}" =~ "light" ]]; then
+      export scheme=light
+    else
+      export scheme=dark
+    fi
+  }
+
+  local theme="${BASH_IT}/colorschemes/${scheme}.colorscheme.bash"
+  
+  if [[ -f ${theme} ]]; then
+    source "${theme}"
+  else
+    echo "Invlaid theme name: ${scheme}, file ${theme} ain't a livin thang."
+  fi
+}
+
+powerline.prompt.git.default
+powerline.prompt.set-left-to scm cwd
+powerline.prompt.set-right-to go clock battery
+
+

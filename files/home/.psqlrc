@@ -10,7 +10,7 @@
 -- string, or is it null? This makes that distinction visible.
 \pset null 'NULL'
 -- set prompts
-\set PROMPT1 '%[%033[1;35m%]%M:%>\n%[%033[7;23;23m%]%n @ %[%033[7;43;23m%]%/%x %[%033[0m%]%[%033[5;35;5m%]%[%033[0;0;0m%] '
+\set PROMPT1 '%[%033[1;33m%]%M:%>\n%[%033[7;23;23m%]%n @ %[%033[7;43;23m%]%/%x %[%033[0m%]%[%033[5;35;5m%]%[%033[0;0;0m%] '
 \set PROMPT2 '↳  [%[%033[1;32m%]%/%[%033[0m%]]%R%#%x '
 -- Autocomplete keywords (like SELECT) in upper-case, even if you started
 -- typing them in lower case.
@@ -28,29 +28,29 @@
 
 \encoding unicode
 
-\echo 'Welcome to the PostgreSQL CLI Interpreter — psql'
-\echo 'Customized by Konstantin Gredeskoul, © 2015-2019 All Rights Reserved.'
+\echo 'Welcome to the Interactive PostgreSQL CLI'
+\echo 'Colorized and Customized by Konstantin Gredeskoul'
+\echo '© 2015-2020 All Rights Reserved, MIT License'
 \echo
 
 \echo 'Type :version to see the PostgreSQL version.'
 \set version 'SELECT version();'
 
-\echo 'Type :extensions  — to see the available extensions.'
+\echo 'Type :extensions — to see the available extensions.'
 \set extensions 'select * from pg_available_extensions;'
 
-\echo 'Type :running     — to see all currently executing queries'
-\set running 'select pid,client_addr,client_port,wait_event_type,wait_event,state,substring(query for 120) as query from pg_stat_activity where state != ''idle'';'
+\echo 'Type :running    — to see all currently executing queries'
+\set running 'select pid,client_addr,client_port,wait_event_type,wait_event,state, to_char(now()::time - query_start::time, ''HH24:MI:SS'') as duration, substring(regexp_replace(substring(query, 0, 200), E''[\\n\\r]+'', '' '', ''g'' ), 0, 120) as sql from pg_stat_activity where state != ''idle'' and query_start is not null order by query_start asc;'
 
-\echo 'Type :locks       — to see all current database locks'
-\set locks 'select pid,client_addr,client_port,wait_event_type,wait_event,state,substring(query for 120) as query from pg_stat_activity where wait_event is not null or wait_event_type is not null;'
+\echo 'Type :locks      — to see all current database locks'
+\set locks 'select pid,client_addr,client_port,wait_event_type,wait_event,state, to_char(now()::time - query_start::time, ''HH24:MI:SS'') as duration, substring(regexp_replace(substring(query, 0, 200), E''[\\n\\r]+'', '' '', ''g'' ), 0, 120) as sql from pg_stat_activity where state != ''idle'' and ( wait_event is not null or wait_event_type is not null) order by duration desc;'
 
 \echo '——————————————————————————————————————————————————————————————————————————'
 
-\echo 'Type :top5short   — to see top 5 time-consuming queries (shortened)'
-\set top5short ' select substring(query for 100) as query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
-
-\echo 'Type :top5full    — to see top 5 time-consuming queries (complete)'
-\set top5full ' select query, to_char(total_time/1000/60, ''999999990D'') as total_min, to_char(calls, ''999999990D'') as calls, to_char(total_time/calls, ''999999990D'') lat_ms, to_char(rows, ''999999990D'') as rows from pg_stat_statements order by total_time desc limit 5;'
+\echo 'Type :top20      — to see top 20 time-consuming queries (shortened)'
+\set top20 'select to_char(total_time / 1000.0, ''999,999,999'') total_secs,to_char(total_time / calls / 1000, ''999,999.99'') as average_secs, calls, rows, regexp_replace(substring(query, 0, 120), E''[\\n\\r]+'', '' '', ''g'' ) as sql from pg_stat_statements order by total_time desc limit 20;'
+\echo 'Type :top30full  — to see top 30 time-consuming queries (full)'
+\set top30full 'select to_char(total_time / 1000.0, ''999,999,999'') total_secs,to_char(total_time / calls / 1000, ''999,999.99'') as average_secs, calls, rows, regexp_replace(query, E''[\\n\\r]+'', '' '', ''g'' ) as sql from pg_stat_statements order by total_time desc limit 30;'
 
 \echo '——————————————————————————————————————————————————————————————————————————'
 
@@ -68,20 +68,30 @@
 \echo 'Type :bigtables  — to see the biggest tables in this database'
 \set bigtables ' SELECT nspname || ''.'' || relname AS "relation", pg_size_pretty(pg_relation_size(C.oid)) AS "size" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN (''pg_catalog'', ''information_schema'') ORDER BY pg_relation_size(C.oid) DESC LIMIT 20;'
 
+\echo 'Type :bigindexes — to see the biggest indexes in this database'
+\set bigindexes ' SELECT nspname || ''.'' || relname AS "relation", pg_size_pretty(pg_relation_size(C.oid)) AS "size" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN (''pg_catalog'', ''information_schema'') and C.relkind = ''i'' ORDER BY pg_relation_size(C.oid) DESC LIMIT 20;'
+
 \echo 'Type :bigrels    — to see the largest tables including indexes'
 \set bigrels ' SELECT nspname || ''.'' || relname AS "relation", pg_size_pretty(pg_total_relation_size(C.oid)) AS "total_size" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN (''pg_catalog'', ''information_schema'') AND C.relkind <> ''i'' AND nspname !~ ''^pg_toast'' ORDER BY pg_total_relation_size(C.oid) DESC LIMIT 20;'
 
 \echo 'Type :dbsizes    — to see the sizes of the databases'
-\set dbsizes 'SELECT d.datname AS Name,  pg_catalog.pg_get_userbyid(d.datdba) AS Owner, CASE WHEN pg_catalog.has_database_privilege(d.datname, ''CONNECT'') THEN pg_catalog.pg_size_pretty(pg_catalog.pg_database_size(d.datname)) ELSE ''No Access'' END AS SIZE FROM pg_catalog.pg_database d ORDER BY CASE WHEN pg_catalog.has_database_privilege(d.datname, ''CONNECT'') THEN pg_catalog.pg_database_size(d.datname) ELSE NULL END DESC nulls first LIMIT 20;'
+\set dbsizes ' SELECT d.datname AS Name,  pg_catalog.pg_get_userbyid(d.datdba) AS Owner, CASE WHEN pg_catalog.has_database_privilege(d.datname, ''CONNECT'') THEN pg_catalog.pg_size_pretty(pg_catalog.pg_database_size(d.datname)) ELSE ''No Access'' END AS SIZE FROM pg_catalog.pg_database d ORDER BY CASE WHEN pg_catalog.has_database_privilege(d.datname, ''CONNECT'') THEN pg_catalog.pg_database_size(d.datname) ELSE NULL END DESC nulls first LIMIT 20;'
 
 \echo '——————————————————————————————————————————————————————————————————————————'
 
-\set pgss 'create extension pg_stat_statements'
+\set pgss 'create extension pg_stat_statements;'
 \echo 'Type :pgss to create an extension for pg_stat_statements (assuming its available)'
 \echo 'Type \\q to exit. '
 
-SET search_path TO public,extensions
+SET search_path TO public,extensions;
 
+\t
+\echo
+SELECT 'PostgreSQL Server Version: ' || regexp_replace(version(), 'PostgreSQL ([\d.]+) .*', '\1', 'g') as pg_version;
+\t
 \timing
+\echo '——————————————————————————————————————————————————————————————————————————'
+\conninfo
+\echo '——————————————————————————————————————————————————————————————————————————'
 
 
