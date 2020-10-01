@@ -40,17 +40,17 @@
 \set extensions 'select * from pg_available_extensions;'
 
 \echo 'Type :running    — to see all currently executing queries'
-\set running 'select pid,client_addr,client_port,wait_event_type,wait_event,state, to_char(now()::time - query_start::time, ''HH24:MI:SS'') as duration, substring(regexp_replace(substring(query, 0, 200), E''[\\n\\r]+'', '' '', ''g'' ), 0, 120) as sql from pg_stat_activity where state != ''idle'' and query_start is not null order by query_start asc;'
+\set running 'select pid,client_addr,client_port,wait_event_type,wait_event,state, to_char(now()::time - query_start::time, ''HH24:MI:SS'') as duration, substring(regexp_replace(substring(query, 0, 200), E''[\\n\\r\\\\s]+'', '' '', ''g'' ), 0, 120) as sql from pg_stat_activity where state != ''idle'' and query_start is not null order by query_start asc;'
 
 \echo 'Type :locks      — to see all current database locks'
-\set locks 'select pid,client_addr,client_port,wait_event_type,wait_event,state, to_char(now()::time - query_start::time, ''HH24:MI:SS'') as duration, substring(regexp_replace(substring(query, 0, 200), E''[\\n\\r]+'', '' '', ''g'' ), 0, 120) as sql from pg_stat_activity where state != ''idle'' and ( wait_event is not null or wait_event_type is not null) order by duration desc;'
+\set locks 'select pid,client_addr,client_port,wait_event_type,wait_event,state, to_char(now()::time - query_start::time, ''HH24:MI:SS'') as duration, substring(regexp_replace(substring(query, 0, 200), E''[\\n\\r\\\\s]+'', '' '', ''g'' ), 0, 120) as sql from pg_stat_activity where state != ''idle'' and ( wait_event is not null or wait_event_type is not null) order by duration desc;'
 
 \echo '——————————————————————————————————————————————————————————————————————————'
 
 \echo 'Type :top20      — to see top 20 time-consuming queries (shortened)'
-\set top20 'select to_char(total_time / 1000.0, ''999,999,999'') total_secs,to_char(total_time / calls / 1000, ''999,999.99'') as average_secs, calls, rows, regexp_replace(substring(query, 0, 120), E''[\\n\\r]+'', '' '', ''g'' ) as sql from pg_stat_statements order by total_time desc limit 20;'
+\set top20 'select to_char(total_time / 1000.0, ''999,999,999'') total_secs,to_char(total_time / calls / 1000, ''999,999.99'') as average_secs, calls, rows, substring(regexp_replace(query, E''[\\n\\r\\\\s]+'', '' '', ''g''), 0, 150) as sql from pg_stat_statements order by total_time desc limit 20;'
 \echo 'Type :top30full  — to see top 30 time-consuming queries (full)'
-\set top30full 'select to_char(total_time / 1000.0, ''999,999,999'') total_secs,to_char(total_time / calls / 1000, ''999,999.99'') as average_secs, calls, rows, regexp_replace(query, E''[\\n\\r]+'', '' '', ''g'' ) as sql from pg_stat_statements order by total_time desc limit 30;'
+\set top30full 'select to_char(total_time / 1000.0, ''999,999,999'') total_secs, to_char(total_time / calls / 1000, ''999,999.99'') as average_secs, calls, rows, substring(regexp_replace(query, E''[\\n\\r\\\\s]+'', '' '', ''g'' ), 0, 1000) as sql from pg_stat_statements order by total_time desc limit 30;'
 
 \echo '——————————————————————————————————————————————————————————————————————————'
 

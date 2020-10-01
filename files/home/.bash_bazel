@@ -1,12 +1,35 @@
 #!/usr/bin/env bash
+# vim: ft=bash
+#
+# Install me in your ${HOME} folder, and add me to your ~/.bashrc:
+#
+# cp .bash_bazel ~/ && echo 'source ~/.bash_bazel' >> ~/.bashrc 
+#
 
-[[ -f ~/.bazel/bin/bazel-complete.bash ]] && source ~/.bazel/bin/bazel-complete.bash
+[[ -n $(command -V brew) ]] && {
+  completion="$(brew --prefix)/etc/bash_completion"
+  [[ -f "${completion}" ]] && {
+    source "${completion}"
+  }
+}
+
+source ~/.bazel/bin/bazel-complete.bash
 
 alias bb='bazel build'
-alias bba='bazel build //...:all'
 alias bbr='bazel run'
 alias bbx='bazel clean --expunge'
 alias bbq='bazel query'
 alias bbt='bazel test'
+
+alias bba='bazel build //...:all'
+
+alias bbba='bazel build //...:all'
+alias bbta='bazel test  //...:all'
 alias bbqa='bazel query //...:all'
+
+_my_bbr_alias_autocomplete() {
+  _bazel__complete_target_stdout "run"
+}
+
+complete -F _my_bbr_alias_autocomplete -o nospace bbr
 
