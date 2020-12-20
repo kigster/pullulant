@@ -1,7 +1,24 @@
 #!/usr/bin/env bash
 
-[[ -n $(command -v git) && ${USER} == "kig" ]] && {
-  git config --global user.email "kigster@gmail.com"
-  git config --global user.name "Konstantin Gredeskoul"
+function .kigs.gitconfig() {
+  if [[ -z $(command -v git) || "${USER}" != "kig" ]]; then
+    return
+  fi
+
+  local email=$(git config --get user.email)
+  local name=$(git config --get user.name)
+
+  local kigs_email="kigster@gmail.com"
+  local kigs_name="Konstantin Gredeskoul"
+
+  if [[ "${name}" != "${kigs_name}" || "${email}" != "${kigs_email}" ]]; then
+    echo "Setting git config's email & name to ${kigs_email}, ${kigs_name}..." >&2
+    git config --global user.email "kigster@gmail.com" 
+    sleep 0.01
+    git config --global user.name "Konstantin Gredeskoul"
+  fi
+
+  return 0
 }
 
+.kigs.gitconfig
