@@ -13,4 +13,7 @@
 function install-vim() {
   #run "rsync ${opts_rsync_backup} -v --perms -a ./files/home/{HOME} # show-stdout "
   cp -rnpv files/home/.vim* ${HOME}
+
+  # Install all plugins
+  vim +PlugInstall +qall
 }

@@ -1,4 +1,4 @@
-# vim:ft=vim
+" vim:ft=vim
 syntax on
 
 set autoindent
@@ -32,11 +32,6 @@ endif
 
 filetype plugin indent on
 :filetype plugin on
-
-" Github Dashboard and Activity
-map ,d :GHDashboard kigster<cr>
-map ,a :GHActivity kigster<cr>
-map ,r :GHActivity kigster/ 
 
 map \ :NERDTreeToggle<cr>
 
@@ -78,65 +73,28 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
-" Make sure you use single quotes
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'junegunn/vim-easy-align'
-" Any valid git URL is allowed
-Plug 'https://github.com/junegunn/vim-github-dashboard.git'
-" Multiple Plug commands can be written in a single line using | separators
-" Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-" On-demand loading
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-" Using a non-master branch
-" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
-Plug 'fatih/vim-go', { 'tag': '*' }
-" Plugin options
-Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-" Plugin outside ~/.vim/plugged with post-update hook
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'sbdchd/vim-shebang'
-" Initialize plugin system
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'junegunn/vim-easy-align'
-" Any valid git URL is allowed
-Plug 'https://github.com/junegunn/vim-github-dashboard.git'
-" Multiple Plug commands can be written in a single line using | separators
+
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-" On-demand loading
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-" Using a non-master branch
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
-Plug 'fatih/vim-go', { 'tag': '*' }
-" Plugin options
-Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-" Plugin outside ~/.vim/plugged with post-update hook
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Unmanaged plugin (manually installed and updated)
-Plug '~/my-prototype-plugin'
-" Varnish VCL Syntax
-Plug 'fgsch/vim-varnish'
-" TOML
-Plug 'cespare/vim-toml'
-" nginx
-Plug 'chr4/nginx.vim'
-" Add maktaba and bazel to the runtimepath.
-" (The latter must be installed before it can be used.)
-Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
-" Emmet to auto-complete HTML and stylesheet tags
-Plug 'mattn/emmet-vim'
+Plug 'cespare/vim-toml'
+Plug 'chr4/nginx.vim'
+Plug 'fatih/vim-go', { 'tag': '*' }
+Plug 'fgsch/vim-varnish'
+Plug 'google/vim-maktaba'
 Plug 'habamax/vim-asciidoctor'
-Plug 'sheerun/vim-polyglot'
-Plug 'phanviet/vim-monokai-pro'
-Plug 'pangloss/vim-javascript'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/vim-easy-align'
+Plug 'mattn/emmet-vim'
 Plug 'mxw/vim-jsx'
+Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+Plug 'pangloss/vim-javascript'
+Plug 'phanviet/vim-monokai-pro'
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+Plug 'sbdchd/vim-shebang'
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'vim-ruby/vim-ruby'
 
 " Initialize plugin system
@@ -165,26 +123,8 @@ let g:user_emmet_settings = {
       \  },
       \}
 
-"set t_Co=256
+set t_Co=256
 set termguicolors
-"set this built-in colorscheme first
 colorscheme brogrammer
-"try to set this assuming the plugin was installed.
-colorscheme monokai_pro
-
-let g:github_dashboard = { 'username': 'kigster', 'password': '44f2196bb2e6299712741b84517e2a56e6b92d94' }
-
-" Dashboard window position
-" - Options: tab, top, bottom, above, below, left, right
-" - Default: tab
-let g:github_dashboard['position'] = 'tab'
-
-" Disable Emoji output
-" - Default: only enable on terminal Vim on Mac
-"let g:github_dashboard['emoji'] = 0
-
-" Command to open link URLs
-" - Default: auto-detect
-let g:github_dashboard['open_command'] = 'open'
 
 

@@ -8,8 +8,6 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 
-
-
 pu-source-file() {
   local file="files/home/$1"
   [[ "$1" =~ '/' ]] && file="$1"
