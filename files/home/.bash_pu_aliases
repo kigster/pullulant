@@ -37,7 +37,7 @@ alias ded='direnv deny .'
 alias nogit="export SCM_CHECK=false"
 alias nogitdetails="export SCM_CHECK=false"
 
-[[ -n $(which vim) ]] && alias vi='vim'
+command -v vim>/dev/null && alias vi='vim'
 
 if [[ $(uname -s) == 'Darwin' ]]; then
   alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
@@ -52,3 +52,6 @@ if [[ $(uname -s) == 'Darwin' ]]; then
 fi 
 
 __git_complete gco _git_checkout
+
+source-if-exists "${HOME}/.bash_pu_aliases_ag"
+
