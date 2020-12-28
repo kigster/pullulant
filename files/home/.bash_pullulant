@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
+# vim: ft=bash
 #_______________________________________________________________________________
 #
-# (c) 2016-2017  Konstantin Gredeskoul
-# https://github.com/kigster
+# © 2016-2021  Konstantin Gredeskoul @kigster on Github, @kig on Twitter
 #
 # For project Pullulant
 # https://github.com/kigster/pullulant/
@@ -10,41 +10,36 @@
 # MIT License
 #_______________________________________________________________________________
 
-
-#export NOKOGIRI_USE_SYSTEM_LIBRARIES=1
-
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export NODE_PATH=/usr/local/share/npm
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
-export PGUSER=postgres
 export EDITOR=vim
 export PAGER='less -R'
 export RI='-f ansi'
-
 export HISTCONTROL=ignoredups
+export PATH="/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/opt/bin:/opt/local/bin:${HOME}/bin"
 
-source-if-exists() {
-  local file
-  for file in "$@"; do
-    [[ -f "${file}" ]] && source "${file}"
-  done
-}
-
-
-source-if-exists ~/.bash_pu_aliases
-source-if-exists ~/.bash_pu_colors
-source-if-exists ~/.bash_pu_functions
-source-if-exists ~/.bash_pu_git
-source-if-exists ~/.bash_pu_grep
-source-if-exists ~/.bash_pu_pgsql
-source-if-exists ~/.bash_pu_user
-source-if-exists ~/.bash_pu_bash_it
-
-export PATH="$HOME/bin:/usr/local/bin:/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 for env in rbenv pyenv; do
   dir="${HOME}/.${env}/shims"
   if [[ -d "${dir}" ]] ; then
     export PATH="${dir}:$PATH"
   fi
 done
+
+function source.if-exists() {
+  local file
+  for file in "$@"; do
+    [[ -f "${file}" ]] && {
+      [[ -n ${DEBUG} ]] && echo "sourcing ${file}..."
+      source "${file}"
+    }
+  done
+}
+
+for file in $(ls -1 ${HOME}/.bash_pu_*); do
+  [[ ${file} =~ ~pu.bak$ || ${file} =~ \~ ]] && continue
+  source.if-exists "${file}"
+done
+
+

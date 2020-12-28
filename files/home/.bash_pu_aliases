@@ -51,7 +51,11 @@ if [[ $(uname -s) == 'Darwin' ]]; then
   alias wifidown='networksetup -setairportpower airport off'
 fi 
 
-__git_complete gco _git_checkout
+function __git_complete () {
+    local wrapper="__git_wrap${2}";
+    eval "$wrapper () { __git_func_wrap $2 ; }";
+    complete -o bashdefault -o default -o nospace -F $wrapper $1 2> /dev/null || complete -o default -o nospace -F $wrapper $1
+}
 
-source-if-exists "${HOME}/.bash_pu_aliases_ag"
+__git_complete gco _git_checkout
 
