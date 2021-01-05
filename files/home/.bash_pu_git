@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vim: ft=bash
+# vim: ft=bash ts=2 sw=2
 #_______________________________________________________________________________
 #
 # (c) 2016-2017 Konstantin Gredeskoul
@@ -13,22 +13,27 @@ alias gpnew='git push -u origin master'
 alias gcb='git branch --no-color | grep -F "*" | cut -f 2 -d " "'  # git current branch
 alias gcmr='git reset; git add README.md; git commit -m "Updated README"; git push '
 
-alias gs='git status'
-alias gst='git status'
-alias gss='git show --stat'
+# git submoduleas
+alias gsi='git submodule update --recursive --init'
+alias gsu='git submodule update --recursive --init'
 
- 
-if [[ -n $(command -V ydiff) ]]; then
+# git statuses
+alias gs='git status'
+alias gst='git status -short'
+alias gss='git show --stat'
+alias gsl='git status --long -M -b --ahead-behind'
+
+command -v ydiff >/dev/null 2>&1 && {
   alias gd='git diff | ydiff'
   alias gds='git diff -s -w 0 | ydiff'
   alias gdc='git diff --cached -b | ydiff'
   alias glp='git diff -L | ydiff'
   alias glps='git diff -l -s -w 0 | ydiff'
-else
+} || {
   alias gd='git diff'
   alias gdc='git diff --cached -b'
   alias glp='git log -p -2'
-fi
+}
 
 alias gl='git log'
 
@@ -69,25 +74,74 @@ alias gcl='git.clone'
 
 alias gbs='git branch --sort=committerdate  | tail -20'
 
-function gitconfig-ssh() {
-  if [[ -f .git/config ]]; then
-    grep -q "url = git@" .git/config && return 0
-    cat .git/config | sed -E 's#url = https://github\.com/([^/]*)/#url = git@github\.com:\1/#g' > .git/config-ssh
-    mv -v .git/config .git/config-https
-    ln -sv .git/config-ssh .git/config
-    ls -al .git/
+# @description Convert remotes with https to git@ format.
+# @example gitconfig.convert.to.ssh ./
+function .git.config.convert.to() {
+  local to="$1"; shift
+
+  local from
+  local regex
+
+  if [[ "${to}" == git@ ]]; then
+    from="https://"
+    regex='s#url = https://github\.com/\([^/]*\)/#url = git@github\.com:\1/#g'
+  elif [[ "${to}" == https:// ]]; then
+    from="git@"
+    regex='s#url = git@github\.com:\([^/]*\)/#url = https://github\.com/\1/#g'
   fi
+
+  local dir="${1:-${PWD}}"
+  local gcf=".git/config"
+  local gcfp="${dir}/${gcf}"
+
+  [[ -f "${gcfp}" ]] || {
+    echo "No ${gcf} file was found under path ${dir}" >&2
+      return 1
+    } 
+
+  grep -q "url = ${from}" ${gcfp} || {
+    echo "No ${from} remotes were detected in your ${gcf}" >&2
+      return 0
+    }
+
+  eval "sed -i'' -E '${regex}' \"${gcfp}\""
+
+  echo "Converted remotes on your ${gcf} to use SSH."
+  grep "url = ${to}" "${gcfp}"
+
+  return 0
+}
+
+function git.config.convert.to.ssh() {
+  .git.config.convert.to git@ "$@"
+}
+
+function git.config.convert.to.https() {
+  .git.config.convert.to https:// "$@"
 }
 
 [[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
+
 function gpr() {
-  [[ -n $(which git-smart-pull) ]] || gem install -N git-smart >/dev/null
-  hash -r 2>/dev/null
-  git-smart-pull    
+  command -v git-smart-pull >/dev/null || {
+    command -v gem>/dev/null && {
+      echo "Installing git-smart Ruby Gem, please wait..." >&2
+      gem install -N git-smart >/dev/null
+      hash -r 2>/dev/null
+    }
+  }
+  if command -v git-smart-pull >/dev/null ; then
+    echo "Activating git-smart-pull gem gpr alias..."
+    alias gpr="git-smart-pull"
+    git-smart-pull    
+  else
+    echo "Gem git-smart-pull not found, activating regular rebase --autostash"
+    alias gpr="git pull --rebase --autostash"
+  fi
 }
 
 
-function git-completions(){
+function git.completions(){
   local dir="/usr/local/etc/bash_completion.d"
   local file="${dir}/git-completion.bash"
 
@@ -125,7 +179,7 @@ function gcmp() {
   set +x 2>&1 > /dev/null
 }
 
-gacmp() {
+function gacmp() {
   ensure_arguments 'git commit message' "$1" || return 1
   printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
   set -x
@@ -137,33 +191,29 @@ gacmp() {
 }
 
 function git-squash() {
-  number=${1}
-  [[ -z ${number} ]] && { 
-    echo "Usage: git.squash <number> # of commits to go back"
-    return
-  }
-  git reset --soft HEAD~${number}
-  git commit
+number=${1}
+[[ -z ${number} ]] && { 
+  echo "Usage: git.squash <number> # of commits to go back"
+  return
+}
+git reset --soft HEAD~${number}
+git commit
 }
 
 function git-up() {
-  local this_branch=$(gcb)
-  this_branch=${this_branch:-master}
-  git branch --set-upstream-to=origin/${this_branch} ${this_branch}
+local this_branch=$(gcb)
+this_branch=${this_branch:-master}
+git branch --set-upstream-to=origin/${this_branch} ${this_branch}
 }
 
-##..................................................................................
-##
-##    function: git.clone repo-name [ user | $USER ]
-## description: git glone from current user's github repo. Also aliased to 'gcl'
-##          eg: git.clone ruby-web # assumign $USER == "wanelo"
-##
+# @description: git glone from current user's github repo. Also aliased to 'gcl'
+# @example git.clone ruby-web # assumign $USER == "wanelo"
 function git-clone() {
-  local repo=$1
-  local who=${2:-${USER}}
-  local folder=${3}
-  [[ -z "$repo" ]] && {
-    printf "${bldwht}Usage: gcl repo [github-username] [folder]${txtrst}\n"
+local repo=$1
+local who=${2:-${USER}}
+local folder=${3}
+[[ -z "$repo" ]] && {
+  printf "${bldwht}Usage: gcl repo [github-username] [folder]${txtrst}\n"
   printf "${bldwht}   OR: gcl username/repo${txtrst}\n\n"
   printf "${bldgrn}   eg: gcl project ${txtrst}\n"
   printf "${bldgrn}   eg: gcl project kigster${txtrst}\n"
@@ -185,41 +235,41 @@ function __reset_terminal() {
 }
 
 function git-clean() {
-  local lib=${PU_HOME}/lib/pu-interaction
-  if [[ -d ${PU_HOME} && -f ${lib} ]] ; then
-    source ${lib}
-    printf "${bldgrn}Doing a dry-run first:${txtrst}\n"
-    git clean -d -f -x -n
-    trap __reset_terminal SIGINT
-    pu-ask-user 'You sure? [y/N]?' 10 'n' 'y n'
-    if [[ "${pu_ask_user_answer}" =~ "y" ]] ; then
-      printf "${bldgrn}\nOK, removing files... !${bldylw}\n"
-      printf "${txtblu}"
-      git clean -d -f -x
-    else
-      printf "\n${bldred}No worries, I am not sure either..${txtrst}\n"
-    fi  
-    printf "${txtrst}"
-  fi
+local lib=${PU_HOME}/lib/pu-interaction
+if [[ -d ${PU_HOME} && -f ${lib} ]] ; then
+  source ${lib}
+  printf "${bldgrn}Doing a dry-run first:${txtrst}\n"
+  git clean -d -f -x -n
+  trap __reset_terminal SIGINT
+  pu-ask-user 'You sure? [y/N]?' 10 'n' 'y n'
+  if [[ "${pu_ask_user_answer}" =~ "y" ]] ; then
+    printf "${bldgrn}\nOK, removing files... !${bldylw}\n"
+    printf "${txtblu}"
+    git clean -d -f -x
+  else
+    printf "\n${bldred}No worries, I am not sure either..${txtrst}\n"
+  fi  
+  printf "${txtrst}"
+fi
 }
 
 
 _git_checkout ()
 {
-    __git_has_doubledash && return;
-    case "$cur" in
-        --conflict=*)
-            __gitcomp "diff3 merge" "" "${cur##--conflict=}"
-        ;;
-        --*)
-            __gitcomp_builtin checkout
-        ;;
-        *)
-            local flags="--track --no-track --no-guess" track_opt="--track";
-            if [ "$GIT_COMPLETION_CHECKOUT_NO_GUESS" = "1" ] || [ -n "$(__git_find_on_cmdline "$flags")" ]; then
-                track_opt='';
-            fi;
-            __git_complete_refs $track_opt
-        ;;
-    esac
+  __git_has_doubledash && return;
+  case "$cur" in
+    --conflict=*)
+      __gitcomp "diff3 merge" "" "${cur##--conflict=}"
+      ;;
+    --*)
+      __gitcomp_builtin checkout
+      ;;
+    *)
+      local flags="--track --no-track --no-guess" track_opt="--track";
+      if [ "$GIT_COMPLETION_CHECKOUT_NO_GUESS" = "1" ] || [ -n "$(__git_find_on_cmdline "$flags")" ]; then
+        track_opt='';
+      fi;
+      __git_complete_refs $track_opt
+      ;;
+  esac
 }
