@@ -339,7 +339,7 @@ which brew formulas or casks to install.
 
 ## Acknowledgements
 
-&copy; 2015-2016 Konstantin Gredeskoul, portions of the code were developed under
+&copy; 2015-2021 Konstantin Gredeskoul, portions of the code were developed under
 the generous sponsorship of [Shippo, Inc.](http://goshippo.com) and are used
 with permission.
 
