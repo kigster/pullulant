@@ -50,10 +50,36 @@ function bashit.colorscheme() {
   fi
 }
 
+# 
+# aws_profile
+# battery
+# clock
+# command_number
+# cwd
+# dirstack
+# gcloud
+# go
+# history_number
+# hostname
+# in_toolbox
+# in_vim
+# k8s_context
+# last_status
+# node
+# python_venv
+# ruby
+# scm
+# shlvl
+# terraform
+# user_info
+# wd
+
+
+
 function bashit.prompt() {
-  powerline.prompt.git.default
-  powerline.prompt.set-left-to scm cwd
-  powerline.prompt.set-right-to go clock battery
+  powerline.prompt.git.max
+  powerline.prompt.left shlvl scm cwd last_status
+  powerline.prompt.right go node ruby clock battery aws_profile k8s_context user_info
 }
 
 function bashit.load() {
