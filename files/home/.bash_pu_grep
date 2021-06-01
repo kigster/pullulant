@@ -17,21 +17,21 @@ function grp() {
   [[ -z "$searchterm" ]] && printf "Usage: ${bldgrn}grp search-searchterm [ grep flags ]${txtrst}\n" && return 1
 
   find . -type f -exec grep --color "$searchterm" $*  {} \; -print | \
-    sed --unbuffered -E "s/^([^\.].*)/> \1/g" | bash::line::print $searchterm
+    sed --unbuffered -E "s/^([^\.].*)/> \1/g" | bash.line.print $searchterm
   unset searchterm
 }
 
-function string::to_a() {
+function string.to_a() {
   string="$1"
   echo $string | fold -w1
 }
 
-function bash::line::print() {
+function bash.line.print() {
   local searchterm=$1
   local input=${2:-"/dev/stdin"}
   while IFS= read -r var
   do
-    declare -a ary=($(string::to_a "$var"))
+    declare -a ary=($(string.to_a "$var"))
     local first=${ary[0]}
     if [[ "${ary[0]}" == ">" ]]; then
       printf "%s\n" "$var" | sed -E "s/^> //g" | GREP_COLOR=41 grep --color "$searchterm"

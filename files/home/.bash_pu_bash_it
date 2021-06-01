@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 # vim: ft=bash
+#
+# This file is a wrapper around fantastic BASH framework Bash-It, and specifically
+# a multi-line powerline theme provided with it.
+
+# Determine our own location
+[[ -z ${BASHIT_PATH} ]] && export BASHIT_PATH="${BASH_SOURCE[0]:-${(%):-%x}}"
 
 export __pullulant_bash_it_loaded=${__pullulant_bash_it_loaded:-"0"}
+export BASH_IT="${HOME}/.bash_it"
 
-function bashit.init() {
-  export BASH_IT="${HOME}/.bash_it"
+function bashit-init() {
   export BASH_IT_THEME="powerline"
   export BASH_IT_THEME="powerline-multiline"
   # (Advanced): Change this to the name of your remote repo if you
@@ -17,7 +23,7 @@ function bashit.init() {
   export GIT_HOSTING='git@git.domain.com'
   # Uncomment this (or set SHORT_HOSTNAME to something else),
   # Will otherwise fall back on $HOSTNAME.
-  export SHORT_HOSTNAME=$(hostname -s)
+  export SHORT_HOSTNAME="$(hostname -s)"
   # Set Xterm/screen/Tmux title with only a short username.
   # Uncomment this (or set SHORT_USER to something else),
   # Will otherwise fall back on $USER.
@@ -30,9 +36,17 @@ function bashit.init() {
   export SCM_CHECK=true
 }
 
-function bashit.colorscheme() {
-  local scheme="$1"
+# returns the list of predefined themes, one per line
+function bashit-colorschemes() {
+  [[ -d "${BASH_IT}/colorschemes" ]] || return 1
+  find "${BASH_IT}/colorschemes" -type f -name '*.colorscheme.bash' | \
+  tr '\n' '\0' | xargs -0 -n1 basename | sed 's/\.colorscheme\.bash//g'
+}
 
+# shellcheck disable=2120
+function bashit-colorscheme() {
+  local scheme="$1"
+  
   if [[ -z "${scheme}" ]] ; then
     if [[ "${ITERM_PROFILE}" =~ "Light" || "${ITERM_PROFILE}" =~ "light" ]]; then
       export scheme=light
@@ -41,8 +55,9 @@ function bashit.colorscheme() {
     fi
   else
     local theme="${BASH_IT}/colorschemes/${scheme}.colorscheme.bash"
-
+    
     if [[ -f ${theme} ]]; then
+      # shellcheck disable=1090
       source "${theme}"
     else
       echo "Theme ${scheme} does not exist.">&2
@@ -50,7 +65,7 @@ function bashit.colorscheme() {
   fi
 }
 
-# 
+#
 # aws_profile
 # battery
 # clock
@@ -73,24 +88,124 @@ function bashit.colorscheme() {
 # terraform
 # user_info
 # wd
-
-
-
-function bashit.prompt() {
+function bashit-prompt-terraform() {
   powerline.prompt.git.max
-  powerline.prompt.left shlvl scm cwd last_status
-  powerline.prompt.right go node ruby clock battery aws_profile k8s_context user_info
+  powerline.prompt.left   terraform scm cwd shlvl last_status
+  powerline.prompt.right  clock battery user_info hostname
 }
 
-function bashit.load() {
+function bashit-prompt-k8s() {
+  powerline.prompt.git.max
+  powerline.prompt.left   k8s_context scm cwd shlvl last_status
+  powerline.prompt.right  clock battery user_info hostname
+}
+
+function bashit-prompt-gcloud() {
+  powerline.prompt.git.max
+  powerline.prompt.left   gcloud scm cwd shlvl last_status
+  powerline.prompt.right  clock battery user_info hostname
+}
+
+function bashit-prompt-aws() {
+  powerline.prompt.git.max
+  powerline.prompt.left   aws_profile scm cwd shlvl last_status
+  powerline.prompt.right  clock battery user_info hostname
+}
+
+function bashit-prompt-developer() {
+  powerline.prompt.git.max
+  powerline.prompt.left   go node ruby scm cwd shlvl last_status
+  powerline.prompt.right  clock battery user_info hostname
+}
+
+function bashit-prompt-minimal() {
+  powerline.prompt.git.min
+  powerline.prompt.left   scm cwd last_status
+  powerline.prompt.right  go node ruby clock battery
+}
+
+# https://stackoverflow.com/questions/1891797/capturing-groups-from-a-grep-regex
+# using BASH to capture group out of the regex. And it's very fast.
+function bashit-list-prompts() {
+  regex="^bashit-prompt-([a-z0-9]*)"
+  for f in $(set | grep -E "$regex"); do [[ $f =~ $regex ]] && echo "${BASH_REMATCH[1]}"; done
+}
+
+function bashit-install() {
+  if [[ ! -d "${HOME}/.bash_it" && -n $(command -v git 2>/dev/null) ]]; then
+    git clone -q https://github.com/kigster/bash-it ~/.bash_it >/dev/null
+  fi
+  [[ -d ${HOME}/.bash_it ]] || return 1
+}
+
+function bashit-main() {
   export __pullulant_bash_it_loaded=1
-  bashit.init
-  bashit.colorscheme
-  bashit.prompt
+  bashit-install
+  bashit-init
+  bashit.colorscheme dark # default
+  bashit-prompt-minimal   # default
+  
+  # how look at the arguments
+  while true; do
+    local arg="$1"
+    shift
+    
+    [[ -z "${arg}" ]] && break
+    
+    local color="$(bashit-colorschemes | grep "${arg}")"
+    if [[ -n "${color}" ]] ; then
+      bashit.colorscheme "${color}"
+    else
+      local func="bashit-prompt-${arg}"
+      if [[ -n $(type ${func} 2>/dev/null) ]]; then
+        ${func}
+      else
+        printf -- "\e[1;31;40m  ———> ARGUMENT UNRECOGNIZED: \e[0;0m [${arg}] is neither a color nor prompt type.\n"
+        bashit-usage
+        return 1
+      fi
+    fi
+  done
 }
 
-if [[ $SHELL =~ bash ]]; then
-  ((__pullulant_bash_it_loaded)) || bashit.load
-fi
+function bashit-refresh() {
+  bashit-main "$@"
+}
+
+function bashit-usage() {
+  printf -- "\e[1;30;32mUSAGE:\e[0;34;40m\n"
+  printf -- "     $ source ${BASH_SOURCE[0]} [ %s ] [ prompt-type ]\n\n" "$(bashit-colorschemes | tr '\n' '|' | sed 's/\|$//g')"
+
+  printf -- "\e[1;30;32mWHERE:\e[0;34;40m\n\e[0;0m"
+  printf -- "     Prompt type can be one of:\n"
+  printf -- "     \e[1;33;40m%s\n\n" "$(bashit-list-prompts | tr '\n' ',' | sed 's/,/, /g')"
+}
+
+function bashit() {
+  if [[ $SHELL =~ bash ]]; then
+    ((__pullulant_bash_it_loaded)) || bashit-main "$@"
+  else
+    printf -- "\e[1;31;40mThis file is meant to be used with BASH only.\e[0;0m\n\n"
+    return 1
+  fi
+}
+
+# https://stackoverflow.com/questions/2683279/how-to-detect-if-a-script-is-being-sourced
+([[ -n $ZSH_EVAL_CONTEXT && $ZSH_EVAL_CONTEXT =~ :file$ ]] ||
+  [[ -n $KSH_VERSION && $(cd "$(dirname -- "$0")" &&
+  printf '%s' "${PWD%/}/")$(basename -- "$0") != "${.sh.file}" ]] ||
+[[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)) && sourced=1 || sourced=0
+
+((sourced)) || {
+  printf -- "\e[1;31;40m"
+  printf -- "      This file should be sourced it into your current shell, optionally\n"
+  printf -- "      with arguments as described in the help message:\e[0;0m\n\n"
+  bashit-usage
+  exit 1
+}
+
+bashit "$@"
+
+
 
 

@@ -8,76 +8,79 @@
 # MIT License
 #_______________________________________________________________________________
 
-alias gp='git push -v'
-alias gpnew='git push -u origin master'
-alias gcb='git branch --no-color | grep -F "*" | cut -f 2 -d " "'  # git current branch
-alias gcmr='git reset; git add README.md; git commit -m "Updated README"; git push '
+function git.aliases() {
+  alias gp='git push -v'
+  alias gpnew='git push -u origin master'
+  alias gcb='git branch --no-color | grep -F "*" | cut -f 2 -d " "' # git current branch
+  alias gcmr='git reset; git add README.md; git commit -m "Updated README"; git push '
 
-# git submoduleas
-alias gsi='git submodule update --recursive --init'
-alias gsu='git submodule update --recursive --init'
+  # git submoduleas
+  alias gsi='git submodule update --recursive --init'
+  alias gsu='git submodule update --recursive --init'
 
-# git statuses
-alias gs='git status'
-alias gst='git status -short'
-alias gss='git show --stat'
-alias gsl='git status --long -M -b --ahead-behind'
+  # git statuses
+  alias gs='git status'
+  alias gst='git status -short'
+  alias gss='git show --stat'
+  alias gsl='git status --long -M -b --ahead-behind'
 
-command -v ydiff >/dev/null 2>&1 && {
-  alias gd='git diff | ydiff'
-  alias gds='git diff -s -w 0 | ydiff'
-  alias gdc='git diff --cached -b | ydiff'
-  alias glp='git diff -L | ydiff'
-  alias glps='git diff -l -s -w 0 | ydiff'
-} || {
-  alias gd='git diff'
-  alias gdc='git diff --cached -b'
-  alias glp='git log -p -2'
+  if (command -v ydiff >/dev/null 2>&1); then
+    alias gd='git diff | ydiff'
+    alias gds='git diff -s -w 0 | ydiff'
+    alias gdc='git diff --cached -b | ydiff'
+    alias glp='git diff -L | ydiff'
+    alias glps='git diff -l -s -w 0 | ydiff'
+  else
+    alias gd='git diff'
+    alias gdc='git diff --cached -b'
+    alias glp='git log -p -2'
+  fi
+
+  alias gl='git log'
+
+  alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
+  alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
+  alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
+
+  alias grs='git reset'
+  alias grsh='git reset --hard'
+  alias gtits='git reset --hard && git clean -dfx'
+  alias gtots='git clean --dry-run -dfx'
+
+  alias gco='git checkout'
+  alias gcob='git checkout -b'
+  alias gcom='git checkout master'
+  alias gcod='git checkout develop'
+
+  alias gco='git checkout'
+  alias gcob='git checkout -b'
+  alias gcom='git checkout master'
+  alias gcod='git checkout develop'
+
+  alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+  alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
+
+  alias gpf='git push --force'
+  alias gprs='git stash && git pull --rebase && git stash pop'
+  alias gpp='git pull --rebase && git push'
+
+  alias grbc='git rebase --continue'
+  alias grba='git rebase --abort'
+
+  alias ga='git add'
+  alias gaa='git add -A'
+  alias gap='git add -p'
+  alias gclean='git clean -d -f -x'
+  alias gcl='git.clone'
+
+  alias gbs='git branch --sort=committerdate  | tail -20'
 }
-
-alias gl='git log'
-
-alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
-alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
-alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
-
-alias grs='git reset'
-alias grsh='git reset --hard'
-alias gtits='git reset --hard && git clean -dfx'
-alias gtots='git clean --dry-run -dfx'
-
-alias gco='git checkout'
-alias gcob='git checkout -b'
-alias gcom='git checkout master'
-alias gcod='git checkout develop'
-
-alias gco='git checkout'
-alias gcob='git checkout -b'
-alias gcom='git checkout master'
-alias gcod='git checkout develop'
-
-alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
-alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
-
-alias gpf='git push --force'
-alias gprs='git stash && git pull --rebase && git stash pop'
-alias gpp='git pull --rebase && git push'
-
-alias grbc='git rebase --continue'
-alias grba='git rebase --abort'
-
-alias ga='git add'
-alias gaa='git add -A'
-alias gap='git add -p'
-alias gclean='git clean -d -f -x'
-alias gcl='git.clone'
-
-alias gbs='git branch --sort=committerdate  | tail -20'
 
 # @description Convert remotes with https to git@ format.
 # @example gitconfig.convert.to.ssh ./
 function .git.config.convert.to() {
-  local to="$1"; shift
+  local to="$1"
+  shift
 
   local from
   local regex
@@ -96,13 +99,13 @@ function .git.config.convert.to() {
 
   [[ -f "${gcfp}" ]] || {
     echo "No ${gcf} file was found under path ${dir}" >&2
-      return 1
-    } 
+    return 1
+  }
 
-  grep -q "url = ${from}" ${gcfp} || {
+  grep -q "url = ${from}" "${gcfp}" || {
     echo "No ${from} remotes were detected in your ${gcf}" >&2
-      return 0
-    }
+    return 0
+  }
 
   eval "sed -i'' -E '${regex}' \"${gcfp}\""
 
@@ -122,154 +125,170 @@ function git.config.convert.to.https() {
 
 [[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
 
-function gpr() {
+function git.smart.pull() {
   command -v git-smart-pull >/dev/null || {
-    command -v gem>/dev/null && {
+    command -v gem >/dev/null && {
       echo "Installing git-smart Ruby Gem, please wait..." >&2
       gem install -N git-smart >/dev/null
       hash -r 2>/dev/null
     }
   }
-  if command -v git-smart-pull >/dev/null ; then
+  if command -v git-smart-pull >/dev/null; then
     echo "Activating git-smart-pull gem gpr alias..."
     alias gpr="git-smart-pull"
-    git-smart-pull    
+    git-smart-pull
   else
     echo "Gem git-smart-pull not found, activating regular rebase --autostash"
     alias gpr="git pull --rebase --autostash"
   fi
 }
 
+_git_checkout() {
+  __git_has_doubledash && return
+  case "$cur" in
+  --conflict=*)
+    __gitcomp "diff3 merge" "" "${cur##--conflict=}"
+    ;;
+  --*)
+    __gitcomp_builtin checkout
+    ;;
+  *)
+    local flags="--track --no-track --no-guess" track_opt="--track"
+    if [ "$GIT_COMPLETION_CHECKOUT_NO_GUESS" = "1" ] || [ -n "$(__git_find_on_cmdline "$flags")" ]; then
+      track_opt=''
+    fi
+    __git_complete_refs "${track_opt}"
+    ;;
+  esac
+}
 
-function git.completions(){
+function gpr() {
+  git.smart.pull "$@"
+}
+
+function __git_complete() {
+  local wrapper="__git_wrap${2}"
+  eval "$wrapper () { __git_func_wrap $2 ; }"
+  complete -o bashdefault -o default -o nospace -F "${wrapper}" "$1" 2>/dev/null || complete -o default -o nospace -F "${wrapper}" "$1"
+}
+
+function git.completions() {
   local dir="/usr/local/etc/bash_completion.d"
   local file="${dir}/git-completion.bash"
 
   if [[ -f ${file} ]]; then
-    source ${file}
+    source "${file}"
 
     # Add git completion to aliases
     __git_complete g __git_main
     __git_complete gco _git_checkout
-    __git_complete gm __git_merge
+    __git_complete gm _git_merge
     __git_complete gp _git_push
     __git_complete gpr _git_rebase
     __git_complete gc _git_commit
   fi
+
+  __git_complete gco _git_checkout
 }
 
-# Usage: ensure_arguments 'argument name', $1
-ensure_arguments() {
-  if [[ -z "$2" ]] ; then
-    printf "\n${bldred}This function requires an argument: ${bldylw}$1${clr}\n"
+# Usage: .git.ensure-arguments 'argument name', $1
+.git.ensure-arguments() {
+  if [[ -z "$2" ]]; then
+    printf "\n${bldred}This function requires an argument: ${bldylw}%s${clr}\n" "$1"
     return 1
   fi
   return 0
 }
 
-function gcmp() {
-  ensure_arguments 'git commit message' "$1"  || return 1
+function git.commit-and-push() {
+  .git.ensure-arguments 'git commit message' "$1" || return 1
   set -x
-  git commit -m "$1"; shift
-  set +x 2>&1 > /dev/null
+  git commit -m "$1"
+  shift
+  set +x 1>/dev/null 2>&1
   printf "\n${bldgrn}About to do git push... You can 1 second to Ctrl-C...${clr}\n"
   sleep 1
   set -x
   git push "$@"
-  set +x 2>&1 > /dev/null
+  set +x 1>/dev/null 2>&1
 }
 
-function gacmp() {
-  ensure_arguments 'git commit message' "$1" || return 1
+function git.commit() {
+  .git.ensure-arguments 'git commit message' "$1" || return 1
   printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
   set -x
   git add .
-  set +x 2>&1 > /dev/null
+  set +x 1>/dev/null 2>&1
   printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C...${clr}\n"
   sleep 1
   gcmp "$@"
 }
 
-function git-squash() {
-number=${1}
-[[ -z ${number} ]] && { 
-  echo "Usage: git.squash <number> # of commits to go back"
-  return
-}
-git reset --soft HEAD~${number}
-git commit
+function git.squash() {
+  number=${1}
+  [[ -z ${number} ]] && {
+    echo "Usage: git.squash <number> # of commits to go back"
+    return
+  }
+  git reset --soft HEAD~"${number}"
+  git commit
 }
 
-function git-up() {
-local this_branch=$(gcb)
-this_branch=${this_branch:-master}
-git branch --set-upstream-to=origin/${this_branch} ${this_branch}
+function git.upstream() {
+  local this_branch=$(gcb)
+  this_branch=${this_branch:-master}
+  git branch --set-upstream-to=origin/"${this_branch}" "${this_branch}"
 }
 
 # @description: git glone from current user's github repo. Also aliased to 'gcl'
 # @example git.clone ruby-web # assumign $USER == "wanelo"
-function git-clone() {
-local repo=$1
-local who=${2:-${USER}}
-local folder=${3}
-[[ -z "$repo" ]] && {
-  printf "${bldwht}Usage: gcl repo [github-username] [folder]${txtrst}\n"
-  printf "${bldwht}   OR: gcl username/repo${txtrst}\n\n"
-  printf "${bldgrn}   eg: gcl project ${txtrst}\n"
-  printf "${bldgrn}   eg: gcl project kigster${txtrst}\n"
-  printf "${bldgrn}   eg: gcl kigster/project ${txtrst}\n"
-  return
+function git.clone() {
+  local repo=$1
+  local who=${2:-${USER}}
+  local folder=${3}
+  [[ -z "$repo" ]] && {
+    printf "${bldwht}Usage: gcl repo [github-username] [folder]${txtrst}\n"
+    printf "${bldwht}   OR: gcl username/repo${txtrst}\n\n"
+    printf "${bldgrn}   eg: gcl project ${txtrst}\n"
+    printf "${bldgrn}   eg: gcl project kigster${txtrst}\n"
+    printf "${bldgrn}   eg: gcl kigster/project ${txtrst}\n"
+    return
+  }
+
+  [[ ${repo} =~ '/' ]] && full_repo="git@github.com:${repo}"
+  [[ ${repo} =~ '/' ]] || full_repo="git@github.com:${who}/${repo}"
+
+  git clone "${full_repo}" "${folder}"
+  [[ $? != 0 ]] && printf "${bldred}can't clone ${bldgrn}${full_repo}${txtrst}\n" >&2
 }
-
-[[ ${repo} =~ '/' ]] && full_repo="git@github.com:${repo}"
-[[ ${repo} =~ '/' ]] || full_repo="git@github.com:${who}/${repo}"
-
-git clone ${full_repo} ${folder}
-[[ $? != 0 ]] && printf "${bldred}can't clone ${bldgrn}${full_repo}${txtrst}\n" >&2
-}
-
 
 function __reset_terminal() {
   reset
   echo "Resetting terminal..."
 }
 
-function git-clean() {
-local lib=${PU_HOME}/lib/pu-interaction
-if [[ -d ${PU_HOME} && -f ${lib} ]] ; then
-  source ${lib}
-  printf "${bldgrn}Doing a dry-run first:${txtrst}\n"
-  git clean -d -f -x -n
-  trap __reset_terminal SIGINT
-  pu-ask-user 'You sure? [y/N]?' 10 'n' 'y n'
-  if [[ "${pu_ask_user_answer}" =~ "y" ]] ; then
-    printf "${bldgrn}\nOK, removing files... !${bldylw}\n"
-    printf "${txtblu}"
-    git clean -d -f -x
-  else
-    printf "\n${bldred}No worries, I am not sure either..${txtrst}\n"
-  fi  
-  printf "${txtrst}"
-fi
+function git.clean() {
+  local lib=${PU_HOME}/lib/pu-interaction
+  if [[ -d ${PU_HOME} && -f ${lib} ]]; then
+    source "${lib}"
+    printf "${bldgrn}Doing a dry-run first:${txtrst}\n"
+    git clean -d -f -x -n
+    trap "reset" SIGINT
+    pu-ask-user 'You sure? [y/N]?' 10 'n' 'y n'
+    if [[ "${pu_ask_user_answer}" =~ "y" ]]; then
+      printf "${bldgrn}\nOK, removing files... !${bldylw}\n"
+      printf "${txtblu}"
+      git clean -d -f -x
+    else
+      printf "\n${bldred}No worries, I am not sure either..${txtrst}\n"
+    fi
+    printf "${txtrst}"
+  fi
 }
 
-
-_git_checkout ()
-{
-  __git_has_doubledash && return;
-  case "$cur" in
-    --conflict=*)
-      __gitcomp "diff3 merge" "" "${cur##--conflict=}"
-      ;;
-    --*)
-      __gitcomp_builtin checkout
-      ;;
-    *)
-      local flags="--track --no-track --no-guess" track_opt="--track";
-      if [ "$GIT_COMPLETION_CHECKOUT_NO_GUESS" = "1" ] || [ -n "$(__git_find_on_cmdline "$flags")" ]; then
-        track_opt='';
-      fi;
-      __git_complete_refs $track_opt
-      ;;
-  esac
+function pu.load.git() {
+  git.aliases
+  git.completions
 }
+
+pu.load.git

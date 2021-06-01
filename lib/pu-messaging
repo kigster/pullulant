@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: ft=bash
 #_______________________________________________________________________________
 #
 # © 2016 Konstantin Gredeskoul
@@ -211,7 +212,6 @@ Help:
 }
 
 function pu-print-help {
-
   pu-short-usage
   printf "
 $(pu-underline-header 'Getting Help: ')

@@ -7,55 +7,54 @@
 # MIT License
 #_______________________________________________________________________________
 
-umask 027
+function pu.aliases() {
+  umask 027
 
-alias da='direnv allow .'
-alias dc='cd'
-alias dir='ls -alF'
-alias lr='ls -alrt'
-alias l='ls -lF'
-alias ds='du -k  | grep -v "\/.*\/"'
-alias diskspace="du -k | grep -v './.*\/'"
-alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
-alias ppjson="jq '.'"
-alias b64paste='pbpaste | base64 --decode'
-alias jkl='bundle exec jekyll serve --watch -D --baseurl ""'
-alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
-alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\", \$1/1024/1024, \$2 }"'
-alias be="bundle exec"
-alias birb="be irb -I lib -I ."
+  alias da='direnv allow .'
+  alias dc='cd'
+  alias dir='ls -alF'
+  alias lr='ls -alrt'
+  alias l='ls -lF'
+  alias ds='du -k  | grep -v "\/.*\/"'
+  alias diskspace="du -k | grep -v './.*\/'"
+  alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
+  alias ppjson="jq '.'"
+  alias b64paste='pbpaste | base64 --decode'
+  alias jkl='bundle exec jekyll serve --watch -D --baseurl ""'
+  alias make_user_admin='sudo dseditgroup -o edit -t user admin -a '
+  # shellcheck disable=SC2142
+  alias dus='du -s ./* | sort -n | tail -10 | awk "{ printf \"    %10.1fGB %s\n\", \$1/1024/1024, \$2 }"'
+  alias be="bundle exec"
+  alias birb="be irb -I lib -I ."
 
-alias mypubkey='cat ~/.ssh/id_rsa.pub | tr -d "\n" | pbcopy && echo "Your public key is now in your Clipboard"'
-alias myprikey='cat ~/.ssh/id_rsa     | tr -d "\n" | pbcopy && echo "Your public key is now in your Clipboard"'
+  alias mypubkey='cat ~/.ssh/id_rsa.pub | tr -d "\n" | pbcopy && echo "Your public key is now in your Clipboard"'
+  alias myprikey='cat ~/.ssh/id_rsa     | tr -d "\n" | pbcopy && echo "Your public key is now in your Clipboard"'
 
-alias bundl='bundle install --full-index'
+  alias bundl='bundle install --full-index'
 
-alias dea='direnv allow .'
-alias ded='direnv deny .'
+  alias dea='direnv allow .'
+  alias ded='direnv deny .'
 
-# turn off git in the prompt
-alias nogit="export SCM_CHECK=false"
-alias nogitdetails="export SCM_CHECK=false"
+  # turn off git in the prompt
+  alias nogit="export SCM_CHECK=false"
+  alias nogitdetails="export SCM_CHECK=false"
 
-command -v vim>/dev/null && alias vi='vim'
+  command -v vim >/dev/null && alias vi='vim'
 
-if [[ $(uname -s) == 'Darwin' ]]; then
-  alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
-  alias bss='brew services start'
-  alias bst='brew services stop'
-  alias bsr='brew services restart'
-  alias filetree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
-  alias winhup='sudo killall -HUP WindowServer'
-  alias wifiup='networksetup -setairportpower airport on'
-  alias cwd='pwd -P |  tr -d "\\n" | pbcopy && echo "Directory $(pwd) is in your clipboard"'
-  alias wifidown='networksetup -setairportpower airport off'
-fi 
+  command -v tree >/dev/null && {
+    alias l2="tree -d -L 2"
+    alias l3="tree -d -L 3"
+  }
 
-function __git_complete () {
-    local wrapper="__git_wrap${2}";
-    eval "$wrapper () { __git_func_wrap $2 ; }";
-    complete -o bashdefault -o default -o nospace -F $wrapper $1 2> /dev/null || complete -o default -o nospace -F $wrapper $1
+  if [[ $(uname -s) == 'Darwin' ]]; then
+    alias networks="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s"
+    alias bss='brew services start'
+    alias bst='brew services stop'
+    alias bsr='brew services restart'
+    alias filetree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
+    alias winhup='sudo killall -HUP WindowServer'
+    alias wifiup='networksetup -setairportpower airport on'
+    alias cwd='pwd -P |  tr -d "\\n" | pbcopy && echo "Directory $(pwd) is in your clipboard"'
+    alias wifidown='networksetup -setairportpower airport off'
+  fi
 }
-
-__git_complete gco _git_checkout
-

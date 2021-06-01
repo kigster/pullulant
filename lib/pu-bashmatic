@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pu::ensure::bashmatic() {
+pu.ensure.bashmatic() {
   [[ -d ~/.bashmatic ]] || git clone https://github.com/kigster/bashmatic ~/.bashmatic
   source ~/.bashmatic/init.sh
 }
