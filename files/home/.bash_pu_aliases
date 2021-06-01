@@ -58,3 +58,5 @@ function pu.aliases() {
     alias wifidown='networksetup -setairportpower airport off'
   fi
 }
+
+pu.aliases "$@"
