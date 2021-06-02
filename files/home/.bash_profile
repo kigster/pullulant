@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # vim: ft=bash
-. /usr/local/etc/bash_completion
+
+[[ -f /usr/local/etc/bash_completion ]] && . /usr/local/etc/bash_completion
 
 # Path to the bash it configuration
 export BASH_IT="/Users/kig/.bash_it"
@@ -54,28 +55,41 @@ export SHORT_TERM_LINE=true
 # source ~/.powerline
 # Load Bash It
 
-export POWERLINE_LEFT_PROMPT="ruby cwd"
-export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
 
 export BASH_IT_P4_DISABLED=true
 
-export SCM=git
-#export SCM_CHECK=true
-export SCM_GIT_SHOW_CURRENT_USER=true
-#export SCM_GIT_SHOW_DETAILS=false
-#export SCM_GIT_SHOW_COMMIT_COUNT=false
 #export SCM_GIT_SHOW_MINIMAL_INFO=false
-#export SCM_GIT_SHOW_REMOTE_INFO=false
-#export SCM_GIT_SHOW_STASH_INFO=false
+
+export SCM=git
+export SCM_CHECK=true
+export SCM_GIT_SHOW_CURRENT_USER=true
+export SCM_GIT_SHOW_DETAILS=true
+export SCM_GIT_SHOW_COMMIT_COUNT=false
+export SCM_GIT_SHOW_REMOTE_INFO=true
+export SCM_GIT_SHOW_STASH_INFO=true
 
 if [[ "${ITERM_PROFILE}" =~ "Light" || "${ITERM_PROFILE}" =~ "light" ]]; then
   export BASH_IT_COLORSCHEME=light
-else
+elif [[ "${ITERM_PROFILE}" =~ "Dark" || "${ITERM_PROFILE}" =~ "dark" ]]; then
   export BASH_IT_COLORSCHEME=dark
+else
+  export BASH_IT_COLORSCHEME=tango
 fi
 
-source "${BASH_IT}"/bash_it.sh
-source "${HOME}"/.bashrc
+source "${HOME}"/.bash_pullulant
 
-export POWERLINE_LEFT_PROMPT="ruby scm cwd"
+source-if-exists "${BASH_IT}"/bash_it.sh
+
+export POWERLINE_LEFT_PROMPT="node ruby scm cwd"
+export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
+
+[[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q"
+[[ -d ${BASHMATIC_HOME} ]] || {
+  echo "Can't find Bashmatic, even after attempting an installation."
+  echo "Please install Bashmatic with the following command line:"
+  echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
+}
+
+source-if-exists "${HOME}"/.bashrc
 

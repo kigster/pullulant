@@ -2,7 +2,7 @@
 
 source "lib/pu-bashmatic"
 
-pu::ensure::bashmatic
+pu.ensure.bashmatic
 
 source "lib/pu-config"
 source "lib/pu-interaction"

@@ -2,7 +2,7 @@
 
 # Returns result of find operation that works for files and folder
 # with spaces.
-files::ls() { 
+files.ls() { 
   local pattern="$1"
   [[ -z "${pattern}" ]] && return
   while IFS= read -d $'\0' -r file ; do
@@ -10,8 +10,8 @@ files::ls() {
   done < <(find . -iname "${pattern}" -print0)
 }
 
-files::ls::mp3() {
-  array::ls '*.mp3'
+files.ls.mp3() {
+  array.ls '*.mp3'
 }
 
 
@@ -24,21 +24,21 @@ better-sed() {
 
 __sed() { better-sed; }
 
-__rename::kit::add-test::func() { echo "$1" | __sed -E 's/\.rb/_test.rb/g';  }
-rename::kit::add-test()         { rename "$1" "__rename::kit::add-test::func" ; }
+__rename.kit.add-test.func() { echo "$1" | __sed -E 's/\.rb/_test.rb/g';  }
+rename.kit.add-test()         { rename "$1" "__rename.kit.add-test.func" ; }
 
-__rename::kit::add-spec::func() { echo "$1" | __sed -E 's/\.rb/_spec.rb/g';  }
-rename::kit::add-spec()         { rename "$1" "__rename::kit::add-spec::func" ; }
+__rename.kit.add-spec.func() { echo "$1" | __sed -E 's/\.rb/_spec.rb/g';  }
+rename.kit.add-spec()         { rename "$1" "__rename.kit.add-spec.func" ; }
 
 ## rename() helpers
-rename::do()           { 
-  [[ -n ${DEBUG} ]] && rename::print "${1}" "${2}"
-  [[ -n ${DEBUG} ]] || rename::mv "${1}" "${2}"
+rename.do()           { 
+  [[ -n ${DEBUG} ]] && rename.print "${1}" "${2}"
+  [[ -n ${DEBUG} ]] || rename.mv "${1}" "${2}"
 }
 
-rename::print()         { printf "moving ${bldgrn}%-70.70s\n    ➜ ${bldylw}%-70.70s${clr}\n" "${1}" "${2}"; }
+rename.print()         { printf "moving ${bldgrn}%-70.70s\n    ➜ ${bldylw}%-70.70s${clr}\n" "${1}" "${2}"; }
 
-rename::mv()            { 
+rename.mv()            { 
   local from="$1"
   local to="$2"
   
@@ -63,15 +63,15 @@ rename::mv()            {
   
   [[ ${code} -ne 0 ]] && {
     printf "${bldred}Command mv exited with status ${code}\n"
-    rename::error "${from}" "${to}"
+    rename.error "${from}" "${to}"
     return 4
   }
   
-  rename::print "${from}" "${to}"
+  rename.print "${from}" "${to}"
   return 0
 }
 
-rename::error() {
+rename.error() {
   local from="$1"
   local to="$2"
   
@@ -87,8 +87,8 @@ rename::error() {
 ##    function: rename <find file pattern> <match regex> <replace regex>
 ##          or: rename <find file pattern> <single-file rename bash function>
 ##          eg: 
-##              rename::kit::add-test() { echo $1 | sed 's/\.rb/_test.rb/g';  }
-##              rename '*.rb' rename::kit::add-test
+##              rename.kit.add-test() { echo $1 | sed 's/\.rb/_test.rb/g';  }
+##              rename '*.rb' rename.kit.add-test
 rename() {
   local pattern="$1"
   local match="$2"
@@ -102,17 +102,17 @@ rename() {
 
   [[ ${pattern} =~ '*' ]] || pattern="*${pattern}"
 
-  readarray -t file_array <<< $(files::ls "${pattern}")
+  readarray -t file_array <<< $(files.ls "${pattern}")
   printf "${bldblu}✅  discovered ${#file_array} files matching ${bldylw}${pattern}\n\n"
 
   if [[ -n $(type "${match}" 2>/dev/null) ]] ; then
     for file in "${file_array[@]}"; do
-      rename::mv "${file}" $(${match} "${file}")
+      rename.mv "${file}" $(${match} "${file}")
     done
   elif [[ -n "${match}" && -n "${replace}" ]] ; then
     for file in "${file_array[@]}"; do
       newname=$(echo "${file}" | sed -E "s#${match}#${replace}#${sedflags}")
-      rename::mv "${file}" "${newname}"
+      rename.mv "${file}" "${newname}"
     done
   else
     printf "${bldred}Invalid usage.${clr}
@@ -310,7 +310,7 @@ addup() {
 }
 
 
-pu::convert() {
+pu.convert() {
   local from_ext=$1
   shift
   local to_ext=$1
@@ -322,9 +322,9 @@ pu::convert() {
   fi
 
   if [[ -z "${from_ext}" || -z ""${to_ext}"" ]]; then
-    printf "usage: ${bldgrn}pu::img::convert from-extension to-extension [options-to-convert]${txtrst}\n"
+    printf "usage: ${bldgrn}pu.img.convert from-extension to-extension [options-to-convert]${txtrst}\n"
     printf "       Works only in the current directory, and is non-recursive, case-sensitive.\n\n"
-    printf "   eg: ${bldblu}img::convert png jpg --quality 100${txtrst}\n"
+    printf "   eg: ${bldblu}img.convert png jpg --quality 100${txtrst}\n"
     return
   fi
 
@@ -349,8 +349,8 @@ pu::convert() {
       return
     fi
 
-    fsize=$(pu::fsize $f)
-    tsize=$(pu::fsize $to_file)
+    fsize=$(pu.fsize $f)
+    tsize=$(pu.fsize $to_file)
     ratio=$(ruby -e "printf '%7.2f', 100.0 * ${tsize} / ${fsize}")
     if [[ $fsize -gt $tsize ]]; then
       action=" decrease"
@@ -492,7 +492,7 @@ osx.hostname() {
 function csr.create() { 
   local name=$1
   if [[ -z $name ]] ; then
-    echo 'usage: scr::create site.domain.com'
+    echo 'usage: scr.create site.domain.com'
     exit 1
   fi
 

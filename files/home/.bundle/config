@@ -1,4 +1,4 @@
 ---
 BUNDLE_GEM__TEST: "rspec"
-BUNDLE_GEM__MIT: "false"
+BUNDLE_GEM__MIT: "true"
 BUNDLE_GEM__COC: "false"

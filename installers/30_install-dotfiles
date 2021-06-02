@@ -19,9 +19,9 @@ function install-dotfiles() {
   local rc="${HOME}/.bash_pu_completion"
   touch $rc
 
-  [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${pu_home}; PATH=\$PATH:\${PU_HOME}' >> $rc # show-stdout"
+  [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${PU_HOME}; PATH=\$PATH:\${PU_HOME}' >> $rc # show-stdout"
 
-  [[ -z "$(grep 'pu-completion' $rc)" ]] && run "cat ${pu_home}/bin/pu-completion >> $rc # show-stdout"
+  [[ -z "$(grep 'pu-completion' $rc)" ]] && run "cat ${PU_HOME}/bin/pu-completion >> $rc # show-stdout"
 
   [[ -z "$(grep pullulant ${HOME}/.gitconfig 2>/dev/null )" ]] && {
     touch ${HOME}/.gitconfig

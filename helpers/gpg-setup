@@ -2,8 +2,8 @@
 
 source lib/pu-bashmatic
 
-gpg::setup() {
-  pu::ensure::bashmatic
+gpg.setup() {
+  pu.ensure.bashmatic
 
   gpg --version &> /dev/null
   local exit_code="$?"
@@ -20,7 +20,7 @@ gpg::setup() {
   gpg --version &> /dev/null
 }
 
-gpg::key::get() {
+gpg.key.get() {
   local gpg_keys=$(gpg --list-secret-keys --keyid-format LONG)
 
   if [[ "$gpg_keys" =~ sec[[:space:]]+rsa[[:digit:]]+/([A-F0-9]+)[[:space:]][^\<]+\<(.*@${domain})\> ]]; then
@@ -29,16 +29,16 @@ gpg::key::get() {
   fi
 }
 
-gpg::git::user::email() {
+gpg.git.user.email() {
   git config --global user.email
 }
 
-gpg::git::user::name() {
+gpg.git.user.name() {
   git config --global user.name
 }
 
-gpg::key::create() {
-  gpg::key::get
+gpg.key.create() {
+  gpg.key.get
 
   [[ -n "$gpg_key_identifier" ]] && {
     info "Found existing GPG key, using that."
@@ -48,8 +48,8 @@ gpg::key::create() {
   warning "Couldn't find a gpg key with @${domain} email address..."
   info "Creating now using configured git user and email..."
 
-  local user_email="$(gpg::git::user::email)"
-  local user_name="$(gpg::git::user::name)"
+  local user_email="$(gpg.git.user.email)"
+  local user_name="$(gpg.git.user.name)"
 
   if [[ ! ${user_email} =~ "@${domain}" ]]; then
     error "Your git config isn't set to use your email, ${user_email} does not match ${domain}." \
@@ -74,7 +74,7 @@ Expire-Date: 0" | gpg --generate-key --batch
 }
 
 # Test gpg signing works
-gpg::git::verify() {
+gpg.git.verify() {
   set -e
   bash -c "cd $(mktemp -d) && git init . && git commit --allow-empty -m 'Test' -S" > /dev/null
   success "Successfully signed a git commit."
@@ -86,7 +86,7 @@ gpg::git::verify() {
   fi
 }
 
-gpg::key::copy-and-open() {
+gpg.key.copy-and-open() {
   local key="$1"; shift
   local url="$1"
   gpg --armor --export "${key}" | pbcopy
@@ -97,10 +97,10 @@ gpg::key::copy-and-open() {
   open "${url}"
 }
 
-gpg::key::install() {
-  gpg::setup
-  gpg::key::create
-  gpg::key::get
+gpg.key.install() {
+  gpg.setup
+  gpg.key.create
+  gpg.key.get
 
   if [[ -z "$gpg_key_identifier" ]]; then
     error "Still couldn't find a gpg key with @${domain} email address!"
@@ -113,13 +113,13 @@ gpg::key::install() {
     run "git config --global user.signingKey ${gpg_key_identifier}"
   fi
 
-  gpg::git::verify
-  gpg::key::copy-and-open "${gpg_key_identifier}" "https://${github_domain}/settings/gpg/new"
+  gpg.git.verify
+  gpg.key.copy-and-open "${gpg_key_identifier}" "https://${github_domain}/settings/gpg/new"
   success "All done!"
 }
 
 gpg-setup() {
   export github_domain=${1:-"github.com"}
-  gpg::key::install
+  gpg.key.install
 }
 

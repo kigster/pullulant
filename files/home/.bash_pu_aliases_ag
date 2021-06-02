@@ -8,24 +8,24 @@
 #_______________________________________________________________________________
 
 set +e
-[[ -z ${__ag} ]] && export __ag="$(which ag)"
+ag_path="$(command -v ag 2>/dev/null)"
+export ag_path
 
-[[ -n ${__ag} ]] && {
-  alias ag="${__ag} --hidden --smart-case --unrestricted --stats --color"
+if [[ -n ${ag_path} ]]; then
+  alias ag='${ag_path} --hidden --smart-case --unrestricted --stats --color'
 
   # Don't parse regex, just use as a string
-  alias ags="${__ag} --hidden --smart-case --unrestricted --stats --color --literal"
+  alias ags='${ag_path} --hidden --smart-case --unrestricted --stats --color --literal'
 
   # case insensitive
-  alias agi="${__ag} --hidden --ignore-case --unrestricted --stats --color"
+  alias agi='${ag_path} --hidden --ignore-case --unrestricted --stats --color'
 
   # -G follows a reges to match the filename
   # agf '\.rb' 'string'
-  alias agr="${__ag} --hidden --smart-case --unrestricted --stats --color -G "
-  alias agrv="${__ag} --hidden --smart-case --unrestricted --stats --color -v -G "
+  alias agr='${ag_path} --hidden --smart-case --unrestricted --stats --color -G '
+  alias agrv='${ag_path} --hidden --smart-case --unrestricted --stats --color -v -G '
 
   # Print files with matching or not matching strings
-  alias agf="${__ag} --hidden --smart-case --unrestricted --stats --color -l "
-  alias agfv="${__ag} --hidden --smart-case --unrestricted --stats --color -L "
-}
-
+  alias agf='${ag_path} --hidden --smart-case --unrestricted --stats --color -l '
+  alias agfv='${ag_path} --hidden --smart-case --unrestricted --stats --color -L '
+fi

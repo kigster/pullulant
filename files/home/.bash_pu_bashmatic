@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+function pu-bashmatic-install() {
+  local flags=" -q "
+  [[ -n ${BASHMATIC_VERBOSE} ]]       && flags=" -v "
+  [[ -n ${BASHMATIC_SKIP_ON_LOGIN} ]] && flags=" ${flags} -l "
+
+  if [[ -z ${NO_BASHMATIC} ]] ; then
+    [[ -d ${HOME}/.bashmatic ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install ${flags}"
+    [[ -d ${HOME}/.bashmatic ]] && source "${HOME}/.bashmatic/init.sh"
+  fi
+}
+
+pu-bashmatic-install

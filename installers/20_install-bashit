@@ -39,7 +39,7 @@ function update_bashrc() {
     run "echo 'appending sourcing of ~/.bashrc to .bash_profile...'"
     run "echo 'source ~/.bashrc' >> ~/.bash_profile"
   }
-  [[ -n "$(egrep '%PU_HOME%' $HOME/.bashrc)" ]] && run "sed -i.bak -e 's:%PU_HOME%:${pu_home}:g' $HOME/.bashrc"
+  [[ -n "$(egrep '%PU_HOME%' $HOME/.bashrc)" ]] && run "sed -i.bak -e 's:%PU_HOME%:${PU_HOME}:g' $HOME/.bashrc"
 }
 
 function install_bash_it_prompt() {

@@ -5,13 +5,14 @@
 
 export EDITOR=vim
 
+[[ -f ~/.bashmatic/init.sh ]] && source ${HOME}/.bashmatic/init.sh
+
 # WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) BEGIN
 [[ -f ~/.bash_wd ]] && source ~/.bash_wd
 # WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) END
 
 #export GPG_TTY=$(tty)
 [[ -f ~/.bash_pullulant ]] && source ~/.bash_pullulant
-[[ -f ~/.bashmatic/init.sh ]] && source ${HOME}/.bashmatic/init.sh
 
 eval "$(rbenv init -)"
 eval "$(direnv hook bash)"
@@ -28,5 +29,5 @@ eval "$(direnv hook bash)"
 [[ -f ~/.grc.bashrc ]] && source ~/.grc.bashrc
 
 export GOPATH="${HOME}/Dropbox/Code/oss/go"
-export PATH="/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:${HOME}/bin:${HOME}/.rbenv/bin:${HOME}/.rbenv/shims:${GOPATH}/bin"
+export PATH="${PATH}:${GOPATH}/bin"
 

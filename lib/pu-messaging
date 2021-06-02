@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: ft=bash
 #_______________________________________________________________________________
 #
 # © 2016 Konstantin Gredeskoul
@@ -8,7 +9,7 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-source "${bash_files_dir}/.bash_pu_colors"
+pu-source-file .bash_pu_colors
 
 function pu-screen-width {
   stty -a | grep columns | awk '{print $6}'
@@ -211,7 +212,6 @@ Help:
 }
 
 function pu-print-help {
-
   pu-short-usage
   printf "
 $(pu-underline-header 'Getting Help: ')

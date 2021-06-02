@@ -153,7 +153,7 @@ function success {
 function abort {
     [[ "$sudoers_enabled" ]] && sudo-disable
     on_exit && failure
-    cd ${original_dir}
+    cd ${CURRENT_PWD}
     exit $*
 }
 function failure {
@@ -180,7 +180,7 @@ function finish {
     on_exit
     success
     printf "${txtrst}"
-    cd ${original_dir}
+    cd ${CURRENT_PWD}
     exit ${exit_status}
 }
 

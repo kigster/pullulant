@@ -8,38 +8,36 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 
-pu-source-file() {
-  local file="files/home/$1"
-  [[ "$1" =~ '/' ]] && file="$1"
-  [[ -f "${file}" ]] && source "${file}"
+export CURRENT_PWD="$(pwd -P)"
+export PU_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
+if [[ ${CURRENT_PWD} != "${PU_HOME}" ]]; then
+  cd "${PU_HOME}" || exit 1
+  trap "cd ${CDURRENT_PWD}" exit
+fi
+
+export PU_VERSION="$( cat "${PU_HOME}/VERSION" | tr -d '\n')"
+
+function pu-source-file() {
+  local file="$1"
+  [[ -f "${file}" ]] || file="files/home/$1"
+  [[ -f "${file}" ]] || file="$(find . -name "$1" -type f | head -1)"
+  [[ -f "${file}" ]] || { printf "${bldred}File '$1' could not be found.\n"; return 1 ; }
+
+  source "${file}"
 }
 
-function pu-setup {
-  export original_dir=$(pwd)
-
-  export pu_home="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-  cd "${pu_home}"
-  export pu_version="$( cat VERSION | tr -d '\n')"
-
+function pu.setup {
   source "lib/pu-loader"
 }
 
-function pu-help-command() {
+function pu.help-command() {
   pu-welcome-screen-short
   pu-print-help
 }
 
-function pu-version-info() {
+function pu.version-info() {
   pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version ${PU_VERSION})\n"
 }
-
-pu-setup
-pu-version-info
-pu-source-file lib/pu-validate-bash-version
-pu-validate-bash-version 4
-
-#pu-source-file lib/pu-bashmatic
-#pu::ensure::bashmatic
 
 # All installers and helpers
 declare -a installer_sudo_map
@@ -50,11 +48,23 @@ export runner_sudo_map
 
 opts_features=""
 
-[[ -z "$*" ]] && {
-  pu-short-usage
-  pu-short-help
-  abort 0
-}
+pu-source-file lib/pu-messaging
+pu-source-file lib/pu-bashmatic
+
+if [[ "$1" == '-h' || "$1" == "-H" || "$1" == "--help" || -z "$*" ]]; then
+  [[ -f .pu ]] || {
+      pu.help-command
+      pu-help-examples
+      pu-debug-help
+   } > "${PU_HOME}/.pu"
+  less -r "${PU_HOME}/.pu"
+  exit 0
+fi
+
+pu.setup
+pu.version-info
+pu-source-file lib/pu-validate-bash-version
+pu-validate-bash-version 4
 
 while getopts "r:Rf:BCDEFHIKLNPRSTUZV:e:b:dhilkmnops:qtvyx" opt; do
   case $opt in
@@ -150,9 +160,9 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZV:e:b:dhilkmnops:qtvyx" opt; do
 
     V)
       export opts_postgres_version="$OPTARG"     
-      [[ $(lib::array::contains-element "${opts_postgres_version}" "${supported_postgres_versions[@]}") ]] || {
+      [[ $(lib.array.contains-element "${opts_postgres_version}" "${supported_postgres_versions[@]}") ]] || {
         error "Version ${opts_postgres_version} is unsupported." \
-              "Valid versions are: $(lib::array::join-piped "${supported_postgres_versions[@]}")"
+              "Valid versions are: $(lib.array.join-piped "${supported_postgres_versions[@]}")"
         exit 1
       }
       ;;
@@ -180,16 +190,16 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZV:e:b:dhilkmnops:qtvyx" opt; do
       opts_debug=yes
       ;;
     x)
-      $0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > $pu_home/doc/help
-      cat $pu_home/doc/help
+      $0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > $PU_HOME/doc/help
+      cat $PU_HOME/doc/help
       echo
       finish;                 ;;
     h)
-      printf "$(pu-help-command && pu-help-examples && pu-debug-help)" | less -R
+      printf "$(pu.help-command && pu-help-examples && pu-debug-help)" | less -R
       exit 0
       ;;
     H)
-      pu-help-command
+      pu.help-command
       pu-help-examples
       pu-debug-help
       exit 0
@@ -220,16 +230,16 @@ function gracefull_exit_with_summary() {
   pu-box-header " ${bldwht}SUMMARY:${txtrst}"
   pu-box-separator
 
-  [[ $runners_completed -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldgrn} $(pu-pluralize 'runner' $runners_completed) succeeded${txtrst}"               $runners_completed)
-  [[ $runners_ignored -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}"  $runners_ignored)
-  [[ $runners_skipped -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_skipped) skipped${txtrst}"  $runners_skipped)
-  [[ $runners_left -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'runner' $runners_left) left, but were not started${txtrst}"   $runners_left)
+  [[ $runners_completed -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldgrn} $(pu.pluralize 'runner' $runners_completed) succeeded${txtrst}"               $runners_completed)
+  [[ $runners_ignored -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu.pluralize 'runner' $runners_ignored) failed, but were ignored${txtrst}"  $runners_ignored)
+  [[ $runners_skipped -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu.pluralize 'runner' $runners_skipped) skipped${txtrst}"  $runners_skipped)
+  [[ $runners_left -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu.pluralize 'runner' $runners_left) left, but were not started${txtrst}"   $runners_left)
 
   pu-box-separator
 
-  [[ $commands_completed -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldgrn} $(pu-pluralize 'command' $commands_completed) ran successfully${txtrst}"      $commands_completed)
-  [[ $commands_ignored -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu-pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}" $runners_ignored)
-  [[ $commands_failed -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldred} $(pu-pluralize 'command' $commands_failed) failed${txtrst}"                   $commands_failed)
+  [[ $commands_completed -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldgrn} $(pu.pluralize 'command' $commands_completed) ran successfully${txtrst}"      $commands_completed)
+  [[ $commands_ignored -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldylw} $(pu.pluralize 'command' $commands_ignored) had non-zero exit status, but were ignored${txtrst}" $runners_ignored)
+  [[ $commands_failed -gt 0 ]] && pu-box-header $(printf " ${bldwht}%4d${bldred} $(pu.pluralize 'command' $commands_failed) failed${txtrst}"                   $commands_failed)
 
   pu-box-bottom
 
@@ -296,7 +306,7 @@ function run_runners() {
   done
 }
 
-function pu-runners-sudo-init() {
+function pu.runners-sudo-init() {
   for runner in ${runners[@]}; do
     if [[ "${installer_sudo_map[${runner}]}" == 'yes' ]]; then
       runner_sudo_map[${runner}]=yes
@@ -304,7 +314,7 @@ function pu-runners-sudo-init() {
   done
 }
 
-function pu-pluralize() {
+function pu.pluralize() {
   word=$1
   count=$2
   [[ -z "${count}" || -z "${word}" ]] && return
@@ -316,10 +326,11 @@ function pu-pluralize() {
 
 
 function main {
+
   pu-long-header
   pu-print-options
   package-config
-  pu-runners-sudo-init
+  pu.runners-sudo-init
 
   # loop over installers, and if either passed as an argument or no arguments
   #" at all – run it."
@@ -352,7 +363,7 @@ function main {
 #
 declare -a args="$@"
 
-function pu-interrupt() {
+function pu.interrupt() {
   printf "\n\n"
   printf "${txtrst}   ➜    Interrupting, since you pressed ${bakred}  Ctrl-C  ${txtrst}\n\n"
   pu-ask-user "${txtrst}   ➜    Should I skip this runner and continue,\n   ➜         or abort completely ([S]kip/[A]bort)?${bldwht}" 10 'A' 'A a S s'
@@ -360,7 +371,7 @@ function pu-interrupt() {
   if echo "$answer" | grep -iq "^s" ; then
     printf "${bldgrn}   ➜    OK, let's continue....${txtrst}\n\n"
     pu-trap-reset INT
-    pu-trap-signals pu-interrupt INT
+    pu-trap-signals pu.interrupt INT
     abort_current_runner_and_continue
   else
     printf "${bldgrn}   ➜    Aborting.${txtrst}\n\n"
@@ -379,11 +390,10 @@ function abort_current_runner_and_continue() {
   continue_next_runner
 }
 
-pu-trap-signals pu-interrupt INT
+pu-trap-signals pu.interrupt INT
 [[ "${opts_continue_on_runner_error}" == "yes" ]] && pu-trap-signals abort_current_runner_and_continue USR1
 
 printf ${txtrst}
 main ${args[@]}
 printf ${txtrst}
 
-# EOF

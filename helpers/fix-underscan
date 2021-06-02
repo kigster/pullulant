@@ -2,7 +2,7 @@
 
 
 
-function osx::underscan() {
+function osx.underscan() {
   cd /var/
   cp .com.apple.iokit.graphics  .com.apple.iokit.graphics.bak
   open /System/Library/PreferencePanes/Displays.prefPane
