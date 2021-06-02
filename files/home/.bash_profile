@@ -55,8 +55,6 @@ export SHORT_TERM_LINE=true
 # source ~/.powerline
 # Load Bash It
 
-export POWERLINE_LEFT_PROMPT="ruby cwd"
-export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
 
 export BASH_IT_P4_DISABLED=true
 
@@ -78,8 +76,20 @@ else
   export BASH_IT_COLORSCHEME=tango
 fi
 
-source "${BASH_IT}"/bash_it.sh
-source "${HOME}"/.bashrc
+source "${HOME}"/.bash_pullulant
 
-export POWERLINE_LEFT_PROMPT="ruby scm cwd"
+source-if-exists "${BASH_IT}"/bash_it.sh
+
+export POWERLINE_LEFT_PROMPT="node ruby scm cwd"
+export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
+
+[[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q"
+[[ -d ${BASHMATIC_HOME} ]] || {
+  echo "Can't find Bashmatic, even after attempting an installation."
+  echo "Please install Bashmatic with the following command line:"
+  echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
+}
+
+source-if-exists "${HOME}"/.bashrc
 

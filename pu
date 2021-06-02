@@ -8,19 +8,25 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 
-pu-source-file() {
-  local file="files/home/$1"
-  [[ "$1" =~ '/' ]] && file="$1"
-  [[ -f "${file}" ]] && source "${file}"
+export CURRENT_PWD="$(pwd -P)"
+export PU_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
+if [[ ${CURRENT_PWD} != "${PU_HOME}" ]]; then
+  cd "${PU_HOME}" || exit 1
+  trap "cd ${CDURRENT_PWD}" exit
+fi
+
+export PU_VERSION="$( cat "${PU_HOME}/VERSION" | tr -d '\n')"
+
+function pu-source-file() {
+  local file="$1"
+  [[ -f "${file}" ]] || file="files/home/$1"
+  [[ -f "${file}" ]] || file="$(find . -name "$1" -type f | head -1)"
+  [[ -f "${file}" ]] || { printf "${bldred}File '$1' could not be found.\n"; return 1 ; }
+
+  source "${file}"
 }
 
 function pu.setup {
-  export original_dir=$(pwd)
-
-  export pu_home="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-  cd "${pu_home}"
-  export pu_version="$( cat VERSION | tr -d '\n')"
-
   source "lib/pu-loader"
 }
 
@@ -33,14 +39,6 @@ function pu.version-info() {
   pu-box-header "${txtgrn}Pullulant ${txtrst} (or just ${bldgrn}pu${txtrst})                       ${bldwht}(Version ${PU_VERSION})\n"
 }
 
-pu.setup
-pu.version-info
-pu-source-file lib/pu-validate-bash-version
-pu-validate-bash-version 4
-
-#pu-source-file lib/pu-bashmatic
-#pu.ensure.bashmatic
-
 # All installers and helpers
 declare -a installer_sudo_map
 export installer_sudo_map
@@ -50,11 +48,23 @@ export runner_sudo_map
 
 opts_features=""
 
-[[ -z "$*" ]] && {
-  pu-short-usage
-  pu-short-help
-  abort 0
-}
+pu-source-file lib/pu-messaging
+pu-source-file lib/pu-bashmatic
+
+if [[ "$1" == '-h' || "$1" == "-H" || "$1" == "--help" || -z "$*" ]]; then
+  [[ -f .pu ]] || {
+      pu.help-command
+      pu-help-examples
+      pu-debug-help
+   } > "${PU_HOME}/.pu"
+  less -r "${PU_HOME}/.pu"
+  exit 0
+fi
+
+pu.setup
+pu.version-info
+pu-source-file lib/pu-validate-bash-version
+pu-validate-bash-version 4
 
 while getopts "r:Rf:BCDEFHIKLNPRSTUZV:e:b:dhilkmnops:qtvyx" opt; do
   case $opt in
@@ -180,8 +190,8 @@ while getopts "r:Rf:BCDEFHIKLNPRSTUZV:e:b:dhilkmnops:qtvyx" opt; do
       opts_debug=yes
       ;;
     x)
-      $0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > $pu_home/doc/help
-      cat $pu_home/doc/help
+      $0 -h | iconv -c -t ascii | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > $PU_HOME/doc/help
+      cat $PU_HOME/doc/help
       echo
       finish;                 ;;
     h)
@@ -316,6 +326,7 @@ function pu.pluralize() {
 
 
 function main {
+
   pu-long-header
   pu-print-options
   package-config

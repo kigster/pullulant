@@ -31,7 +31,7 @@ function package-config {
   for feature in "${features[@]}"; do
     local feature_with_path=$(echo $feature | grep  '/')
     if [ "${feature_with_path}" != "${feature}" ]; then
-      package_file="${pu_home}/features/${feature}/packages"
+      package_file="${PU_HOME}/features/${feature}/packages"
     else
       package_file="$feature"
     fi
@@ -47,7 +47,7 @@ function package-config {
   pu-list-components "Runners"  "ylw"  "${runners[@]}"
   [[ ${#runners_skipped[@]} -gt 0 ]] && pu-list-components "Skipped"  "red"  "${runners_skipped[@]}"
 
-  source "${pu_home}/lib/pu-uniq-packages"
+  source "${PU_HOME}/lib/pu-uniq-packages"
 
   if [[ -n "${opts_interactive}" ]]; then
     printf "\n${txtwht}   ${undylw}Attention:${txtrst} Please review the run parameters above.\n   If something is wrong or missing, hit Ctrl-C to abort.\n\n"

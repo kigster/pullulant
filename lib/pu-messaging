@@ -9,7 +9,7 @@
 # Distributed under MIT License
 #_______________________________________________________________________________
 #
-source "${bash_files_dir}/.bash_pu_colors"
+pu-source-file .bash_pu_colors
 
 function pu-screen-width {
   stty -a | grep columns | awk '{print $6}'

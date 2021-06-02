@@ -21,11 +21,16 @@ export HISTCONTROL=ignoredups
 
 function source-if-exists() {
   local file
+  local t1 t2
   for file in "$@"; do
+    t1=$(millis)
+    [[ -n $DEBUG ]] && printf "${bldblu}sourcing ${bldylw}%30s${clr}...  ->" "${file}"
     [[ -f "${file}" ]] && source "${file}"
+    t2=$(millis)
+    diff=$(( t2 - t1 ))
+    [[ -n $DEBUG ]] && printf " ✅  $(diff)ms\n"
   done
 }
-
 
 source-if-exists ~/.bash_pu_aliases
 source-if-exists ~/.bash_pu_aliases_ag
@@ -33,6 +38,7 @@ source-if-exists ~/.bash_pu_bashmatic
 source-if-exists ~/.bash_pu_colors
 source-if-exists ~/.bash_pu_functions
 source-if-exists ~/.bash_pu_git
+source-if-exists ~/.bash_pu_gpg
 source-if-exists ~/.bash_pu_grep
 source-if-exists ~/.bash_pu_pgsql
 source-if-exists ~/.bash_pu_user
