@@ -27,12 +27,12 @@ function git.aliases() {
   if (command -v ydiff >/dev/null 2>&1); then
     alias gd='git diff | ydiff'
     alias gds='git diff -s -w 0 | ydiff'
-    alias gdc='git diff .cached -b | ydiff'
+    alias gdc='git diff --cached -b | ydiff'
     alias glp='git diff -L | ydiff'
     alias glps='git diff -l -s -w 0 | ydiff'
   else
     alias gd='git diff'
-    alias gdc='git diff .cached -b'
+    alias gdc='git diff --cached -b'
     alias glp='git log -p -2'
   fi
 
