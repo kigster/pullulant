@@ -11,18 +11,18 @@
 function git.aliases() {
   alias gp='git push -v'
   alias gpnew='git push -u origin master'
-  alias gcb='git branch .no-color | grep -F "*" | cut -f 2 -d " "' # git current branch
+  alias gcb='git branch -no-color | grep -F "*" | cut -f 2 -d " "' # git current branch
   alias gcmr='git reset; git add README.md; git commit -m "Updated README"; git push '
 
   # git submoduleas
-  alias gsi='git submodule update .recursive .init'
-  alias gsu='git submodule update .recursive .init'
+  alias gsi='git submodule update --recursive --init'
+  alias gsu='git submodule update --recursive --init'
 
   # git statuses
   alias gs='git status'
   alias gst='git status -short'
-  alias gss='git show .stat'
-  alias gsl='git status .long -M -b .ahead-behind'
+  alias gss='git show -stat'
+  alias gsl='git status -long -M -b -ahead-behind'
 
   if (command -v ydiff >/dev/null 2>&1); then
     alias gd='git diff | ydiff'
@@ -38,14 +38,14 @@ function git.aliases() {
 
   alias gl='git log'
 
-  alias gc='EDITOR=/usr/local/bin/vim git commit -S .verbose'
+  alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
   alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
-  alias gca='EDITOR=/usr/local/bin/vim git commit -S .amend .verbose'
+  alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
 
   alias grs='git reset'
-  alias grsh='git reset .hard'
-  alias gtits='git reset .hard && git clean -dfx'
-  alias gtots='git clean .dry-run -dfx'
+  alias grsh='git reset -hard'
+  alias gtits='git reset -hard && git clean -dfx'
+  alias gtots='git clean -dry-run -dfx'
 
   alias gco='git checkout'
   alias gcob='git checkout -b'
@@ -57,15 +57,15 @@ function git.aliases() {
   alias gcom='git checkout master'
   alias gcod='git checkout develop'
 
-  alias gll="git log .graph .pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' .abbrev-commit .date=relative"
-  alias glg="git log .graph .all .pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
+  alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+  alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
-  alias gpf='git push .force'
-  alias gprs='git stash && git pull .rebase && git stash pop'
-  alias gpp='git pull .rebase && git push'
+  alias gpf='git push --force'
+  alias gprs='git stash && git pull -rebase && git stash pop'
+  alias gpp='git pull --rebase && git push'
 
-  alias grbc='git rebase .continue'
-  alias grba='git rebase .abort'
+  alias grbc='git rebase -continue'
+  alias grba='git rebase -abort'
 
   alias ga='git add'
   alias gaa='git add -A'
@@ -73,12 +73,12 @@ function git.aliases() {
   alias gclean='git clean -d -f -x'
   alias gcl='git.clone'
 
-  alias gbs='git branch .sort=committerdate  | tail -20'
+  alias gbs='git branch --sort=committerdate  | tail -20'
 }
 
 # @description Convert remotes with https to git@ format.
-# @example gitconfig.convert.to.ssh ./
-function .git.config.convert.to() {
+# @example gitconfig.convert.to.ssh -/
+function -git.config.convert.to() {
   local to="$1"
   shift
 
@@ -116,11 +116,11 @@ function .git.config.convert.to() {
 }
 
 function git.config.convert.to.ssh() {
-  .git.config.convert.to git@ "$@"
+  -git.config.convert.to git@ "$@"
 }
 
 function git.config.convert.to.https() {
-  .git.config.convert.to https:// "$@"
+  -git.config.convert.to https:// "$@"
 }
 
 [[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
@@ -138,8 +138,8 @@ function git.smart.pull() {
     alias gpr="git-smart-pull"
     git-smart-pull
   else
-    echo "Gem git-smart-pull not found, activating regular rebase .autostash"
-    alias gpr="git pull .rebase .autostash"
+    echo "Gem git-smart-pull not found, activating regular rebase -autostash"
+    alias gpr="git pull -rebase -autostash"
   fi
 }
 

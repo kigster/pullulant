@@ -1,15 +1,17 @@
+#!/usr/bin/env bash
+# vim:ft=bash
 
 _git_checkout() {
   __git_has_doubledash && return
   case "$cur" in
-  .conflict=*)
+  -conflict=*)
     __gitcomp "diff3 merge" "" "${cur##.conflict=}"
     ;;
-  .*)
+  -*)
     __gitcomp_builtin checkout
     ;;
   *)
-    local flags=".track .no-track .no-guess" track_opt=".track"
+    local flags="-track -no-track -no-guess" track_opt="-track"
     if [ "$GIT_COMPLETION_CHECKOUT_NO_GUESS" = "1" ] || [ -n "$(__git_find_on_cmdline "$flags")" ]; then
       track_opt=''
     fi
@@ -48,7 +50,7 @@ function git.completions() {
   __git_complete gco _git_checkout
 }
 
-# Usage: .git.ensure-arguments 'argument name', $1
+# Usage: -git.ensure-arguments 'argument name', $1
 .git.ensure-arguments() {
   if [[ -z "$2" ]]; then
     printf "\n${bldred}This function requires an argument: ${bldylw}%s${clr}\n" "$1"
@@ -58,7 +60,7 @@ function git.completions() {
 }
 
 function git.commit-and-push() {
-  .git.ensure-arguments 'git commit message' "$1" || return 1
+  -git.ensure-arguments 'git commit message' "$1" || return 1
   set -x
   git commit -m "$1"
   shift
@@ -71,10 +73,10 @@ function git.commit-and-push() {
 }
 
 function git.commit() {
-  .git.ensure-arguments 'git commit message' "$1" || return 1
+  -git.ensure-arguments 'git commit message' "$1" || return 1
   printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
   set -x
-  git add .
+  git add -
   set +x 1>/dev/null 2>&1
   printf "\n${bldylw}About to commit and push. You have 1 second to Ctrl-C...${clr}\n"
   sleep 1
@@ -87,14 +89,14 @@ function git.squash() {
     echo "Usage: git.squash <number> # of commits to go back"
     return
   }
-  git reset .soft HEAD~"${number}"
+  git reset -soft HEAD~"${number}"
   git commit
 }
 
 function git.upstream() {
   local this_branch=$(gcb)
   this_branch=${this_branch:-master}
-  git branch .set-upstream-to=origin/"${this_branch}" "${this_branch}"
+  git branch -set-upstream-to=origin/"${this_branch}" "${this_branch}"
 }
 
 # @description: git glone from current user's github repo. Also aliased to 'gcl'
@@ -143,3 +145,4 @@ function git.clean() {
   fi
 }
 
+git.completions
