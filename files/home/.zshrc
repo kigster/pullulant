@@ -69,7 +69,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git wd zsh-completions)
+plugins=(wd git gitfast git-prompt git-extras)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -86,4 +86,5 @@ function zsh.add-plugins() {
 
 [[ -f ${HOME}/.bash_pullulant ]] && source ${HOME}/.bash_pullulant
 
-
+[[ $PATH =~ /Users/kig/Dropbox/Code/jobs/fossa/dev-tools/bin ]] || export PATH="$PATH:/Users/kig/Dropbox/Code/jobs/fossa/dev-tools/bin"
+[[ $PATH =~ /Users/kig/.bashmatic/bin ]] || export PATH="${PATH}:/Users/kig/.bashmatic/bin"
