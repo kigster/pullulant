@@ -5,7 +5,7 @@
 
 export EDITOR=vim
 
-[[ -f ~/.bashmatic/init.sh ]] && source ${HOME}/.bashmatic/init.sh
+#[[ -f ~/.bashmatic/init.sh ]] && source ${HOME}/.bashmatic/init.sh
 
 # WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) BEGIN
 [[ -f ~/.bash_wd ]] && source ~/.bash_wd

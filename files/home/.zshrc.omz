@@ -1,0 +1,51 @@
+# vim: ft=sh
+#———— oh-my-zsh ——————————————————————————————————
+# Path to your oh-my-zsh installation.
+export ZSH="${HOME}/.oh-my-zsh"
+
+ZSH_THEME="agnoster"
+CASE_SENSITIVE="true"
+# HYPHEN_INSENSITIVE="true"
+# DISABLE_AUTO_UPDATE="true"
+# DISABLE_UPDATE_PROMPT="true"
+# DISABLE_MAGIC_FUNCTIONS="true"
+# DISABLE_LS_COLORS="true"
+# DISABLE_AUTO_TITLE="true"
+# ENABLE_CORRECTION="true"
+# COMPLETION_WAITING_DOTS="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+HIST_STAMPS="yyyy-mm-dd"
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+alias zshconfig="vim ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+
+plugins=(wd git gitfast git-prompt git-extras direnv fzf themes brew colorize grc)
+source $ZSH/oh-my-zsh.sh
+
+function omz-add-plugins() {
+  for plugin in "$@"; do
+    if [[ -d $ZSH/plugins/${plugin} ]]; then
+      ((DEBUG_INFO)) && {
+        omz plugin info ${plugin}
+        continue
+      }
+      ((DEBUG)) && echo "loading plugin ${plugin}"
+      plugins+=(${plugin})
+    fi
+  done
+}
+
+alias zap="omz-add-plugins"
+
+#zap aws battery brew bundler cask colorize commonaliases docker docker-compose emoji
+#zap emoji-clock fzf gh gnu-utils go golang grc gulp helm iterm2 keychain kubectl
+#zap nmap npm nvm osx pip rails rake rake-fast rbenv rsync redis-cli ruby themes vscode
+#zap z zsh-interactive-cd zsh-navigation-tools zsh-z
+
+[[ "(uname -s)" == "Darwin" ]] && zap osx brew
+[[ -n "${GOPATH}" ]] && zap golang go
+[[ -d ${HOME}/.rbenv ]] && zap rbenv ruby rake rails
+[[ -d ${HOME}/.pyenv ]] && zap pip
+[[ -d ${HOME}/.nvm ]] && zap node gulp npm nvm
+

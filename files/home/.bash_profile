@@ -76,9 +76,7 @@ else
   export BASH_IT_COLORSCHEME=tango
 fi
 
-source "${HOME}"/.bash_pullulant
-
-source-if-exists "${BASH_IT}"/bash_it.sh
+source "${BASH_IT}"/bash_it.sh
 
 export POWERLINE_LEFT_PROMPT="node ruby scm cwd"
 export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
@@ -91,5 +89,5 @@ export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
   echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
 }
 
-source-if-exists "${HOME}"/.bashrc
+source "${HOME}"/.bashrc
 

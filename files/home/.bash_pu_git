@@ -62,6 +62,7 @@ function git.aliases() {
 
   alias gpf='git push --force'
   alias gprs='git stash && git pull -rebase && git stash pop'
+  alias gpr="git.smart.pull"
   alias gpp='git pull --rebase && git push'
 
   alias grbc='git rebase -continue'
@@ -152,3 +153,4 @@ function pu.load.git() {
 }
 
 pu.load.git
+

@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
+#
+# vim: ft=bash
 #_______________________________________________________________________________
 #
-# © 2016 Konstantin Gredeskoul
+# © 2016-2021 Konstantin Gredeskoul
 # Project Pullulant™
 # https://github.com/kigster/pullulant/
 #
 # Distributed under MIT License
 #_______________________________________________________________________________
-#
-#
-function package-config {
+
+function package-config() {
   # Script-level Constants
-  export var_pullulant_symbol_ok=${var_pullulant_symbol_ok-" ✅ "}
-  export var_pullulant_symbol_error=${var_pullulant_symbol_error-" ⛔️     "}
-  export var_pullulant_symbol_ignored=${var_pullulant_symbol_ignored-" 🙄   "}
-  export var_zsh_theme=${var_zsh_theme-"reinvent-one"}
-  export var_brew_cask_appdir=${var_brew_cask_appdir-"/Applications"}
+  export var_pullulant_symbol_ok=${var_pullulant_symbol_ok:-" ✅ "}
+  export var_pullulant_symbol_error=${var_pullulant_symbol_error:-" ⛔️     "}
+  export var_pullulant_symbol_ignored=${var_pullulant_symbol_ignored:-" 🙄   "}
+  export var_zsh_theme=${var_zsh_theme:-"reinvent-one"}
+  export var_brew_cask_appdir=${var_brew_cask_appdir:-"/Applications"}
   readonly export const_timestamp=`date "+%Y%m%d%H%M%S"`
   readonly export const_sprout_wrap_repo="https://github.com/pivotal-sprout/sprout-wrap"
 
@@ -126,7 +127,7 @@ function package-config {
   export skip_sudo_disable=false
 }
 
-function pu_option_value {
+function pu_option_value() {
   option=$1
   eval "echo $"${option}
 }

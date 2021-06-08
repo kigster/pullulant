@@ -10,6 +10,8 @@
 #
 # MIT License
 
+#source ${HOME}/.bash_pu_bashmatic
+
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
@@ -19,39 +21,43 @@ export PAGER='less -R'
 export RI='-f ansi'
 export HISTCONTROL=ignoredups
 
-function source-if-exists() {
-  local file
-  local t1 t2
-  for file in "$@"; do
-    t1=$(millis)
-    [[ -n $DEBUG ]] && printf "${bldblu}sourcing ${bldylw}%30s${clr}...  ->" "${file}"
-    [[ -f "${file}" ]] && source "${file}"
-    t2=$(millis)
-    diff=$(( t2 - t1 ))
-    [[ -n $DEBUG ]] && printf " ✅  $(diff)ms\n"
-  done
-}
+if [[ -f ~/.bash_safe_source ]] ; then 
+  source "${HOME}/.bash_safe_source"
+else
+  function safe-source() {
+    while true; do
+      [[ -f "$1" ]] && source "$1"
+      shift
+    done
+  }
+fi
 
-source-if-exists ~/.bash_pu_aliases
-source-if-exists ~/.bash_pu_aliases_ag
-source-if-exists ~/.bash_pu_bashmatic
-source-if-exists ~/.bash_pu_colors
-source-if-exists ~/.bash_pu_functions
-source-if-exists ~/.bash_pu_git
-source-if-exists ~/.bash_pu_gpg
-source-if-exists ~/.bash_pu_grep
-source-if-exists ~/.bash_pu_pgsql
-source-if-exists ~/.bash_pu_user
-source-if-exists ~/.bashit
+set +e
 
+declare -a sources=(
+  ${HOME}/.bash_pu_aliases
+  ${HOME}/.bash_pu_aliases_ag
+  ${HOME}/.bash_pu_colors
+  ${HOME}/.bash_pu_functions
+  ${HOME}/.bash_pu_git
+  ${HOME}/.bash_pu_gpg
+  ${HOME}/.bash_pu_grep
+  ${HOME}/.bash_pu_pgsql
+  ${HOME}/.bash_pu_user
+  ${HOME}/.bashit
+)
+
+safe-source "${sources[@]}"
 
 # Load rbenv and pyenv without th expensive eval.
-export PATH="$HOME/bin:/usr/local/bin:/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 for env in rbenv pyenv; do
   dir="${HOME}/.${env}/shims"
   if [[ -d "${dir}" ]] ; then
     export PATH="${dir}:$PATH"
   fi
 done
+
+
+ 
 
 
