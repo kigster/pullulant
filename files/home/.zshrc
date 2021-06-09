@@ -31,6 +31,7 @@ source ${HOME}/.bash_safe_source
 
 safe-source "${HOME}/.bashmatic/init.sh"
 safe-source "${HOME}/.bash_pullulant"
+safe-source "${HOME}/.grc.bashrc"
 safe-source "${HOME}/.zshrc.omz"
 safe-source "${HOME}/.zshrc.${USER}"
 safe-source "${HOME}/.bash_pu_git"
