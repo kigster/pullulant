@@ -20,7 +20,12 @@ HIST_STAMPS="yyyy-mm-dd"
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 
-plugins=(wd git gitfast git-prompt git-extras direnv fzf themes brew colorize grc)
+plugins=(
+  wd git gitfast git-prompt git-extras gnu-utils
+  direnv fzf themes brew colorize grc
+  kubectl iterm2 helm gulp gh
+)
+
 source $ZSH/oh-my-zsh.sh
 
 function omz-add-plugins() {
@@ -37,11 +42,6 @@ function omz-add-plugins() {
 }
 
 alias zap="omz-add-plugins"
-
-#zap aws battery brew bundler cask colorize commonaliases docker docker-compose emoji
-#zap emoji-clock fzf gh gnu-utils go golang grc gulp helm iterm2 keychain kubectl
-#zap nmap npm nvm osx pip rails rake rake-fast rbenv rsync redis-cli ruby themes vscode
-#zap z zsh-interactive-cd zsh-navigation-tools zsh-z
 
 [[ "(uname -s)" == "Darwin" ]] && zap osx brew
 [[ -n "${GOPATH}" ]] && zap golang go

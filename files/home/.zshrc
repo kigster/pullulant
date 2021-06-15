@@ -4,7 +4,9 @@
 # © 2010-2021 Konstantin Gredeskoul, MIT License
 # @see https://github.com/kigster/pullulant
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:${HOME}/bin"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:${HOME}/bin:${PATH}"
+# make `direnv` silent
+export DIRENV_LOG_FORMAT=
 
 declare -a paths
 paths=(

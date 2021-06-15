@@ -3,6 +3,10 @@
 # automatically appended by pullulant's installer
 # vim: filetype=bash
 
+# make `direnv` silent
+export DIRENV_LOG_FORMAT=
+
+# make the editor vim
 export EDITOR=vim
 
 #[[ -f ~/.bashmatic/init.sh ]] && source ${HOME}/.bashmatic/init.sh
