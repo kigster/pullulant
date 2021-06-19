@@ -138,6 +138,12 @@ function bashit-install() {
   [[ -d ${HOME}/.bash_it ]] || return 1
 }
 
+function bashit.prompt() {
+  powerline.prompt.git.default
+  powerline.prompt.set left scm cwd
+  powerline.prompt.set right go clock battery
+}
+
 function bashit-main() {
   export __pullulant_bash_it_loaded=1
   bashit-install
