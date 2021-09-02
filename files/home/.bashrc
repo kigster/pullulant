@@ -18,8 +18,7 @@ export EDITOR=vim
 #export GPG_TTY=$(tty)
 [[ -f ~/.bash_pullulant ]] && source ~/.bash_pullulant
 
-eval "$(rbenv init -)"
-eval "$(direnv hook bash)"
+export DIRENV_LOG_FORMAT=
 
 #[[ -f ~/.bash_bazel ]] && source ~/.bash_bazel
 [[ -f ~/.bash_${USER} ]] && source ~/.bash_${USER}
@@ -33,5 +32,11 @@ eval "$(direnv hook bash)"
 [[ -f ~/.grc.bashrc ]] && source ~/.grc.bashrc
 
 export GOPATH="${HOME}/Dropbox/Code/oss/go"
-export PATH="${PATH}:${GOPATH}/bin"
+export PATH="${HOME}/.rbenv/shims:${PATH}:${GOPATH}/bin"
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+eval "$(rbenv init -)"
+eval "$(direnv hook bash)"

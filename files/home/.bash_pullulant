@@ -10,7 +10,7 @@
 #
 # MIT License
 
-#source ${HOME}/.bash_pu_bashmatic
+source ${HOME}/.bash_safe_source
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -21,20 +21,8 @@ export PAGER='less -R'
 export RI='-f ansi'
 export HISTCONTROL=ignoredups
 
-if [[ -f ~/.bash_safe_source ]] ; then 
-  source "${HOME}/.bash_safe_source"
-else
-  function safe-source() {
-    while true; do
-      [[ -f "$1" ]] && source "$1"
-      shift
-    done
-  }
-fi
-
-set +e
-
 declare -a sources=(
+  ${HOME}/.bash_pu_bashmatic
   ${HOME}/.bash_pu_aliases
   ${HOME}/.bash_pu_aliases_ag
   ${HOME}/.bash_pu_colors
@@ -44,10 +32,10 @@ declare -a sources=(
   ${HOME}/.bash_pu_grep
   ${HOME}/.bash_pu_pgsql
   ${HOME}/.bash_pu_user
-  ${HOME}/.bashit
+  ${HOME}/.bash_pu_bash_it
 )
 
-safe-source "${sources[@]}"
+src "${sources[@]}"
 
 # Load rbenv and pyenv without th expensive eval.
 for env in rbenv pyenv; do

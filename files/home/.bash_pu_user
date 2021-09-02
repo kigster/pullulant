@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# vim: ft=bash
 function .kigs.gitconfig() {
   if [[ -z $(command -v git) || "${USER}" != "kig" ]]; then
     return

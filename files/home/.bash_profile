@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # vim: ft=bash
 
-[[ -f /usr/local/etc/bash_completion ]] && . /usr/local/etc/bash_completion
+[[ -f ~/.bash_safe_source ]] && source ~/.bash_safe_source
+[[ -f ~/.bashmatic/.bash_safe_source ]] && source ~/.bashmatic/.bash_safe_source
+
+[[ -f /usr/local/etc/bash_completion ]] && src /usr/local/etc/bash_completion
 
 # Path to the bash it configuration
 export BASH_IT="/Users/kig/.bash_it"
@@ -60,14 +63,6 @@ export BASH_IT_P4_DISABLED=true
 
 #export SCM_GIT_SHOW_MINIMAL_INFO=false
 
-export SCM=git
-export SCM_CHECK=true
-export SCM_GIT_SHOW_CURRENT_USER=true
-export SCM_GIT_SHOW_DETAILS=true
-export SCM_GIT_SHOW_COMMIT_COUNT=false
-export SCM_GIT_SHOW_REMOTE_INFO=true
-export SCM_GIT_SHOW_STASH_INFO=true
-
 if [[ "${ITERM_PROFILE}" =~ "Light" || "${ITERM_PROFILE}" =~ "light" ]]; then
   export BASH_IT_COLORSCHEME=light
 elif [[ "${ITERM_PROFILE}" =~ "Dark" || "${ITERM_PROFILE}" =~ "dark" ]]; then
@@ -76,10 +71,24 @@ else
   export BASH_IT_COLORSCHEME=tango
 fi
 
-source "${BASH_IT}"/bash_it.sh
+export SCM=git
+export SCM_CHECK=true
+export SCM_GIT_SHOW_CURRENT_USER=true
+export SCM_GIT_SHOW_DETAILS=true
+export SCM_GIT_SHOW_COMMIT_COUNT=false
+export SCM_GIT_SHOW_REMOTE_INFO=true
+export SCM_GIT_SHOW_STASH_INFO=true
 
-export POWERLINE_LEFT_PROMPT="node ruby scm cwd"
-export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
+src "${BASH_IT}"/bash_it.sh
+
+export POWERLINE_LEFT_PROMPT="scm cwd"
+export POWERLINE_RIGHT_PROMPT="clock node"
+
+[[ -f ${HOME}/.bashmatic_debug ]] && {
+  export BASHMATIC_DEBUG=1
+  export BASHMATIC_PATH_DEBUG=1
+  export DEBUG=1
+}
 
 [[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
 [[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q"
@@ -89,5 +98,6 @@ export POWERLINE_RIGHT_PROMPT="clock battery user_info hostname"
   echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
 }
 
-source "${HOME}"/.bashrc
+src ~/.bash_it/colorschemes/tango*
+src "${HOME}"/.bashrc
 

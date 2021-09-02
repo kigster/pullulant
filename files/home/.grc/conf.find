@@ -1,0 +1,3 @@
+# Main
+regexp=^(\.?\/*[^/]+)(/[^/]+)(/[^/]+)?(/[^/]+)?(/[^/]+)?(/[^/]+)?(/[^/]+)?(/[^/]+)?(/[^/]+)?(.*)$
+colours=default,blue,green,cyan,magenta,red,yellow,white,bold,red,green,blue,magenta
