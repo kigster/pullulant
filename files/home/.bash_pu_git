@@ -9,8 +9,8 @@
 #_______________________________________________________________________________
 
 function git.aliases() {
-  alias gp='git push -v -u'
-  alias gpom='git push -u origin master'
+  alias gp='git push -v'
+  alias gpnew='git push -u origin master'
   alias gcb='git branch -no-color | grep -F "*" | cut -f 2 -d " "' # git current branch
   alias gcmr='git reset; git add README.md; git commit -m "Updated README"; git push '
 
@@ -52,6 +52,11 @@ function git.aliases() {
   alias gcom='git checkout master'
   alias gcod='git checkout develop'
 
+  alias gco='git checkout'
+  alias gcob='git checkout -b'
+  alias gcom='git checkout master'
+  alias gcod='git checkout develop'
+
   alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
   alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
@@ -60,15 +65,15 @@ function git.aliases() {
   alias gpr="git.smart.pull"
   alias gpp='git pull --rebase && git push'
 
-  alias grbc='git rebase --continue'
-  alias grba='git rebase --abort'
+  alias grbc='git rebase -continue'
+  alias grba='git rebase -abort'
 
   alias ga='git add'
   alias gaa='git add -A'
   alias gap='git add -p'
   alias gclean='git clean -d -f -x'
   alias gcl='git.clone'
-  alias gclk='git.clone git@github.com:kigster/'
+
   alias gbs='git branch --sort=committerdate  | tail -20'
 }
 
@@ -112,11 +117,11 @@ function git.config.convert.to() {
 }
 
 function git.config.convert.to.ssh() {
-  -git.config.convert.to git@ "$@"
+  git.config.convert.to git@ "$@"
 }
 
 function git.config.convert.to.https() {
-  -git.config.convert.to https:// "$@"
+  git.config.convert.to https:// "$@"
 }
 
 [[ -n $(alias gpr 2>/dev/null) ]] && unalias gpr
