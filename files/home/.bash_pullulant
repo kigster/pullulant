@@ -32,7 +32,7 @@ declare -a sources=(
   ${HOME}/.bash_pu_grep
   ${HOME}/.bash_pu_pgsql
   ${HOME}/.bash_pu_user
-  ${HOME}/.bash_pu_bash_it
+  ${HOME}/.bash_pu_bash_it tango
 )
 
 src "${sources[@]}"

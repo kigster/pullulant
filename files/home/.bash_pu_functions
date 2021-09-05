@@ -14,7 +14,6 @@ files.ls.mp3() {
   array.ls '*.mp3'
 }
 
-
 ## "kit" functions are meant to be passed as a second argument to rename().
 # They provide various pre-defined renaming patterns.
 better-sed() {
