@@ -19,7 +19,7 @@ function src() {
   for file in "$@"; do
     [[ -z $file ]] && break
     if [[ -s "${file}" ]]; then
-      ((PULLULANT_DEBUG)) && printf "${pfx} sourcing ${txtgrn}%50s${clr}..." "${file}"
+      ((PULLULANT_DEBUG)) && printf "${pfx} sourcing ${txtgrn}%-50s${clr}..." "${file}"
       source "${file}"
       code=$?
       ((PULLULANT_DEBUG)) && {
@@ -30,7 +30,7 @@ function src() {
         printf "${txtgrn} [ ✔︎ %s] ${clr}\n" "OK"
       }
     else
-      ((PULLULANT_DEBUG)) && printf "${pfx} sourcing ${txtylw}%50s${clr}... ${txtylw}[ ${bldylw}X${txtylw}, file not found ]${clr}\n" "${file}"
+      ((PULLULANT_DEBUG)) && printf "${pfx} sourcing ${txtylw}%-50s${clr}... ${txtylw}[ ${bldylw}X${txtylw}, file not found ]${clr}\n" "${file}"
     fi 
   done
   return 0
@@ -49,7 +49,6 @@ declare -a pullulant_plugins=(
   aliases
   aliases_ag
   bash_it
-  bashmatic
   brew
   colors
   #completion
@@ -63,6 +62,7 @@ declare -a pullulant_plugins=(
   services
   tmux
   user
+  bashmatic
 )
 
 if [[ -z $(echo "${pullulant_plugins[*]}" | grep "$1") ]] ; then

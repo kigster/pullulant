@@ -150,6 +150,8 @@ function pu.load.git() {
   if [[ $(basename ${SHELL}) == "bash" ]]; then
     [[ -f ~/.bash_pu_git_completions ]] && source ~/.bash_pu_git_completions
   fi
+
+  return 0
 }
 
 pu.load.git

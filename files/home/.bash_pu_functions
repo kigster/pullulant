@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: ft=bash
 
 # Returns result of find operation that works for files and folder
 # with spaces.

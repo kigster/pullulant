@@ -1,8 +1,10 @@
+#!/usr/bin/env bash
+# vim: ft=bash
 export BASHMATIC_HOME="${BASHMATIC_HOME:-${HOME}/.bashmatic}"
 
 function pu-bashmatic-install() {
   local flags=" -q "
-  [[ -n ${BASHMATIC_VERBOSE} ]]       && flags=" -v "
+  [[ -n ${BASHMATIC_VERBOSE} ]]       && flags=" -1 "
   [[ -n ${BASHMATIC_SKIP_ON_LOGIN} ]] && flags=" ${flags} -l "
 
   if [[ -z ${NO_BASHMATIC} ]] ; then
