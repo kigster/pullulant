@@ -45,7 +45,7 @@ function bashit-colorschemes() {
 
 # shellcheck disable=2120
 function bashit-colorscheme() {
-  local scheme="$1"
+  local scheme="${1:-"tango"}"
   
   if [[ -z "${scheme}" ]] ; then
     if [[ "${ITERM_PROFILE}" =~ "Light" || "${ITERM_PROFILE}" =~ "light" ]]; then
