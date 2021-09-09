@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# vim: ft=bash
+#  git_completion
 #
 # pprocs family of functions
 # Author: Konstantin Gredeskoul

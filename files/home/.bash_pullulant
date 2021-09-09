@@ -12,6 +12,11 @@ set +e
 
 export pfx="${bldpur}[pullulant]${clr}"
 
+function current_shell() {
+  local cmd="$(/bin/ps -p $$ -o comm | tail -1 | sed -E 's/-//g')"
+  printf "%s" $(basename ${cmd})
+}
+
 function src() {
   local file
   local code
@@ -45,25 +50,30 @@ export PAGER='less -R'
 export RI='-f ansi'
 export HISTCONTROL=ignoredups
 
+
+
 declare -a pullulant_plugins=(
   aliases
   aliases_ag
-  bash_it
   brew
   colors
-  #completion
   docker
   functions
   git
-#  git_completion
   grep
   pgsql
   pprocs
   services
   tmux
   user
-  bashmatic
 )
+
+if [[ $(current_shell) == "bash" ]]; then
+  pullulant_plugins+=(git_completion)
+  pullulant_plugins+=(completion)
+
+  source ~/.bash_pu_bash_it dark developer
+fi
 
 if [[ -z $(echo "${pullulant_plugins[*]}" | grep "$1") ]] ; then
   for plugin in "$@"; do
@@ -84,8 +94,3 @@ for env in rbenv pyenv; do
     export PATH="${dir}:$PATH"
   fi
 done
-
-
-
-
-
