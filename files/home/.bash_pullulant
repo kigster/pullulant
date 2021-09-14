@@ -51,7 +51,6 @@ export RI='-f ansi'
 export HISTCONTROL=ignoredups
 
 
-
 declare -a pullulant_plugins=(
   aliases
   aliases_ag
@@ -75,17 +74,10 @@ if [[ $(current_shell) == "bash" ]]; then
   source ~/.bash_pu_bash_it dark developer
 fi
 
-if [[ -z $(echo "${pullulant_plugins[*]}" | grep "$1") ]] ; then
-  for plugin in "$@"; do
-    file="${HOME}/.bash_pu_${plugin}"  
-    src "${file}"
-  done
-else
-  for plugin in "${pullulant_plugins[@]}"; do
-    file="${HOME}/.bash_pu_${plugin}"  
-    src "${file}"
-  done
-fi
+for plugin in "${pullulant_plugins[@]}"; do
+  file="${HOME}/.bash_pu_${plugin}"  
+  src "${file}"
+done
 
 # Load rbenv and pyenv without th expensive eval.
 for env in rbenv pyenv; do
