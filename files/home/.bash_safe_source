@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+# © Copyright 2021 Konstantin Gredeskoul
+# Part of BASHMATIC framework.
+
+set +e
+
+((DEBUG + __debug + debug)) && BASHMATIC_DEBUG=1
+
+function source_if_exists() {
+  local errors=0
+  for file in "$@"; do
+    if [[ -s "${file}" ]]; then
+      source "${file}"
+      local code=$?
+      ((BASHMATIC_DEBUG)) && printf "[debug] loading file: [${bldgrn}%40.40s${clr}]"
+      if ((code)); then
+        if ((BASHMATIC_DEBUG)); then
+          printf " (exit code: ${code} [ 💣 ])\n"
+          code=$((code + 1))
+        else
+          code=$((code + 1))
+          echo "WARNING: sourced file ${file} returned non-zero code ${code}" >&2
+        fi
+      fi
+    else
+      echo "WARNING: sourced file ${file} does not exist" >&2
+    fi
+  done
+  return ${code}
+}
