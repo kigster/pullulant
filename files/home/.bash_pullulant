@@ -12,7 +12,7 @@ set +e
 
 export pfx="${bldpur}[pullulant]${clr}"
 
-function source_if_exists() {
+function pu_source() {
   local errors=0
   for file in "$@"; do
     if [[ -s "${file}" ]]; then
@@ -45,7 +45,6 @@ export HISTCONTROL=ignoredups
 
 declare -a pullulant_plugins=(
   aliases
-  bash_it
   brew
   colors
   completion
@@ -64,12 +63,12 @@ declare -a pullulant_plugins=(
 if [[ -z $(echo "${pullulant_plugins[*]}" | grep "$1") ]] ; then
   for plugin in "$@"; do
     file="${HOME}/.bash_pu_${plugin}"  
-    source_if_exists "${file}"
+    pu_source "${file}"
   done
 else
   for plugin in "${pullulant_plugins[@]}"; do
     file="${HOME}/.bash_pu_${plugin}"  
-    source_if_exists "${file}"
+    pu_source "${file}"
   done
 fi
 
@@ -81,7 +80,7 @@ for env in rbenv pyenv; do
   fi
 done
 
-
+source ~/.bash_pu_bash_it tango developer
 
 
 
