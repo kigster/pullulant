@@ -12,33 +12,26 @@ set +e
 
 export pfx="${bldpur}[pullulant]${clr}"
 
-function current_shell() {
-  local cmd="$(/bin/ps -p $$ -o comm | tail -1 | sed -E 's/-//g')"
-  printf "%s" $(basename ${cmd})
-}
-
-function src() {
-  local file
-  local code
-
+function pu_source() {
+  local errors=0
   for file in "$@"; do
-    [[ -z $file ]] && break
     if [[ -s "${file}" ]]; then
-      ((PULLULANT_DEBUG)) && printf "${pfx} sourcing ${txtgrn}%-50s${clr}..." "${file}"
+      ((DEBUG)) && printf "[debug] loading file: [${bldgrn}%40.40s${clr}]"
       source "${file}"
-      code=$?
-      ((PULLULANT_DEBUG)) && {
-        ((code)) && {
-           printf "${pfx} ${txtred} [ ${bldred}X${txtred} ], ${italic} exit code=%d${clr}\n" ${code}
-           continue
-        }
-        printf "${txtgrn} [ ✔︎ %s] ${clr}\n" "OK"
-      }
+      local code=$?
+      if ((code)); then
+        ((DEBUG)) && printf " (exit code: ${code} [ 💣 ])\n"
+        code=$((code + 1))
+      else
+        ((DEBUG)) && echo
+        ((DEBUG)) && echo "WARNING: sourced file ${file} returned non-zero code ${code}" >&2
+      fi
     else
-      ((PULLULANT_DEBUG)) && printf "${pfx} sourcing ${txtylw}%-50s${clr}... ${txtylw}[ ${bldylw}X${txtylw}, file not found ]${clr}\n" "${file}"
-    fi 
+      ((DEBUG)) && echo
+      ((DEBUG)) && echo "WARNING: sourced file ${file} does not exist" >&2
+    fi
   done
-  return 0
+  return ${code}
 }
 
 export LANG=en_US.UTF-8
@@ -52,13 +45,14 @@ export HISTCONTROL=ignoredups
 
 declare -a pullulant_plugins=(
   aliases
-  aliases_ag
   brew
   bazel
   colors
+  completion
   docker
   functions
   git
+  git_completion
   grep
   pgsql
   pprocs
@@ -66,17 +60,6 @@ declare -a pullulant_plugins=(
   tmux
   user
 )
-
-if [[ $(current_shell) == "bash" ]]; then
-  pullulant_plugins+=(git_completion)
-
-  [[ -d ~/.bash_it ]] && source ~/.bash_pu_bash_it dark developer
-fi
-
-declare -a plugins
-echo "${pullulant_plugins[*]}" | grep -q "$1" && {
-  plugins=("$@")
-}
 
 [[ "${#plugins[@]}" -eq 0 ]] && {
   plugins=("${pullulant_plugins[@]}")
@@ -96,4 +79,8 @@ for env in rbenv pyenv; do
 done
 
 [[ -d "${HOME}/.volta" ]] && export PATH="${PATH}:${HOME}/.volta/bin"
+
+source ~/.bash_pu_bash_it tango developer
+
+
 
