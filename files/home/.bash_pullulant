@@ -86,8 +86,7 @@ done
 [[ -d "${HOME}/.volta" ]] && export PATH="${PATH}:${HOME}/.volta/bin"
 
 if [[ -d ${HOME}/.bash_it ]] ; then
-  source "${HOME}/.bash_pu_bash_it" \
-    "${HOME}/.bash_it/colorschemes/tango.colorscheme.bash" developer
+  source "${HOME}/.bash_pu_bash_it" tango developer
 fi
 
 [[ -f ${BASHMATIC_HOME}/lib/time.sh ]] && {
