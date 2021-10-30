@@ -15,8 +15,6 @@ export EDITOR=vim
 [[ -f ~/.bash_wd ]] && source ~/.bash_wd
 # WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) END
 
-#export GPG_TTY=$(tty)
-[[ -f ~/.bash_pullulant ]] && source ~/.bash_pullulant
 
 export DIRENV_LOG_FORMAT=
 
@@ -34,9 +32,7 @@ export DIRENV_LOG_FORMAT=
 export GOPATH="${HOME}/Dropbox/Code/oss/go"
 export PATH="${HOME}/.rbenv/shims:${PATH}:${GOPATH}/bin"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 eval "$(rbenv init -)"
 eval "$(direnv hook bash)"
+
+[[ -f ~/.bash_pullulant ]] && source ~/.bash_pullulant
