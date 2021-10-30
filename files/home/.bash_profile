@@ -3,8 +3,7 @@
 
 [[ -f ~/.bash_safe_source ]] && source ~/.bash_safe_source
 [[ -f ~/.bashmatic/.bash_safe_source ]] && source ~/.bashmatic/.bash_safe_source
-
-[[ -f /usr/local/etc/bash_completion ]] && src /usr/local/etc/bash_completion
+[[ -f /usr/local/etc/bash_completion ]] && source /usr/local/etc/bash_completion
 
 # Path to the bash it configuration
 export BASH_IT="/Users/kig/.bash_it"
@@ -79,7 +78,7 @@ export SCM_GIT_SHOW_COMMIT_COUNT=false
 export SCM_GIT_SHOW_REMOTE_INFO=true
 export SCM_GIT_SHOW_STASH_INFO=true
 
-src "${BASH_IT}"/bash_it.sh
+source "${BASH_IT}/bash_it.sh"
 
 export POWERLINE_LEFT_PROMPT="scm cwd"
 export POWERLINE_RIGHT_PROMPT="clock node"
@@ -98,6 +97,6 @@ export POWERLINE_RIGHT_PROMPT="clock node"
   echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
 }
 
-src ~/.bash_it/colorschemes/tango*
-src "${HOME}"/.bashrc
+source "${HOME}/.bash_it/colorschemes/tango.colorscheme.bash"
+source "${HOME}/.bashrc"
 

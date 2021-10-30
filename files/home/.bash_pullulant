@@ -71,6 +71,7 @@ fi
 
 for file in $(ls -1 ${HOME}/.bash_pu* | grep -v '~'); do 
   [[ "${file}" =~ .bash_pullulant$ ]] && continue
+  [[ "${file}" =~ .bash_it*$ ]] && continue
   pu_source "${file}"
 done
 
