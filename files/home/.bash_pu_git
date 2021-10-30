@@ -147,7 +147,7 @@ function git.smart.pull() {
 function pu.load.git() {
   git.aliases
   
-  if [[ $(basename ${SHELL}) == "bash" ]]; then
+  if [[ $(basename "${SHELL}") == "bash" ]]; then
     [[ -f ~/.bash_pu_git_completions ]] && source ~/.bash_pu_git_completions
   fi
 

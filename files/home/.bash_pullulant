@@ -50,12 +50,11 @@ export PAGER='less -R'
 export RI='-f ansi'
 export HISTCONTROL=ignoredups
 
-
-
 declare -a pullulant_plugins=(
   aliases
   aliases_ag
   brew
+  bazel
   colors
   docker
   functions
@@ -70,27 +69,31 @@ declare -a pullulant_plugins=(
 
 if [[ $(current_shell) == "bash" ]]; then
   pullulant_plugins+=(git_completion)
-  pullulant_plugins+=(completion)
 
-  source ~/.bash_pu_bash_it dark developer
+  [[ -d ~/.bash_it ]] && source ~/.bash_pu_bash_it dark developer
 fi
 
-if [[ -z $(echo "${pullulant_plugins[*]}" | grep "$1") ]] ; then
-  for plugin in "$@"; do
-    file="${HOME}/.bash_pu_${plugin}"  
-    src "${file}"
-  done
-else
-  for plugin in "${pullulant_plugins[@]}"; do
-    file="${HOME}/.bash_pu_${plugin}"  
-    src "${file}"
-  done
-fi
+declare -a plugins
+echo "${pullulant_plugins[*]}" | grep -q "$1" && {
+  plugins=("$@")
+}
 
-# Load rbenv and pyenv without th expensive eval.
+[[ "${#plugins[@]}" -eq 0 ]] && {
+  plugins=("${pullulant_plugins[@]}")
+}
+
+for plugin in "${plugins[@]}"; do
+  file="${HOME}/.bash_pu_${plugin}"  
+  src "${file}"
+done
+
+# Load rbenv and pyenv without the expensive eval
 for env in rbenv pyenv; do
   dir="${HOME}/.${env}/shims"
   if [[ -d "${dir}" ]] ; then
     export PATH="${dir}:$PATH"
   fi
 done
+
+[[ -d "${HOME}/.volta" ]] && export PATH="${PATH}:${HOME}/.volta/bin"
+
