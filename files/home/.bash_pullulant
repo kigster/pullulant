@@ -13,26 +13,36 @@ set +e
 export pfx="${bldpur}[pullulant]${clr}"
 
 function pu_source() {
-  local errors=0
+  set +e
   for file in "$@"; do
     if [[ -s "${file}" ]]; then
-      ((DEBUG)) && printf "[debug] loading file: [${bldgrn}%40.40s${clr}]"
+      ((DEBUG)) && printf "[debug] ${bldblu}loading file: [${bldgrn}%-50.50s${clr}] " "${file}"
+      local code=0
       source "${file}"
-      local code=$?
+      code=$?
       if ((code)); then
-        ((DEBUG)) && printf " (exit code: ${code} [ 💣 ])\n"
-        code=$((code + 1))
+        ((DEBUG)) && printf "${bldred} (ERROR: exit code: ${code} [ 💣 ])${clr}\n"
       else
-        ((DEBUG)) && echo
-        ((DEBUG)) && echo "WARNING: sourced file ${file} returned non-zero code ${code}" >&2
+        ((DEBUG)) && printf "${bldgrn} [OK]${clr}\n" >&2
       fi
     else
-      ((DEBUG)) && echo
-      ((DEBUG)) && echo "WARNING: sourced file ${file} does not exist" >&2
+      ((DEBUG)) && printf "\n${bldylw}WARNING: sourced file [${file}] does not exist\n${clr}" >&2
     fi
   done
   return ${code}
 }
+
+function src() {
+  pu_source "$@"
+}
+
+[[ -n ${BASHMATIC_HOME} && -d "${BASHMATIC_HOME}" ]] && {
+  [[ -f ${BASHMATIC_HOME}/lib/time.sh ]] && {
+    source "${BASHMATIC_HOME}/init.sh"
+    source "${BASHMATIC_HOME}/lib/time.sh"
+    export __pullulant_start_time="$(millis)"
+  }
+} 
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -43,31 +53,25 @@ export PAGER='less -R'
 export RI='-f ansi'
 export HISTCONTROL=ignoredups
 
-declare -a pullulant_plugins=(
-  aliases
-  brew
-  bazel
-  colors
-  completion
-  docker
-  functions
-  git
-  git_completion
-  grep
-  pgsql
-  pprocs
-  services
-  tmux
-  user
-)
+if [[ -n $1 ]] ; then
+  for plugin in "${[@]}"; do
+    [[ -s ${plugin} ]] && {
+      pu_source "${plugin}"
+      continue
+    }
+    file="${HOME}/.bash_pu_${plugin}"
+    [[ -s "${file}" ]] && {
+      pu_source "${file}"
+      continue
+    }
+    echo "Invalid Plugin: ${plugin}"
+    break
+  done
+fi
 
-[[ "${#plugins[@]}" -eq 0 ]] && {
-  plugins=("${pullulant_plugins[@]}")
-}
-
-for plugin in "${plugins[@]}"; do
-  file="${HOME}/.bash_pu_${plugin}"  
-  src "${file}"
+for file in $(ls -1 ${HOME}/.bash_pu* | grep -v '~'); do 
+  [[ "${file}" =~ .bash_pullulant$ ]] && continue
+  pu_source "${file}"
 done
 
 # Load rbenv and pyenv without the expensive eval
@@ -80,7 +84,14 @@ done
 
 [[ -d "${HOME}/.volta" ]] && export PATH="${PATH}:${HOME}/.volta/bin"
 
-source ~/.bash_pu_bash_it tango developer
+if [[ -d ${HOME}/.bash_it ]] ; then
+  source "${HOME}/.bash_pu_bash_it" \
+    "${HOME}/.bash_it/colorschemes/tango.colorscheme.bash" developer
+fi
 
-
+[[ -f ${BASHMATIC_HOME}/lib/time.sh ]] && {
+  source "${BASHMATIC_HOME}/lib/time.sh"
+  export __pullulant_end_time=$(millis)
+  h1 "Pullulant Libraries took $((__pullulant_end_time - __pullulant_start_time)) milliseconds to load."
+}
 
