@@ -75,7 +75,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'cdelledonne/vim-cmake'
 Plug 'bazelbuild/vim-bazel'
 Plug 'cespare/vim-toml'
 Plug 'chr4/nginx.vim'
@@ -96,6 +96,12 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'vim-ruby/vim-ruby'
+" Add maktaba and bazel to the runtimepath.
+" (The latter must be installed before it can be used.)
+Plug 'google/vim-maktaba'
+Plug 'bazelbuild/vim-bazel'
+Plug 'rust-lang/rust.vim'
+
 
 " Initialize plugin system
 call plug#end()

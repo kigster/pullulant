@@ -38,9 +38,9 @@ function git.aliases() {
 
   alias gl='git log'
 
-  alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
-  alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
-  alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
+  alias gc='EDITOR=vim git commit -S --verbose'
+  alias gcm='EDITOR=vim git commit -S -m'
+  alias gca='EDITOR=vim git commit -S --amend --verbose'
 
   alias grs='git reset'
   alias grsh='git reset -hard'

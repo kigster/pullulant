@@ -1,0 +1,5 @@
+# vim: ft=zsh
+#
+export IDEA_PROPERTIES="${TMPDIR}"="${TMPDIR}/ide.properties"
+export PATH="${HOME}/.bashmatic/bin:$PATH"
+export CODECOV_TOKEN=

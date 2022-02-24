@@ -1,8 +1,13 @@
 
 [include]
   path = ~/.gitconfig-pullulant
-  path = ~/.gitconfig-user
+  path = ~/.gitconfig-kig
 [pull]
 	rebase = true
 [gpg]
 	program = gpg
+[user]
+	email = kigster@gmail.com
+	name = Konstantin Gredeskoul
+[init]
+	defaultBranch = master
