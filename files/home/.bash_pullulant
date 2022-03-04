@@ -10,39 +10,9 @@
 
 set +e
 
-export pfx="${bldpur}[pullulant]${clr}"
-
-function pu_source() {
-  set +e
-  for file in "$@"; do
-    if [[ -s "${file}" ]]; then
-      ((DEBUG)) && printf "[debug] ${bldblu}loading file: [${bldgrn}%-50.50s${clr}] " "${file}"
-      local code=0
-      source "${file}"
-      code=$?
-      if ((code)); then
-        ((DEBUG)) && printf "${bldred} (ERROR: exit code: ${code} [ 💣 ])${clr}\n"
-      else
-        ((DEBUG)) && printf "${bldgrn} [OK]${clr}\n" >&2
-      fi
-    else
-      ((DEBUG)) && printf "\n${bldylw}WARNING: sourced file [${file}] does not exist\n${clr}" >&2
-    fi
-  done
-  return ${code}
-}
-
 function src() {
-  pu_source "$@"
+  [[ -f $1 ]] && source "$1"
 }
-
-[[ -n ${BASHMATIC_HOME} && -d "${BASHMATIC_HOME}" ]] && {
-  [[ -f ${BASHMATIC_HOME}/lib/time.sh ]] && {
-    source "${BASHMATIC_HOME}/init.sh"
-    source "${BASHMATIC_HOME}/lib/time.sh"
-    export __pullulant_start_time="$(millis)"
-  }
-} 
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -52,46 +22,10 @@ export EDITOR=vim
 export PAGER='less -R'
 export RI='-f ansi'
 export HISTCONTROL=ignoredups
+export PU_ARCHIVE="${HOME}/.pullulant_archive"
+mkdir -p ${PU_ARCHIVE}
 
-if [[ -n $1 ]] ; then
-  for plugin in "${[@]}"; do
-    [[ -s ${plugin} ]] && {
-      pu_source "${plugin}"
-      continue
-    }
-    file="${HOME}/.bash_pu_${plugin}"
-    [[ -s "${file}" ]] && {
-      pu_source "${file}"
-      continue
-    }
-    echo "Invalid Plugin: ${plugin}"
-    break
-  done
-fi
+mv ${HOME}/.bash_pu*~pu.bak ${PU_ARCHIVE} >/dev/null 2>&1
 
-for file in $(ls -1 ${HOME}/.bash_pu* | grep -v '~'); do 
-  [[ "${file}" =~ .bash_pullulant$ ]] && continue
-  [[ "${file}" =~ .bash_it*$ ]] && continue
-  pu_source "${file}"
-done
-
-# Load rbenv and pyenv without the expensive eval
-for env in rbenv pyenv; do
-  dir="${HOME}/.${env}/shims"
-  if [[ -d "${dir}" ]] ; then
-    export PATH="${dir}:$PATH"
-  fi
-done
-
-[[ -d "${HOME}/.volta" ]] && export PATH="${PATH}:${HOME}/.volta/bin"
-
-if [[ -d ${HOME}/.bash_it ]] ; then
-  source "${HOME}/.bash_pu_bash_it" tango developer
-fi
-
-[[ -f ${BASHMATIC_HOME}/lib/time.sh ]] && {
-  source "${BASHMATIC_HOME}/lib/time.sh"
-  export __pullulant_end_time=$(millis)
-  h1 "Pullulant Libraries took $((__pullulant_end_time - __pullulant_start_time)) milliseconds to load."
-}
+eval "$( cat ${HOME}/.bash_pu_* )"
 

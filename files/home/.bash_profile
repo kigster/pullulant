@@ -97,6 +97,5 @@ export POWERLINE_RIGHT_PROMPT="clock node"
   echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
 }
 
-source "${HOME}/.bash_it/colorschemes/tango.colorscheme.bash"
 source "${HOME}/.bashrc"
 
