@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # vim: ft=bash
 # shellcheck disable=SC2154,SC1090
 # © 2016-2021  Konstantin Gredeskoul
@@ -7,25 +8,109 @@
 # https://github.com/kigster/pullulant/
 #
 # MIT License
+# @description 
+#     To use this script, you can exclude some of the .bash_pu_<component> files:
+#        $ source .bash_pullulant :bazel :bash_it :bashmatic 
+#     will load all of the .bash_pu_<component> except the ones listed.
+
+# shellcheck disable=SC2076,SC2206,SC2066
 
 set +e
-
-function src() {
-  [[ -f $1 ]] && source "$1"
+declare negator=":"
+declare home_dir="$(dirname "${BASH_SOURCE[0]}")"
+declare DEBUG=${DEBUG:-false}
+function PATH_prepend() {
+  local dir="$1"
+  [[ ":${PATH}:" =~ ":${dir}:" ]] || export PATH="${dir}:${PATH}"
 }
 
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
-export PGUSER=postgres
-export EDITOR=vim
-export PAGER='less -R'
-export RI='-f ansi'
-export HISTCONTROL=ignoredups
-export PU_ARCHIVE="${HOME}/.pullulant_archive"
-mkdir -p ${PU_ARCHIVE}
+function PATH_append() {
+  local dir="$1"
+  [[ ":${PATH}:" =~ ":${dir}:" ]] || export PATH="${PATH}:${dir}"
+}
 
-mv ${HOME}/.bash_pu*~pu.bak ${PU_ARCHIVE} >/dev/null 2>&1
+function pullulant_select_plugins() {
+  local -a skipped=( $@ )
 
-eval "$( cat ${HOME}/.bash_pu_* )"
+  # We deliberately not use quotes around $@ because we want the arguments to expand.
+  # shellcheck disable=SC2068
+  for p in $@; do
+    local flag=
+    local plugin=
+    
+    if [[ "${p:0:1}" == "${negator}" ]] ; then
+      flag="${p:0:1}"
+      plugin="${p:1}"
+    else
+      continue
+    fi
 
+    $DEBUG && echo -- "checking argument $p -> { ${flag}, ${plugin} )"
+    # shellcheck disable=SC2076
+    if [[ "${existing_plugins}" =~ " ${plugin} " && "${flag}" == "${negator}" ]]; then
+      skipped+=( ${plugin} )
+    fi
+  done
+
+  local skipped_plugins=" ${skipped[*]} "
+  printf -- "%s" "${skipped_plugins}"
+}
+
+function pullulant_initializer() {
+  local ignored="$*"
+
+  for plugin in "${pullulant_plugins[@]}"; do
+    if [[ "${ignored}" =~ " ${plugin} " ]]; then
+      $DEBUG && echo -- "skipping ${plugin}..."
+      continue
+    fi
+    file="${home_dir}/.bash_pu_${plugin}"
+
+    if [[ -f "${file}" ]] ; then 
+      $DEBUG && echo -- "sourcing ${file}..."
+      source "${file}"
+    else
+      echo -e --  "${bldred}ERROR: invalid pullulant plugin: ${txtylw}${plugin}${clr}" >&2
+      return 1
+    fi
+  done
+}
+
+function shims_initializer() {
+  local -a langs=("$@")
+  # Load rbenv and pyenv without th expensive eval.
+  for env in "${langs[@]}"; do
+    dir="${HOME}/.${env}/shims"
+    if [[ -d "${dir}" ]]; then
+      PATH_prepend "${dir}"
+    fi
+  done
+  return 0
+}
+
+declare -a pullulant_plugins=(
+  aliases
+  aliases_ag
+  bash_it
+  bashmatic
+  bazel
+  brew
+  colors
+  completion
+  docker
+  functions
+  git
+  git_completion
+  grep
+  pgsql
+  pprocs
+  services
+  tmux
+  user
+)
+
+set -eo pipefail
+export existing_plugins=" ${pullulant_plugins[*]} "
+pullulant_initializer "$(pullulant_select_plugins "$@")"
+shims_initializer pyenv rbenv
+set +e

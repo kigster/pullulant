@@ -12,32 +12,81 @@
 # File: pu-completion
 #_______________________________________________________________________________
 #
-function install-dotfiles() {
-  [[ -f ~/.bashrc ]] || touch ~/.bashrc
-  run "rsync ${opts_rsync_backup} -v -a ${rsync_home_dir} ${HOME} # show-stdout"
-  [[ -f ~/.bashrc ]] || ln -nfs ~/.bashrc ~/.bash_login
+function now() {
+    date '+%F.%T.%S'
+}
 
-  local rc="${HOME}/.bash_pu_completion"
-  touch $rc
+function install-gitconfig() {
+  command -v sym >/dev/null || {
+    echo "Installing gem sym..."
+    gem install sym -N
+  }
+  set -e
+  local gc="config/.gitconfig.${USER}"
+  [[ -f "${gc}.enc" ]] || return 0
 
-  [[ -z "$(grep PU_HOME $rc)" ]] && run "echo 'PU_HOME=${PU_HOME}; PATH=\$PATH:\${PU_HOME}' >> $rc # show-stdout"
+  echo "Decrypting your custom github tokens..."
+  local counter=0
+  local code=1
+  while true; do
+    counter=$(( counter + 1 ))
+    [[ ${counter} -eq 10 ]] && exit 1
+    sym -vk config/key -n "${gc}.enc"
+    code=$?
+    (( code )) || break
+    echo -e "${bldred}Uh-oh, perhaps you got the wrong password?"
+    echo -e "${clr}HINT: this is the encryption key password..."
+    sleep 0.3
+  done
 
-  [[ -z "$(grep 'pu-completion' $rc)" ]] && run "cat ${PU_HOME}/bin/pu-completion >> $rc # show-stdout"
-
-  [[ -z "$(grep pullulant ${HOME}/.gitconfig 2>/dev/null )" ]] && {
-    touch ${HOME}/.gitconfig
-    echo "
+  echo -e "Instaling your custom ${bldblu}~/.gitconfig${txtylw}"  
+  [[ -f "${gc}" ]] && cp -vf "${gc}" "${HOME}/"
+  grep -q "$(basename "${gc}")" ~/.gitconfig || {
+    cat <<EOF >> ~/.gitconfig
 [include]
-    path = ~/.gitconfig-pullulant
-    path = ~/.gitconfig-user
-"   >> ${HOME}/.gitconfig
+  path = ~/.gitconfig.pullulant
+  path = ~/.gitconfig.${USER}  
+EOF
   }
 
-  [[ -z "$(grep bash_pullulant ${HOME}/.bashrc 2>/dev/null )" ]] && {
-    echo "
-    # automatically appended by pullulant's installer
-    source ~/.bash_pullulant
-"   >> ${HOME}/.bashrc
-  }
+  rm -vf "${gc}"
+  set +e
+}
 
+function install-dotfiles() {
+  set -e
+  local bckp="${HOME}/.backup/dotfiles/$(now)"
+  local pwd="$(pwd)"
+  local dir="${pwd}/files/home"
+  mkdir -pv "${bckp}"
+  local -a files=( $(ls -1a "${dir}") )
+
+  for file in "${files[@]}"; do
+    [[ ${file} == "." || ${file} == ".." ]] && continue
+    
+    local dest="${HOME}/${file}"
+    local source="${dir}/${file}"
+
+    [[ -f ${dest} ]] && diff -q "${source}" "${dest}" && {
+      printf -- "${bldgrn}File ${txtylw}%20.20s${bldgrn} is already up to date.\n" "${file}"
+      continue
+    }
+
+    if [[ -f "${dest}" ]] ; then
+      echo -e "${txtblu}backing up FILE      ${txtylw}~/${file}..."
+      mv -vf "${dest}" "${bckp}/"
+      echo -e "installing file ${bldgrn}${dest}..."
+      cp -vf "files/home/${file}" "${HOME}"
+    elif [[ -d "${dest}" ]] ; then
+      echo -e "${txtblu}backing up DIRECTORY ${txtpur}~/${file}...${bldred}"
+      mv -vf "${dest}" "${bckp}/"
+      echo -e "installing DIRECTORY ${txtpur}${dest}...${txtcyn}"
+      cp -vrf "files/home/${file}" "${HOME}/"
+    fi
+  done
+
+  [[ -f ${HOME}/.bash_profile ]] && mv -vf "${HOME}/.bash_profile" "${bckp}/"
+
+  install-gitconfig
+  set +e
 }

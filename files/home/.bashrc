@@ -3,38 +3,22 @@
 # automatically appended by pullulant's installer
 # vim: filetype=bash
 
-# make the editor vim
-export EDITOR=vim
-
-[[ -f ~/.bashmatic/init.sh ]] && source ${HOME}/.bashmatic/init.sh
-
-# WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) BEGIN
-[[ -f ~/.bash_wd ]] && source ~/.bash_wd
-# WarpDir (v1.7.0, appended on 2020-01-16 13:07:54 -0800) END
-
 export DIRENV_LOG_FORMAT=
-
-#[[ -f ~/.bash_bazel ]] && source ~/.bash_bazel
-[[ -f ~/.bash_${USER} ]] && source ~/.bash_${USER}
-
-#[[ -f /Users/kig/.sym.completion.bash ]] && source /Users/kig/.sym.completion.bash
-[[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
-
-#alias mit="cat /Users/kig/Dropbox/Backups/Books/MIT-License | pbcopy"
-#[[ -f /Users/kig/.sym.symit.bash ]] && source /Users/kig/.sym.symit.bash
-
-[[ -f ~/.grc.bashrc ]] && source ~/.grc.bashrc
-
+export EDITOR=vim
 export GOPATH="${HOME}/Dropbox/Code/oss/go"
-export PATH="${HOME}/.rbenv/shims:${PATH}:${GOPATH}/bin"
+export GPG_TTY=$(tty)
+export HISTCONTROL=ignoredups
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
+export PAGER='less -R'
+export PATH="${PATH}:${GOPATH}/bin"
+export PGUSER=postgres
+export QUOTING_STYLE=literal
+export RI='-f ansi'
+export GITHUG_TOKEN="$(git config user.token)"
 
-eval "$(rbenv init -)"
-eval "$(direnv hook bash)"
+command -v rbenv >/dev/null && eval "$(rbenv init -)"
+command -v direnv >/dev/null && eval "$(direnv hook bash)"
 
-[[ -f ~/.bash_pullulant ]] && source ~/.bash_pullulant
-
-[[ -d "${HOME}/.volta" ]] && export PATH="${PATH}:${HOME}/.volta/bin"
-
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+alias dir="ls --color=always -a -l"

@@ -1,0 +1,2 @@
+
+source ~/.bash_login

@@ -10,7 +10,7 @@
 
 function git.aliases() {
   alias gp='git push -v'
-  alias gpnew='git push -u origin master'
+  alias gpnew='git push -u origin main'
   alias gcb='git branch -no-color | grep -F "*" | cut -f 2 -d " "' # git current branch
   alias gcmr='git reset; git add README.md; git commit -m "Updated README"; git push '
 
@@ -38,9 +38,9 @@ function git.aliases() {
 
   alias gl='git log'
 
-  alias gc='EDITOR=vim git commit -S --verbose'
-  alias gcm='EDITOR=vim git commit -S -m'
-  alias gca='EDITOR=vim git commit -S --amend --verbose'
+  alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
+  alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
+  alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
 
   alias grs='git reset'
   alias grsh='git reset -hard'
@@ -49,12 +49,12 @@ function git.aliases() {
 
   alias gco='git checkout'
   alias gcob='git checkout -b'
-  alias gcom='git checkout master'
+  alias gcom='git checkout main'
   alias gcod='git checkout develop'
 
   alias gco='git checkout'
   alias gcob='git checkout -b'
-  alias gcom='git checkout master'
+  alias gcom='git checkout main'
   alias gcod='git checkout develop'
 
   alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
@@ -147,7 +147,7 @@ function git.smart.pull() {
 function pu.load.git() {
   git.aliases
   
-  if [[ $(basename "${SHELL}") == "bash" ]]; then
+  if [[ $(basename ${SHELL}) == "bash" ]]; then
     [[ -f ~/.bash_pu_git_completions ]] && source ~/.bash_pu_git_completions
   fi
 

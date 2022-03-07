@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# vim: ft=bash
 #
 #        File: pu-completion
 #     Project: Pullulant — Completion
@@ -10,7 +9,8 @@
 #_______________________________________________________________________________
 
 if [[ -z ${PU_HOME} ]] ; then
-  export PU_BINARY=${PU_BINARY:-"${HOME}/workspace/pullulant/pu"}
+  export PU_BINARY=${PU_BINARY:-"$(find ~/workspace -name pu -type f)"}
+ 
   if [[ -n ${PU_BINARY} && -s ${PU_BINARY} ]]; then
     export PU_HOME="$(dirname ${PU_BINARY})"
     export PATH="$PATH:${PU_HOME}"

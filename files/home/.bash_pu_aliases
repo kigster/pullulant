@@ -9,13 +9,12 @@
 
 function pu.aliases() {
   umask 027
-
-  unalias ls 2>/dev/null
+  alias gpge='gpg --list-secret-keys --keyid-format LONG'
   alias da='direnv allow .'
   alias dc='cd'
-  alias dir='/bin/ls -alF --color=always'
-  alias lr='/bin/ls -alrt --color=always'
-  alias l='/bin/ls -lF --color=always'
+  alias dir='ls -alF'
+  alias lr='ls -alrt'
+  alias l='ls -lF'
   alias ds='du -k  | grep -v "\/.*\/"'
   alias diskspace="du -k | grep -v './.*\/'"
   alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"

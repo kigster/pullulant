@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+[[ -f ~/.bash_pullulant ]]              && source ~/.bash_pullulant :bashmatic :bash_it :bazel 
+[[ -f ~/.bash_pu_bashmatic ]]           && source ~/.bash_pu_bashmatic
+[[ -f ~/.bash_bash_it ]]                && source ~/.bash_bash_it
+
+[[ -f /usr/local/etc/bash_completion ]] && source /usr/local/etc/bash_completion
+
+command -v fzf          >/dev/null && [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+command -v grc          >/dev/null && [[ -f ~/.grc.bashrc ]] && source ~/.grc.bashrc
+command -v warp-dir     >/dev/null && [[ -f ~/.bash_wd ]] && source ~/.bash_wd
+
+source "${HOME}"/.bashrc
+
+[[ -f ~/.bashrc.${USER} ]] && source ~/.bashrc."${USER}"
+

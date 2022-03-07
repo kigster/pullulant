@@ -1,13 +1,31 @@
-
-[include]
-  path = ~/.gitconfig-pullulant
-  path = ~/.gitconfig-kig
+; vim: ft=.gitconfig
 [pull]
 	rebase = true
+  preservemerges = true
+
 [gpg]
 	program = gpg
+
 [user]
-	email = kigster@gmail.com
-	name = Konstantin Gredeskoul
+  token = 
+  signingkey = 
+	email = 
+	name = 
+
 [init]
-	defaultBranch = master
+	defaultBranch = main
+
+[github]
+  token = 
+
+[commit]
+  gpgsign = true
+
+[diff]
+  renames = true
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
