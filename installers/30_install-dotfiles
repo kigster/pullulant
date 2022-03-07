@@ -76,13 +76,12 @@ function install-dotfiles() {
       echo -e "${txtblu}backing up FILE      ${txtylw}~/${file}..."
       mv -vf "${dest}" "${bckp}/"
       echo -e "installing file ${bldgrn}${dest}..."
-      cp -vf "files/home/${file}" "${HOME}"
     elif [[ -d "${dest}" ]] ; then
       echo -e "${txtblu}backing up DIRECTORY ${txtpur}~/${file}...${bldred}"
       mv -vf "${dest}" "${bckp}/"
       echo -e "installing DIRECTORY ${txtpur}${dest}...${txtcyn}"
-      cp -vrf "files/home/${file}" "${HOME}/"
     fi
+    cp -vrf "files/home/${file}" "${HOME}/"
   done
 
   [[ -f ${HOME}/.bash_profile ]] && mv -vf "${HOME}/.bash_profile" "${bckp}/"
