@@ -61,3 +61,4 @@ function pu-is-valid-runner {
 }
 
 init
+echo ${installer_sudo_map[@]}

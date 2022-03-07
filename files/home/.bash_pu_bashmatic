@@ -1,16 +1,54 @@
 #!/usr/bin/env bash
 # vim: ft=bash
+
 export BASHMATIC_HOME="${BASHMATIC_HOME:-${HOME}/.bashmatic}"
+declare BASHMATIC_LOADED=${BASHMATIC_LOADED:-false}
+declare BASHMATIC_LOADED_AT=${BASHMATIC_LOADED_AT:-""}
 
 function pu-bashmatic-install() {
-  local flags=" -q "
-  [[ -n ${BASHMATIC_VERBOSE} ]]       && flags=" -1 "
-  [[ -n ${BASHMATIC_SKIP_ON_LOGIN} ]] && flags=" ${flags} -l "
+  # default flag is quiet
+  local flags=${BASHMATIC_INSTALL_FLAGS:-""}
+  if ${BASHMATIC_VERBOSE}; then
+    flags=" ${flags} -v "
+  else
+    flags=" ${flags} -q "
+  fi
 
-  if [[ -z ${NO_BASHMATIC} ]] ; then
-    [[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install ${flags}" 2>&1 >/dev/null
+  ${BASHMATIC_SKIP_ON_LOGIN} && flags=" ${flags} -l "
+
+  if [[ ! -d ${BASHMATIC_HOME} ]]; then
+    [[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install ${flags}" >/dev/null 2>&1
     [[ -d ${BASHMATIC_HOME} ]] && source "${BASHMATIC_HOME}/init.sh"
   fi
 }
 
-pu-bashmatic-install
+function pu-bashmatic-main() {
+  local now=$(date +"%s")
+  if [[ -f ${BASHMATIC_HOME}/init.sh ]]; then
+    ${BASHMATIC_LOADED} && [[ -n ${BASHMATIC_VERBOSE} && ${BASHMATIC_LOADED} -lt ${now} ]] && {
+      echo "Bashmatic was previously loaded $(( ( now - BASHMATIC_LOADED_AT ) / 60 )) minutes ago."
+      return 0
+    }
+    ${BASHMATIC_LOADED} || {
+      source "${BASHMATIC_HOME}/init.sh"
+      export BASHMATIC_LOADED=true
+      export BASHMATIC_LOADED_AT=$(date +"%s")
+    }
+  else
+    pu-bashmatic-install "$@"
+  fi
+
+  [[ -d ${BASHMATIC_HOME} ]] || {
+    echo -e "\e[1;31m"
+    echo -e " • Can't find Bashmatic, even after attempting an installation"
+    echo -e "   into the home folder: \e[1;34m${BASHMATIC_HOME}\n"
+    echo -e " • Please install Bashmatic with the following command, "
+    echo -e "   which adds verbose logging:"
+    echo -e "   \e[1;4;34mbash -c \"\$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -v\""
+    echo -e "\e[0;m"
+  }
+
+  pu-bashmatic-install
+}
+
+pu-bashmatic-main "$@"

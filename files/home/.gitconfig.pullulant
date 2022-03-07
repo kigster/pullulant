@@ -17,12 +17,12 @@
   lg = log --oneline
   lol = log --graph --decorate --oneline
   lola = log --graph --decorate --oneline --all
-  blog = log origin/master... --left-right
+  blog = log origin/main... --left-right
   ds = diff --staged
   fixup = commit --amend -C HEAD
   squash = commit --squash
   unstage = reset HEAD
-  rum = rebase master@{u}
+  rum = rebase main@{u}
   burn = reset --hard HEAD^
   g = log --pretty=format:\"%h %an - %s\" --graph
   lc = log ORIG_HEAD.. --stat --no-merges
@@ -30,7 +30,7 @@
   ol = log --format=\"%C(yellow)%h%Creset %C(cyan)%aN%Creset\t%s\"
   w = whatchanged
   uncommit = reset --soft HEAD^
-  su = branch --set-upstream-to=origin/master master
+  su = branch --set-upstream-to=origin/main main
 
 [core]
   pager = less -FXRS -x2

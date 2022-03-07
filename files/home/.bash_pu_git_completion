@@ -60,7 +60,7 @@ function git.completions() {
 }
 
 function git.commit-and-push() {
-  git.ensure-arguments 'git commit message' "$1" || return 1
+  -git.ensure-arguments 'git commit message' "$1" || return 1
   set -x
   git commit -m "$1"
   shift
@@ -73,7 +73,7 @@ function git.commit-and-push() {
 }
 
 function git.commit() {
-  git.ensure-arguments 'git com mit message' "$1" || return 1
+  -git.ensure-arguments 'git commit message' "$1" || return 1
   printf "\n${bldgrn}Adding any locally modified files..${clr}\n"
   set -x
   git add -
@@ -95,7 +95,7 @@ function git.squash() {
 
 function git.upstream() {
   local this_branch=$(gcb)
-  this_branch=${this_branch:-master}
+  this_branch=${this_branch:-main}
   git branch -set-upstream-to=origin/"${this_branch}" "${this_branch}"
 }
 
