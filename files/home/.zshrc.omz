@@ -2,6 +2,11 @@
 #———— oh-my-zsh ——————————————————————————————————
 # Path to your oh-my-zsh installation.
 export ZSH="${HOME}/.oh-my-zsh"
+[[ -d ${ZSH} ]] && command -v omz >/dev/null || {
+  bash -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  echo  "source ~/.zshrc.pre-oh-my-zsh" >> ~/.zshrc
+}
+
 
 ZSH_THEME="agnoster"
 CASE_SENSITIVE="true"

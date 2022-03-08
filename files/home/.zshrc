@@ -4,12 +4,13 @@
 # © 2010-2021 Konstantin Gredeskoul, MIT License
 # @see https://github.com/kigster/pullulant
 
+set +e
+
 unset DEBUG
 # uncomment to enable debug logging of sourced file paths
 # export DEBUG=1
 export DIRENV_LOG_FORMAT=
 export DEBUG=
-export VOLTA_HOME="$HOME/.volta"
 export GOPATH=/Users/kig/Dropbox/Code/oss/go
 export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
 
@@ -52,3 +53,5 @@ done
 
 unset p
 source ${HOME}/.zshrc.omz
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
