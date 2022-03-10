@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# vim: ft=bash
 # ------------------------------------
 # Docker alias and function
 # ------------------------------------
@@ -14,19 +14,19 @@ alias dps="docker ps"
 # Get process included stop container
 alias dpa="docker ps -a"
 
-# Get images
-alias di="docker images"
+# List docker images
+alias dis="docker images"
 
-# Get container IP
-alias dip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
+# Get container IP (requires an argument)
+alias dic="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
 
 # Run deamonized container, e.g., $dkd base /bin/echo hello
-alias dkd="docker run -d -P"
+alias drd="docker run -d -P"
 
 # Run interactive container, e.g., $dki base /bin/bash
-alias dki="docker run -i -t -P"
+alias dri="docker run -i -t"
 
-dkli() {
+function dkli() {
   docker run -it $(di | head -2 | grep -v REP | awk '{print $3}') /bin/bash
 }
 
@@ -34,28 +34,28 @@ dkli() {
 alias dex="docker exec -i -t"
 
 # Stop all containers
-dstop() { docker stop $(docker ps -a -q); }
+function dst() { docker stop $(docker ps -a -q) ; }
 
 # Remove all containers
-drm() { docker rm $(docker ps -a -q); }
+function drm() { docker rm $(docker ps -a -q) ; }
 
 # Stop and Remove all containers
 alias drmf='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
 
 # Remove all images
-dri() { docker rmi $(docker images -q); }
+function dri() { docker rmi $(docker images -q); }
 
 # Dockerfile build, e.g., $dbu tcnksm/test
-dbu() { docker build -t=$1 .; }
+function dbd() { 
+  [[ -z $1 ]] && {
+    echo "usage: dbd image-name"
+    return 1
+  }
+  docker build -t=$1 .
+}
 
 # Show all alias related docker
-dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort; }
-
-function dkenv {
-  if [ ! -z "$(which docker-machine)" ]; then
-    docker_env=$(docker-machine env default 2>/dev/null)
-    if [ $? -eq 0 ]; then
-      eval "$(docker-machine env default 2>/dev/null)"
-    fi
-  fi
+function dalias() { 
+  alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 % \2/" | sed "s/['|\']//g" | sort | awk 'BEGIN{FS="%"}{ printf(" %-25s ==> %s\n", $1, $2) }'
 }
+
