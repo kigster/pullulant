@@ -19,10 +19,24 @@ export GITHUG_TOKEN="$(git config user.token)"
 
 export PATH="${PATH}:${GOPATH}/bin"
 
-[[ -d ~/.bashmatic && ! ${PATH} =~ bashmatic ]] && export PATH="${PATH}:${HOME}/.bashmatic/bin"
+[[ -d ~/.bashmatic && ! ${PATH} =~ bashmatic ]] && \
+  export PATH="${PATH}:${HOME}/.bashmatic/bin"
 
-command -v brew >/dev/null    && export PATH="$(brew --prefix)/bin:${PATH}"
 command -v rbenv >/dev/null   && eval "$(rbenv init -)"
 command -v direnv >/dev/null  && eval "$(direnv hook bash)"
 
+if [[ -x /opt/homebrew/bin/brew ]] ; then
+  if [[ $(arch) == "i386" ]]; then
+    alias brew='arch -x86_64 /opt/homebrew/bin/brew'
+  else
+    alias brew='arch -arm64 /opt/homebrew/bin/brew'
+  fi
+else
+  alias brew="/usr/local/bin/brew"
+fi
+
+command -v brew >/dev/null    && export PATH="$(brew --prefix)/bin:${PATH}"
+
 alias dir="ls --color=always -a -l"
+
+set +e
