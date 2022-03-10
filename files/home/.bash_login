@@ -2,6 +2,18 @@
 # vim: ft=bash
 set +e
 
+if [[ -x /opt/homebrew/bin/brew ]] ; then
+  if [[ $(arch) == "i386" ]]; then
+    alias brew='arch -x86_64 /opt/homebrew/bin/brew'
+  else
+    alias brew='arch -arm64 /opt/homebrew/bin/brew'
+  fi
+else
+  alias brew="/usr/local/bin/brew"
+fi
+
+command -v brew >/dev/null    && export PATH="$(brew --prefix)/bin:${PATH}"
+
 [[ -f ~/.bash_pullulant ]]              && source ~/.bash_pullulant :bashmatic :bash_it :bazel 
 [[ -f ~/.bash_pu_bashmatic ]]           && source ~/.bash_pu_bashmatic
 [[ -f ~/.bash_bash_it ]]                && source ~/.bash_bash_it
@@ -17,3 +29,6 @@ source "${HOME}"/.bashrc
 [[ -f "${HOME}/.bashrc.${USER}" ]] && source "${HOME}/.bashrc.${USER}"
 
 set +e
+export BASHMATIC_HOME="/Users/kig/.bashmatic"
+[[ -f ${BASHMATIC_HOME}/init.sh ]] && source ${BASHMATIC_HOME}/init.sh
+export PATH="${PATH}:${BASHMATIC_HOME}/bin"
