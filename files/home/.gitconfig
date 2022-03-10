@@ -1,19 +1,19 @@
-; vim: ft=.gitconfig
+; vim: ft=gitconfig
 [pull]
-	rebase = true
+  rebase = true
   preservemerges = true
 
 [gpg]
-	program = gpg
+  program = gpg
 
 [user]
   token = 
   signingkey = 
-	email = 
-	name = 
+  email = 
+  name = 
 
 [init]
-	defaultBranch = main
+  defaultBranch = main
 
 [github]
   token = 
@@ -29,3 +29,6 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[include]
+  path = ~/.gitconfig.pullulant
+  path = ~/.gitconfig.kig  
