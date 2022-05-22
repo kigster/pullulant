@@ -58,9 +58,9 @@ source ~/.bash_it/bash_it.sh
 bashit-prompt-developer && bashit-colorscheme dark-monaco
 
 [[ -f "${HOME}/.bashrc.${USER}" ]] && source "${HOME}/.bashrc.${USER}"
+[[ -f "${HOME}/.bashrc.healthsherpa" ]] && source "${HOME}/.bashrc.healthsherpa"
 
-command -v rbenv >/dev/null   && {
-  eval "$(rbenv init -)"
+command -v rbenv >/dev/null   && eval "$(rbenv init -)"
 command -v direnv>/dev/null   && eval "$(direnv hook bash)"
 
 complete -C /usr/local/bin/terraform terraform
@@ -75,3 +75,4 @@ export BASHMATIC_HOME="${HOME}/.bashmatic"
 [[ -f ${BASHMATIC_HOME}/init.sh ]] && source ${BASHMATIC_HOME}/init.sh
 
 [[ -f ~/.bashrc ]] && source ~/.bashrc
+
