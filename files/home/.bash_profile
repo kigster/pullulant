@@ -58,7 +58,6 @@ source ~/.bash_it/bash_it.sh
 bashit-prompt-developer && bashit-colorscheme dark-monaco
 
 [[ -f "${HOME}/.bashrc.${USER}" ]] && source "${HOME}/.bashrc.${USER}"
-[[ -f "${HOME}/.bashrc.healthsherpa" ]] && source "${HOME}/.bashrc.healthsherpa"
 
 command -v rbenv >/dev/null   && {
   eval "$(rbenv init -)"

@@ -12,7 +12,6 @@ unalias gd 2>/dev/null
 unalias gdc 2>/dev/null
 
 function gd() {
-
   local -a diff_args
   local -a ydiff_args
   local dd=0
@@ -33,6 +32,23 @@ function gdc() {
   gd --cached "$@"
 }
 
+function gds() {
+  if [[ "$*" =~ -- ]]; then
+    gd "$@" -s
+  else
+    gd "$@" -- -s
+  fi
+}
+
+function gdsc() {
+  if [[ "$*" =~ -- ]]; then
+    gd --cached "$@" -s
+  else
+    gd --cached "$@" -- -s
+  fi
+}
+
+
 function git.aliases() {
   alias gp='git push -v'
   alias gpnew='git push -u origin main'
@@ -48,7 +64,7 @@ function git.aliases() {
   alias gst='git status -short'
   alias gss='git show -stat'
   alias gsl='git status -long -M -b -ahead-behind'
-
+  
   alias gl='git log'
 
   alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
