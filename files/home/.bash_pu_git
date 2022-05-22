@@ -8,6 +8,31 @@
 # MIT License
 #_______________________________________________________________________________
 
+unalias gd 2>/dev/null
+unalias gdc 2>/dev/null
+
+function gd() {
+
+  local -a diff_args
+  local -a ydiff_args
+  local dd=0
+  for arg in "$@"; do
+    [[ ${arg} == "--" ]] && { dd=1; continue; }
+    ((dd)) && ydiff_args+=("${arg}")
+    ((dd)) || diff_args+=("${arg}")
+  done
+
+  if command -v ydiff 1>/dev/null 2>&1; then
+    git diff "${diff_args[@]}" | ydiff "${ydiff_args[@]}"
+  else 
+    git diff "$@"
+  fi
+}
+
+function gdc() {
+  gd --cached "$@"
+}
+
 function git.aliases() {
   alias gp='git push -v'
   alias gpnew='git push -u origin main'
@@ -23,18 +48,6 @@ function git.aliases() {
   alias gst='git status -short'
   alias gss='git show -stat'
   alias gsl='git status -long -M -b -ahead-behind'
-
-  if (command -v ydiff >/dev/null 2>&1); then
-    alias gd='git diff | ydiff'
-    alias gds='git diff -s -w 0 | ydiff'
-    alias gdc='git diff --cached -b | ydiff'
-    alias glp='git diff -L | ydiff'
-    alias glps='git diff -l -s -w 0 | ydiff'
-  else
-    alias gd='git diff'
-    alias gdc='git diff --cached -b'
-    alias glp='git log -p -2'
-  fi
 
   alias gl='git log'
 
