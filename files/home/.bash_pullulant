@@ -8,105 +8,110 @@
 # https://github.com/kigster/pullulant/
 #
 # MIT License
-# @description 
+# @description
 #     To use this script, you can exclude some of the .bash_pu_<component> files:
-#        $ source .bash_pullulant :bazel :bash_it :bashmatic 
+#        $ source .bash_pullulant :bazel :bash_it :bashmatic
 #     will load all of the .bash_pu_<component> except the ones listed.
 
 # shellcheck disable=SC2076,SC2206,SC2066
 
+export DEBUG=0
+
 set +e
 declare negator=":"
 declare home_dir="$(dirname "${BASH_SOURCE[0]}")"
-declare DEBUG=${DEBUG:-false}
+
 function PATH_prepend() {
-  local dir="$1"
-  [[ ":${PATH}:" =~ ":${dir}:" ]] || export PATH="${dir}:${PATH}"
+    local dir="$1"
+    [[ ":${PATH}:" =~ ":${dir}:" ]] || export PATH="${dir}:${PATH}"
 }
 
 function PATH_append() {
-  local dir="$1"
-  [[ ":${PATH}:" =~ ":${dir}:" ]] || export PATH="${PATH}:${dir}"
+    local dir="$1"
+    [[ ":${PATH}:" =~ ":${dir}:" ]] || export PATH="${PATH}:${dir}"
 }
 
 function pullulant_select_plugins() {
-  local -a skipped=( $@ )
-
-  # We deliberately not use quotes around $@ because we want the arguments to expand.
-  # shellcheck disable=SC2068
-  for p in $@; do
-    local flag=
-    local plugin=
+    local -a skipped=( $@ )
     
-    if [[ "${p:0:1}" == "${negator}" ]] ; then
-      flag="${p:0:1}"
-      plugin="${p:1}"
-    else
-      continue
-    fi
-
-    $DEBUG && echo -- "checking argument $p -> { ${flag}, ${plugin} )"
-    # shellcheck disable=SC2076
-    if [[ "${existing_plugins}" =~ " ${plugin} " && "${flag}" == "${negator}" ]]; then
-      skipped+=( ${plugin} )
-    fi
-  done
-
-  local skipped_plugins=" ${skipped[*]} "
-  printf -- "%s" "${skipped_plugins}"
+    # We deliberately not use quotes around $@ because we want the arguments to expand.
+    # shellcheck disable=SC2068
+    for p in $@; do
+        local flag=
+        local plugin=
+        
+        if [[ "${p:0:1}" == "${negator}" ]] ; then
+            flag="${p:0:1}"
+            plugin="${p:1}"
+        else
+            continue
+        fi
+        
+        ((DEBUG)) && echo -- "checking argument $p -> { ${flag}, ${plugin} )"
+        # shellcheck disable=SC2076
+        if [[ ${existing_plugins} =~ " ${plugin} " && "${flag}" == "${negator}" ]]; then
+            skipped+=( ${plugin} )
+        fi
+    done
+    
+    local skipped_plugins=" ${skipped[*]} "
+    printf -- "%s" "${skipped_plugins}"
 }
 
 function pullulant_initializer() {
-  local ignored="$*"
-
-  for plugin in "${pullulant_plugins[@]}"; do
-    if [[ "${ignored}" =~ " ${plugin} " ]]; then
-      $DEBUG && echo -- "skipping ${plugin}..."
-      continue
-    fi
-    file="${home_dir}/.bash_pu_${plugin}"
-
-    if [[ -f "${file}" ]] ; then 
-      $DEBUG && echo -- "sourcing ${file}..."
-      source "${file}"
-    else
-      echo -e --  "${bldred}ERROR: invalid pullulant plugin: ${txtylw}${plugin}${clr}" >&2
-      return 1
-    fi
-  done
+    local ignored="$*"
+    
+    for plugin in "${pullulant_plugins[@]}"; do
+        ((DEBUG)) && echo -n "initializing pullulant plugin ${plugin}..."
+        if [[ "${ignored}" =~ " ${plugin} " ]]; then
+            ((DEBUG)) && echo -- "skipping ${plugin}..."
+            continue
+        fi
+        file="${home_dir}/.bash_pu_${plugin}"
+        
+        if [[ -f "${file}" ]] ; then
+            ((DEBUG)) && echo -- "sourcing ${file}..."
+            local d=${DEBUG}
+            unset DEBUG
+            source "${file}"
+            export DEBUG="$d"
+        else
+            ((DEBUG)) && echo -e --  "${bldred}ERROR: invalid pullulant plugin: ${txtylw}${plugin}${clr}" >&2
+            return 1
+        fi
+    done
 }
 
 function shims_initializer() {
-  local -a langs=("$@")
-  # Load rbenv and pyenv without th expensive eval.
-  for env in "${langs[@]}"; do
-    dir="${HOME}/.${env}/shims"
-    if [[ -d "${dir}" ]]; then
-      PATH_prepend "${dir}"
-    fi
-  done
-  return 0
+    local -a langs=("$@")
+    # Load rbenv and pyenv without th expensive eval.
+    for env in "${langs[@]}"; do
+        dir="${HOME}/.${env}/shims"
+        if [[ -d "${dir}" ]]; then
+            PATH_prepend "${dir}"
+        fi
+    done
+    return 0
 }
 
 declare -a pullulant_plugins=(
-  aliases
-  aliases_ag
-  bash_it
-  bashmatic
-  bazel
-  brew
-  colors
-  completion
-  docker
-  functions
-  git
-  git_completion
-  grep
-  pgsql
-  pprocs
-  services
-  tmux
-  user
+    aliases
+    aliases_ag
+    bash_it
+    bashmatic
+    bazel
+    brew
+    colors
+    docker
+    functions
+    git
+    git_completion
+    grep
+    pgsql
+    pprocs
+    services
+    tmux
+    user
 )
 
 set -eo pipefail

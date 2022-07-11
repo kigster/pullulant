@@ -8,6 +8,8 @@
 #
 #_______________________________________________________________________________
 
+# TODO: this is very slow
+
 if [[ -z ${PU_HOME} ]] ; then
   export PU_BINARY=${PU_BINARY:-"$(find ~/workspace -name pu -type f)"}
  

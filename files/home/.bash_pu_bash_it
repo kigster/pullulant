@@ -196,6 +196,4 @@ function bashit() {
 }
 
 
-bashit "$@"
-
 
