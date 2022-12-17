@@ -50,3 +50,74 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}";
 export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 unalias ag
+
+function archive() {
+  local first="$1"
+  local archive
+
+  archive="$(echo "${first}" | sed 's/\/$//g; s/\//-/g; s/ /./g' | tr '[:upper:]' '[:lower:]')".7z
+  [[ ${archive} =~ .7z$ ]] || archive="${archive}.7z"
+
+  local -a directories
+  local skipped=0
+  local good=0
+  local size=0
+  local largest_size=0
+  local largest_folder
+  local dir_size
+
+  for dir in "$@"; do
+    dir_size="$(du -s "${dir}" | cut -f1)"
+
+    if [[ ${dir_size} -gt ${largest_size} ]] ; then
+      largest_size=${dir_size}
+      largest_dir="${dir}"
+    fi
+
+    size=$(( size + dir_size ));
+    [[ -d "${dir}" ]] || {
+      warning "DIRECTORY: [${dir}] does not exist. Skipping."
+      skipped=$((skipped + 1))
+      continue
+    }
+    good=$(( good + 1 ))
+    directories+=( "${dir}" )
+  done
+
+  if [[ ${good} -gt 0 ]]; then
+    h2bg "Found ${good} existing directories, and ${skipped} bad ones." \
+      "The largest folder is [${largest_folder}], size is $(( largest_size / 1024 / 1024))Mb"
+
+    h1 "Archive:" "${bldylw}${archive}" \
+       "Total size of all the folders is $(( size / 1024 / 1024 / 1024 )) Gb."
+
+    h2 "Directories:" "${directories[@]}"
+
+    if [[ ${skipped} -gt 0 ]]; then
+      run.ui.press-any-key "Since some of your arguments are invalid, now is your change to Ctrl-C..." \
+          "\n    ${bldred}Or press any key to continue..."
+    fi
+  fi
+
+  command -v 7z >/dev/null || brew install -q p7zip
+  clear
+
+  info "Starting compression..."
+  hr; echo
+  printf "${txtblu}"
+  # 7z a -sdel -mmt18 -mx7 -ssc -bb1 "${archive}" "$@"
+  set -xe
+  7z a -sdel -mmt18 -mx7 -ssc -bb1 "${archive}" "$@"
+  local code=$?
+  set +xe
+  printf "${clr}\n"
+  hr; echo
+
+  ((code)) && {
+    error "Archiving failed with code=${code}"
+  } || {
+    success "Archiving succeeded with exit code ${code}, and file size $(file.size.gb "${archive}")"
+  }
+  return ${code}
+}
+
