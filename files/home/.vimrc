@@ -83,7 +83,7 @@ Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'fgsch/vim-varnish'
 Plug 'google/vim-maktaba'
 Plug 'habamax/vim-asciidoctor'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/vim-easy-align'
 Plug 'mattn/emmet-vim'
 Plug 'mxw/vim-jsx'

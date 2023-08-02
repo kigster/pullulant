@@ -118,10 +118,20 @@ function bashit-prompt-developer() {
   powerline.prompt.right  clock battery user_info hostname
 }
 
+function bashit-prompt-right-on() {
+  powerline.prompt.left scm cwd last_status duration
+  powerline.prompt.right clock ruby node user_info hostname
+}
+
 function bashit-prompt-minimal() {
   powerline.prompt.git.min
   powerline.prompt.left   scm cwd last_status
   powerline.prompt.right  go node ruby clock battery
+}
+
+function bashit-prompt-agnoster() {
+  export BASH_IT_THEME=agnoster
+  source $BASH_IT/bash_it.sh
 }
 
 # https://stackoverflow.com/questions/1891797/capturing-groups-from-a-grep-regex

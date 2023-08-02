@@ -18,7 +18,7 @@ function pu-bashmatic-install() {
 
   if [[ ! -d ${BASHMATIC_HOME} ]]; then
     [[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install ${flags}" >/dev/null 2>&1
-    [[ -d ${BASHMATIC_HOME} ]] && source "${BASHMATIC_HOME}/init.sh"
+    [[ -f ${BASHMATIC_HOME}/init.sh ]] && source "${BASHMATIC_HOME}/init.sh"
   fi
 }
 

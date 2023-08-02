@@ -89,7 +89,7 @@ function git.squash() {
     echo "Usage: git.squash <number> # of commits to go back"
     return
   }
-  git reset -soft HEAD~"${number}"
+  git reset --soft HEAD~"${number}"
   git commit
 }
 

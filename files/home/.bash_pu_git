@@ -94,8 +94,8 @@ function git.aliases() {
   alias gpr="git.smart.pull"
   alias gpp='git pull --rebase && git push'
 
-  alias grbc='git rebase -continue'
-  alias grba='git rebase -abort'
+  alias grbc='git rebase --continue'
+  alias grba='git rebase --abort'
 
   alias ga='git add'
   alias gaa='git add -A'
