@@ -82,11 +82,6 @@ function git.aliases() {
   alias gcoms='git checkout master'
   alias gcod='git checkout develop'
 
-  alias gco='git checkout'
-  alias gcob='git checkout -b'
-  alias gcom='git checkout main'
-  alias gcod='git checkout develop'
-
   alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
   alias glg="git log --graph --all --pretty=format:'%C(yellow)%h -%C(auto)%d %C(bold cyan)%s %C(bold white)(%cr)%Creset %C(dim white)<%an>'"
 
@@ -95,8 +90,8 @@ function git.aliases() {
   alias gpr="git.smart.pull"
   alias gpp='git pull --rebase && git push'
 
-  alias grbc='git rebase --continue'
-  alias grba='git rebase --abort'
+  alias rbc='git rebase --continue'
+  alias rba='git rebase --abort'
 
   alias ga='git add'
   alias gaa='git add -A'
@@ -107,29 +102,35 @@ function git.aliases() {
   alias gbs='git branch --sort=committerdate  | tail -20'
 }
 
-function git.new-branch-name() {
+# Creates a branch name, eg given:
+# ARGV="one two three four"
+# OUTPUT="kig/one-two-three-four"
+function git.branch.new-name-for-me() {
   # lower case the user name
   local u="${USER,,}"
-  local branch="${1}"
+  local branch="$*"
 
   [[ -z ${branch} ]] && {
     echo "Branch name is required (but may contain spaces)" >&2
     return 1
   }
 
-  [[ ${branch} =~ " " ]] && branch="$(echo "$1" | sed -E 's/ /-/g; s/\s+$//g' | tr -d '\n')"
+  # replace any spaces with dashes
+  branch="$(echo -n "$*" | sed -E 's/ /-/g; s/\s+$//g')"
   # lower case branch name
   branch="${branch,,}"
 
-  if [[ ${branch} =~ ^${u}/ ]]; then
+  if [[ "${branch}" =~ ^${u}/ ]]; then
     printf "%s" "${branch}"
   else
     printf "%s" "${USER}/${branch}"
   fi
 }
 
+alias gbnn="git.branch.new-name-for-me"
+
 function git.branch.create() {
-  local branch="$(git.new-branch-name "$@")"
+  local branch="$(gbnn "$@")"
   [[ -z ${branch} ]] && return 1
 
   set +e set -x; 
@@ -140,13 +141,14 @@ function git.branch.create() {
   return ${code}
 }
 
+alias gbc="git.branch.create"
+
 function git.branch.create-and-track() {
-  local branch="$(git.new-branch-name "$@")"
-  git.branch.create "${branch}"
+  local branch="$(gbnn "$@")"
+  gbc "${branch}"
   set -x; git push -u origin "${branch}"; set +x
 }
 
-alias gbcu="git.branch.create"
 alias gbct="git.branch.create-and-track"
 
 # @description Convert remotes with https to git@ format.
