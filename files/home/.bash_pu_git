@@ -116,7 +116,7 @@ function git.branch.new-name-for-me() {
   }
 
   # replace any spaces with dashes
-  branch="$(echo -n "$*" | sed -E 's/ /-/g; s/\s+$//g')"
+  branch="$(echo -n "$*" | sed -E 's/ /-/g; s/ *$//g')"
   # lower case branch name
   branch="${branch,,}"
 
