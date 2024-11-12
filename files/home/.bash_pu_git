@@ -67,9 +67,9 @@ function git.aliases() {
   
   alias gl='git log'
 
-  alias gc='EDITOR=/usr/local/bin/vim git commit -S --verbose'
-  alias gcm='EDITOR=/usr/local/bin/vim git commit -S -m'
-  alias gca='EDITOR=/usr/local/bin/vim git commit -S --amend --verbose'
+  alias gc='EDITOR=vim git commit -S --verbose'
+  alias gcm='EDITOR=vim git commit -S -m'
+  alias gca='EDITOR=vim git commit -S --amend --verbose'
 
   alias grs='git reset'
   alias grsh='git reset -hard'
@@ -79,6 +79,7 @@ function git.aliases() {
   alias gco='git checkout'
   alias gcob='git checkout -b'
   alias gcom='git checkout main'
+  alias gcoms='git checkout master'
   alias gcod='git checkout develop'
 
   alias gco='git checkout'
@@ -105,6 +106,48 @@ function git.aliases() {
 
   alias gbs='git branch --sort=committerdate  | tail -20'
 }
+
+function git.new-branch-name() {
+  # lower case the user name
+  local u="${USER,,}"
+  local branch="${1}"
+
+  [[ -z ${branch} ]] && {
+    echo "Branch name is required (but may contain spaces)" >&2
+    return 1
+  }
+
+  [[ ${branch} =~ " " ]] && branch="$(echo "$1" | sed -E 's/ /-/g; s/\s+$//g' | tr -d '\n')"
+  # lower case branch name
+  branch="${branch,,}"
+
+  if [[ ${branch} =~ ^${u}/ ]]; then
+    printf "%s" "${branch}"
+  else
+    printf "%s" "${USER}/${branch}"
+  fi
+}
+
+function git.branch.create() {
+  local branch="$(git.new-branch-name "$@")"
+  [[ -z ${branch} ]] && return 1
+
+  set +e set -x; 
+  git checkout -b "${branch}"
+  local code=$?
+
+  set +x
+  return ${code}
+}
+
+function git.branch.create-and-track() {
+  local branch="$(git.new-branch-name "$@")"
+  git.branch.create "${branch}"
+  set -x; git push -u origin "${branch}"; set +x
+}
+
+alias gbcu="git.branch.create"
+alias gbct="git.branch.create-and-track"
 
 # @description Convert remotes with https to git@ format.
 # @example gitconfig.convert.to.ssh -/
