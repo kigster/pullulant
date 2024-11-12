@@ -106,8 +106,11 @@ function git.aliases() {
 # ARGV="one two three four"
 # OUTPUT="kig/one-two-three-four"
 function git.branch.new-name-for-me() {
+  # use PREFERRED_USERNAME if available, otherwise $USER
+  local u="${PREFERRED_USERNAME:-${USER}}"
   # lower case the user name
-  local u="${USER,,}"
+  u="${u,,}"
+
   local branch="$*"
 
   [[ -z ${branch} ]] && {
