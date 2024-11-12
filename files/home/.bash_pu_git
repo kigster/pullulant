@@ -126,7 +126,7 @@ function git.branch.new-name-for-me() {
   if [[ "${branch}" =~ ^${u}/ ]]; then
     printf "%s" "${branch}"
   else
-    printf "%s" "${USER}/${branch}"
+    printf "%s" "${u}/${branch}"
   fi
 }
 
