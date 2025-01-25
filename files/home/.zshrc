@@ -6,6 +6,15 @@
 
 set +e
 
+#jif type brew &>/dev/null; then
+ #j FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+#j
+ #j autoload -Uz compinit
+  ##jjcompinit
+#jfi
+
+unalias mkdir 2>/dev/null
+
 unset DEBUG
 # uncomment to enable debug logging of sourced file paths
 # export DEBUG=1
@@ -14,12 +23,9 @@ export DEBUG=
 export GOPATH=/Users/kig/Dropbox/Code/oss/go
 export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
 
-alias mkdir="/opt/homebrew/bin/gmkdir"
-
-source ~/.bash_pu_colors
-source ~/.bash_pu_aliases
-source ~/.bash_pu_aliases_ag
-source ~/.bash_pu_git
+source ~/.bash_pu_colors 2>/dev/null
+source ~/.bash_pu_aliases 2>/dev/null
+source ~/.bash_pu_aliases_ag 2>/dev/null
 
 declare -a paths
 paths=(
@@ -52,6 +58,11 @@ for p in "${paths[@]}"; do
 done
 
 unset p
-source ${HOME}/.zshrc.omz
+
+# unalias mkdir 2>/dev/null
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
+
+source ${HOME}/.zshrc.omz
+
+
