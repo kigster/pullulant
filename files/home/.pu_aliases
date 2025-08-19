@@ -12,9 +12,14 @@ function pu.aliases() {
   alias gpge='gpg --list-secret-keys --keyid-format LONG'
   alias da='direnv allow .'
   alias dc='cd'
-  alias dir='ls -alF'
-  alias lr='ls -alrt'
+
+  alias dir='ls -lF'
+  alias dira='ls -alF'
+  alias lr='ls -lrt'
+  alias lra='ls -lrta'
   alias l='ls -lF'
+  alias la='ls -lFa'
+
   alias ds='du -k  | grep -v "\/.*\/"'
   alias diskspace="du -k | grep -v './.*\/'"
   alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"

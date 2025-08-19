@@ -9,17 +9,12 @@ set +e
 unset DEBUG
 # uncomment to enable debug logging of sourced file paths
 # export DEBUG=1
-export DIRENV_LOG_FORMAT=
+# export DIRENV_LOG_FORMAT=
 export DEBUG=
 export GOPATH=/Users/kig/Dropbox/Code/oss/go
 export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
 
 alias mkdir="/opt/homebrew/bin/gmkdir"
-
-source ~/.bash_pu_colors
-source ~/.bash_pu_aliases
-source ~/.bash_pu_aliases_ag
-source ~/.bash_pu_git
 
 declare -a paths
 paths=(
@@ -33,6 +28,7 @@ paths=(
   ${HOME}/.volta
   /usr/bin
   /bin
+  /sbin
 )
 
 unset p
@@ -52,6 +48,20 @@ for p in "${paths[@]}"; do
 done
 
 unset p
-source ${HOME}/.zshrc.omz
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
+
+source ~/.pu_colors
+source ~/.pu_aliases
+source ~/.pu_git
+source ~/.pu_functions
+
+#source ~/.bash_pu_aliases_ag
+#source ~/.bash_pu_git_completion
+
+eval "$(direnv hook zsh)"
+
+export PATH="${PATH}:/usr/sbin:/sbin"
+
+source ~/.zshrc.omz
+source ~/.zshrc.pre-oh-my-zsh

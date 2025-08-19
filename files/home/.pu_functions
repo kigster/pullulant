@@ -214,7 +214,7 @@ mem() {
 #              STDIN, and can divide or multiply the result by an optional coefficient.
 #              Specify units with -u, eg. "Mb" or "Gb", etc.
 #
-#     depends: requires the supporting AWK script "~/.addup.awk" to be installed.
+#     depends: requires the supporting AWK script "~/.awk_addup_pu" to be installed.
 #
 addup() {
   local addup_debug=0
@@ -306,7 +306,7 @@ addup() {
       -v multiplier="${addup__multiplier}" \
       -v units="${addup__units}" \
       -v debug="${addup__debug}" \
-      -f ~/.pu_addup.awk <&0
+      -f ~/.awk_addup_pu <&0
 }
 
 
