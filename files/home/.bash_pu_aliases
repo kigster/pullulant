@@ -12,9 +12,11 @@ function pu.aliases() {
 
   alias da='direnv allow .'
   alias dc='cd'
-  alias dir='ls -alF'
-  alias lr='ls -alrt'
-  alias l='ls -lF'
+  alias dir='ls -lF --color'
+  alias dira='ls -alF --color'
+  alias lr='ls -lrtF --color'
+  alias lra='ls -lartF --color'
+  alias l='ls -lF --color'
   alias ds='du -k  | grep -v "\/.*\/"'
   alias diskspace="du -k | grep -v './.*\/'"
   alias ppxml="xmllint --format - | highlight --out-format=ansi --syntax=xml"
