@@ -1,5 +1,5 @@
 ---
-gem: --no-ri --no-rdoc
+gem: -N
 :update_sources: true
 :bulk_threshold: 1000
 :verbose: false

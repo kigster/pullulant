@@ -75,6 +75,8 @@ Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-plug'
 Plug 'mattn/emmet-vim'
 Plug 'mxw/vim-jsx'
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 Plug 'pangloss/vim-javascript'
 Plug 'phanviet/vim-monokai-pro'

@@ -1,0 +1,24 @@
+# vim: ft=bash
+
+set -x
+
+declare verbose
+export verbose=0
+
+[[ ${ARGV[*]} =~ -v || ${ARGV[*]} ]] && export verbose=1
+
+if [[ $SHELL =~ bash ]]; then
+  ((verbose)) && echo "sourcing BASH functions"
+  source .custom.bash/.bash*
+elif [[ $SHELL =~ zsh ]]; then
+  ((verbose)) && echo "sourcing ZSH functions"
+  for file in $(find .custom.zsh -type f | sort ); do
+    ((verbose)) && echo "loading file ${file}..."
+    source "${file}"
+  done
+fi
+ 
+command -v psql >/dev/null && {
+  ((verbose)) && echo "Installing .psqlrc file and macros to ~..."
+  cp .custom.psql/.psqlrc* ~/
+}
