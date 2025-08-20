@@ -18,7 +18,7 @@ function pu.aliases() {
   alias lr='ls -lrt --color'
   alias lra='ls -lrta --color'
   alias l='ls -lF --color'
-  alias la='ls -lFa --colors'
+  alias la='ls -lFa --color'
 
   alias ds='du -k  | grep -v "\/.*\/"'
   alias diskspace="du -k | grep -v './.*\/'"
